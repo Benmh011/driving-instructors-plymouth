@@ -15,16 +15,19 @@ export function Header() {
           <a href="#coverage" className="link-grow">
             Areas
           </a>
+          <a href="/login" className="link-grow">
+            Log in
+          </a>
         </nav>
         <div className="flex items-center gap-2">
           <a
-            href="#waitlist"
+            href="/register?role=instructor"
             className="hidden rounded-full border border-ink/20 px-4 py-2 text-sm font-semibold transition-colors hover:border-ink hover:bg-ink hover:text-paper sm:inline-flex"
           >
             I&rsquo;m an instructor
           </a>
           <a
-            href="#waitlist"
+            href="/register"
             className="inline-flex items-center gap-1.5 rounded-full bg-signal px-4 py-2 text-sm font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-signal-dark"
           >
             Find an instructor

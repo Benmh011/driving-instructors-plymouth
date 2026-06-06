@@ -1,11 +1,11 @@
 const FAQS = [
   {
-    q: "When does Clutch launch?",
-    a: "We're onboarding the first Plymouth instructors now and opening to learners shortly after. Join the waitlist and you'll be among the first to know.",
+    q: "When does it launch?",
+    a: "We're onboarding the first Plymouth instructors now and opening to learners shortly after. Create an account to get set up.",
   },
   {
-    q: "Does it cost anything to join the waitlist?",
-    a: "No — joining is free for both learners and instructors. At launch there are no booking fees for learners either.",
+    q: "Does it cost anything to sign up?",
+    a: "No — creating an account is free for both learners and instructors. At launch there are no booking fees for learners either.",
   },
   {
     q: "I'm a driving instructor. How does it work for me?",
@@ -13,7 +13,7 @@ const FAQS = [
   },
   {
     q: "Which areas are covered?",
-    a: "We're starting across Plymouth and the surrounding towns, then expanding through South West Devon. Tell us your area on the waitlist so we can prioritise it.",
+    a: "We're starting across Plymouth and the surrounding towns, then expanding through South West Devon. Tell us your area when you sign up so we can prioritise it.",
   },
 ];
 

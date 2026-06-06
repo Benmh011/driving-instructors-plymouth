@@ -24,8 +24,8 @@ export function Footer() {
             <a href="#coverage" className="link-grow w-fit">
               Areas covered
             </a>
-            <a href="#waitlist" className="link-grow w-fit">
-              Join the waitlist
+            <a href="/register" className="link-grow w-fit">
+              Create an account
             </a>
           </nav>
         </div>

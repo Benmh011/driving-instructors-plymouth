@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  LEARNER
+  INSTRUCTOR
+}
+
+enum Transmission {
+  MANUAL
+  AUTOMATIC
+  BOTH
+}
+
+model User {
+  id                 String   @id @default(cuid())
+  email              String   @unique
+  passwordHash       String
+  name               String
+  role               Role
+  onboardingComplete Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  learnerProfile     LearnerProfile?
+  instructorProfile  InstructorProfile?
+}
+
+model LearnerProfile {
+  id           String       @id @default(cuid())
+  userId       String       @unique
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postcode     String
+  transmission Transmission @default(MANUAL)
+  goal         String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model InstructorProfile {
+  id           String       @id @default(cuid())
+  userId       String       @unique
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  adiNumber    String // DVSA ADI badge number
+  businessName String?
+  postcodes    String // comma-separated coverage areas for now
+  transmission Transmission @default(MANUAL)
+  hourlyRate   Int // whole pounds per hour
+  carDetails   String?
+  bio          String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}

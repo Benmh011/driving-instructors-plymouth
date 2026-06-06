@@ -28,13 +28,13 @@ export function Hero() {
           className="rise mt-6 max-w-xl text-lg leading-relaxed text-ink-soft"
           style={{ animationDelay: "160ms" }}
         >
-          Clutch connects you with vetted local driving instructors across
+          We connect you with vetted local driving instructors across
           Plymouth and the surrounding towns. See real prices, real
           availability, and book lessons in minutes — no endless phone calls,
           no six-month waitlists.
         </p>
 
-        {/* Area search — visual for now, scrolls to the waitlist */}
+        {/* Area search — visual for now, leads to sign-up */}
         <div
           className="rise mt-9 flex w-full max-w-lg flex-col gap-2.5 sm:flex-row"
           style={{ animationDelay: "240ms" }}
@@ -63,7 +63,7 @@ export function Hero() {
             />
           </div>
           <a
-            href="#waitlist"
+            href="/register"
             className="inline-flex items-center justify-center gap-1.5 rounded-full bg-signal px-6 py-3 text-base font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-signal-dark"
           >
             Find lessons
@@ -76,8 +76,8 @@ export function Hero() {
           style={{ animationDelay: "300ms" }}
         >
           Teaching here?{" "}
-          <a href="#instructors" className="link-grow font-semibold text-ink">
-            List your lessons on Clutch →
+          <a href="/register?role=instructor" className="link-grow font-semibold text-ink">
+            List your lessons →
           </a>
         </p>
 
