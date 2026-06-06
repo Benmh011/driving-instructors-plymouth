@@ -21,7 +21,7 @@ export function Hero() {
         >
           Learn to drive,
           <br />
-          <span className="text-signal">without the faff.</span>
+          <span className="text-ink">without the faff.</span>
         </h1>
 
         <p
@@ -64,7 +64,7 @@ export function Hero() {
           </div>
           <a
             href="/register"
-            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-signal px-6 py-3 text-base font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-signal-dark"
+            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-tarmac px-6 py-3 text-base font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-tarmac-soft"
           >
             Find lessons
             <span aria-hidden>→</span>

@@ -6,7 +6,7 @@ import { registerUser } from "@/app/(auth)/actions";
 type RoleChoice = "LEARNER" | "INSTRUCTOR";
 
 const field =
-  "w-full rounded-xl border border-ink/20 bg-white px-4 py-3 text-base outline-none transition-colors focus:border-signal";
+  "w-full rounded-xl border border-ink/20 bg-white px-4 py-3 text-base outline-none transition-colors focus:border-ink";
 const label = "mb-1.5 block text-sm font-semibold";
 
 export default function RegisterForm({ defaultRole = "LEARNER" }: { defaultRole?: RoleChoice }) {
@@ -27,7 +27,7 @@ export default function RegisterForm({ defaultRole = "LEARNER" }: { defaultRole?
               onClick={() => setRole(r)}
               className={`rounded-xl border px-4 py-3 text-sm font-semibold transition-colors ${
                 role === r
-                  ? "border-signal bg-signal text-white"
+                  ? "border-ink bg-tarmac text-white"
                   : "border-ink/20 bg-white hover:border-ink"
               }`}
             >
@@ -65,12 +65,12 @@ export default function RegisterForm({ defaultRole = "LEARNER" }: { defaultRole?
         <p className="mt-1 text-xs text-ink-soft">At least 8 characters.</p>
       </div>
 
-      {state?.error && <p className="text-sm font-medium text-signal">{state.error}</p>}
+      {state?.error && <p className="text-sm font-medium text-ink">{state.error}</p>}
 
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-full bg-signal px-6 py-3 font-semibold text-white transition-transform hover:-translate-y-0.5 hover:bg-signal-dark disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full rounded-full bg-tarmac px-6 py-3 font-semibold text-white transition-transform hover:-translate-y-0.5 hover:bg-tarmac-soft disabled:cursor-not-allowed disabled:opacity-60"
       >
         {pending ? "Creating account…" : "Create account"}
       </button>

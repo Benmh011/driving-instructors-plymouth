@@ -80,7 +80,7 @@ body::before {
 .lplate {
   display: inline-grid;
   place-items: center;
-  background: var(--color-signal);
+  background: var(--color-ink);
   color: #fff;
   font-family: var(--font-display);
   font-weight: 700;
