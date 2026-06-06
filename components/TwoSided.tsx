@@ -82,7 +82,7 @@ export function TwoSided() {
                 key={p}
                 className="flex items-start gap-3.5 border-b border-white/10 px-5 py-4 last:border-b-0"
               >
-                <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-line text-tarmac">
+                <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-sea text-white">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden>
                     <path
                       d="M5 13l4 4L19 7"

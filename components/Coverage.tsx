@@ -39,7 +39,7 @@ export function Coverage() {
           {AREAS.map((area) => (
             <span
               key={area}
-              className="rounded-full border border-ink/15 bg-white/60 px-4 py-2 text-sm font-medium transition-colors hover:border-signal hover:text-signal"
+              className="rounded-full border border-ink/15 bg-white/60 px-4 py-2 text-sm font-medium transition-colors hover:border-sea hover:text-sea"
             >
               {area}
             </span>

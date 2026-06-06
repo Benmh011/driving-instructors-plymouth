@@ -1,22 +1,23 @@
 @import "tailwindcss";
 
 /* ----------------------------------------------------------------
-   Clutch — design tokens
-   Aesthetic: editorial "road infrastructure"
-   paper + tarmac, L-plate red signal, amber road-line accents
+   Driving Instructors Plymouth — design tokens
+   Driving identity (L-plate + road markings) in a Plymouth palette:
+   Hoe limestone, Plymouth Sound navy, Smeaton red, Tinside teal, brass
 ----------------------------------------------------------------- */
 @theme {
-  --color-paper: #f6f2ea;
-  --color-paper-dim: #ece6da;
-  --color-tarmac: #15171c;
-  --color-tarmac-soft: #21242c;
-  --color-ink: #15171c;
-  --color-ink-soft: #4a4f59;
-  --color-signal: #e11d2a; /* L-plate red */
-  --color-signal-dark: #b9121d;
-  --color-line: #f2b705; /* road-marking amber */
+  --color-paper: #efe6d2; /* Hoe limestone */
+  --color-paper-dim: #e5dac1;
+  --color-tarmac: #122842; /* Plymouth Sound navy — dark sections */
+  --color-tarmac-soft: #1c3550;
+  --color-ink: #142436; /* deep navy ink */
+  --color-ink-soft: #4f5d6b;
+  --color-signal: #c8362f; /* Smeaton's Tower red = L-plate red */
+  --color-signal-dark: #a62a24;
+  --color-line: #c9a24b; /* brass — road-marking centre line */
+  --color-sea: #2c8aa0; /* Tinside teal — secondary accent */
   --color-go: #2f8f5b; /* pass/go green, used sparingly */
-  --color-hairline: rgba(21, 23, 28, 0.12);
+  --color-hairline: rgba(20, 36, 54, 0.12);
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-bricolage), Georgia, serif;
