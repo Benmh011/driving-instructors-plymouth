@@ -1,0 +1,24 @@
+export function Logo({
+  className = "",
+  variant = "onLight",
+}: {
+  className?: string;
+  variant?: "onLight" | "onDark";
+}) {
+  const text = variant === "onLight" ? "text-ink" : "text-paper";
+  return (
+    <a href="#top" className={`group inline-flex items-center gap-2.5 ${className}`}>
+      <span className="lplate h-9 w-9 shrink-0 text-lg leading-none transition-transform duration-300 group-hover:-rotate-6">
+        L
+      </span>
+      <span className={`flex flex-col font-display leading-[0.96] tracking-tight ${text}`}>
+        <span className="text-[13px] font-extrabold sm:text-[15px]">
+          Driving Instructors
+        </span>
+        <span className="text-[13px] font-extrabold sm:text-[15px]">
+          Plymouth<span className="text-signal">.</span>
+        </span>
+      </span>
+    </a>
+  );
+}

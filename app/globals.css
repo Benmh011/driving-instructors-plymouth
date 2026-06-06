@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+/* ----------------------------------------------------------------
+   Clutch — design tokens
+   Aesthetic: editorial "road infrastructure"
+   paper + tarmac, L-plate red signal, amber road-line accents
+----------------------------------------------------------------- */
+@theme {
+  --color-paper: #f6f2ea;
+  --color-paper-dim: #ece6da;
+  --color-tarmac: #15171c;
+  --color-tarmac-soft: #21242c;
+  --color-ink: #15171c;
+  --color-ink-soft: #4a4f59;
+  --color-signal: #e11d2a; /* L-plate red */
+  --color-signal-dark: #b9121d;
+  --color-line: #f2b705; /* road-marking amber */
+  --color-go: #2f8f5b; /* pass/go green, used sparingly */
+  --color-hairline: rgba(21, 23, 28, 0.12);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), Georgia, serif;
+
+  --radius-plate: 0.5rem;
+}
+
+* {
+  border-color: var(--color-hairline);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Faint paper grain so backgrounds aren't flat */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+/* The signature device: a dashed road centre-line divider */
+.roadline {
+  height: 4px;
+  width: 100%;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--color-line) 0,
+    var(--color-line) 34px,
+    transparent 34px,
+    transparent 60px
+  );
+}
+
+.roadline-vertical {
+  width: 4px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--color-line) 0,
+    var(--color-line) 24px,
+    transparent 24px,
+    transparent 44px
+  );
+}
+
+/* L-plate device */
+.lplate {
+  display: inline-grid;
+  place-items: center;
+  background: var(--color-signal);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  border-radius: var(--radius-plate);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.25);
+}
+
+/* Staggered page-load reveal */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise {
+  opacity: 0;
+  animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+    opacity: 1;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Underline-grow link */
+.link-grow {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 2px;
+  transition: background-size 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.link-grow:hover {
+  background-size: 100% 2px;
+}
