@@ -100,7 +100,7 @@ export function TwoSided() {
           </ul>
         </div>
       </div>
-      <RoadDivider progress={72} />
+      <RoadDivider progress={72} dark />
     </section>
   );
 }

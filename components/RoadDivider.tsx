@@ -4,38 +4,34 @@ import { useEffect, useRef, useState } from "react";
 
 function Car() {
   return (
-    <svg width="100" height="58" viewBox="0 0 100 58" fill="none" aria-hidden>
+    <svg width="108" height="56" viewBox="0 0 108 56" fill="none" aria-hidden>
+      {/* arch wells */}
+      <circle cx="30" cy="45" r="10.5" fill="#d8cfd6" />
+      <circle cx="82" cy="45" r="10.5" fill="#d8cfd6" />
       {/* teal body, facing left */}
       <path
-        d="M12 47 Q8 47 8 41 L8 35 Q8 28 15 25 Q19 10 42 9 L58 9 Q81 10 85 25 Q92 28 92 35 L92 41 Q92 47 86 47 Z"
+        d="M14 47 Q8 47 8 41 L8 36 Q8 31 13 30 L20 29 Q24 12 42 11 L66 11 Q84 12 88 29 L95 30 Q100 31 100 36 L100 41 Q100 47 94 47 Z"
         fill="#2c8aa0"
       />
-      {/* grey wheel arches */}
-      <circle cx="28" cy="45" r="10.5" fill="#a9aeb4" />
-      <circle cx="72" cy="45" r="10.5" fill="#a9aeb4" />
-      {/* grey lower skirt */}
-      <path
-        d="M8 40 L92 40 L92 41 Q92 47 86 47 L12 47 Q8 47 8 41 Z"
-        fill="#a9aeb4"
-      />
-      {/* tyres + hubs */}
-      <circle cx="28" cy="45" r="8" fill="#14202e" />
-      <circle cx="28" cy="45" r="3.2" fill="#d7dbde" />
-      <circle cx="72" cy="45" r="8" fill="#14202e" />
-      <circle cx="72" cy="45" r="3.2" fill="#d7dbde" />
-      {/* domed window */}
-      <path d="M20 24 Q22 13 40 12 L56 12 Q74 13 78 24 Z" fill="#d4ecf2" />
-      <path
-        d="M30 23 L40 13.5 L46 13.5 L36 23 Z"
-        fill="#ffffff"
-        opacity="0.55"
-      />
-      <path d="M50 23 L57 14 L61 14.5 L54 23 Z" fill="#ffffff" opacity="0.45" />
+      {/* windows */}
+      <path d="M26 26 L31 15 L48 15 L48 26 Z" fill="#cfe7f0" />
+      <path d="M52 26 L52 15 L78 15 Q82 16 82 26 Z" fill="#cfe7f0" />
+      {/* wing mirror */}
+      <path d="M20 25 L15 26 L15 29 L20 28 Z" fill="#1b2733" />
+      {/* door handle */}
+      <rect x="64" y="31" width="8" height="2.2" rx="1.1" fill="#1b2733" />
+      {/* wheels: tyre, cream rim, hub */}
+      <circle cx="30" cy="45" r="9" fill="#14202e" />
+      <circle cx="30" cy="45" r="5" fill="#f2efe9" />
+      <circle cx="30" cy="45" r="2.2" fill="#14202e" />
+      <circle cx="82" cy="45" r="9" fill="#14202e" />
+      <circle cx="82" cy="45" r="5" fill="#f2efe9" />
+      <circle cx="82" cy="45" r="2.2" fill="#14202e" />
       {/* centred L-plate */}
-      <rect x="43" y="28" width="14" height="12" rx="2" fill="#c8362f" />
+      <rect x="47" y="30" width="14" height="12" rx="2" fill="#c8362f" />
       <text
-        x="50"
-        y="38"
+        x="54"
+        y="40"
         textAnchor="middle"
         fontFamily="Arial, sans-serif"
         fontSize="11"
@@ -68,9 +64,11 @@ function Flag() {
 export function RoadDivider({
   progress = 60,
   finish = false,
+  dark = false,
 }: {
   progress?: number;
   finish?: boolean;
+  dark?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [driven, setDriven] = useState(false);
@@ -92,17 +90,16 @@ export function RoadDivider({
   }, []);
 
   // We drive on the left: car faces left, travels right -> left.
-  // Higher progress = further along = further to the left.
-  const left = driven ? `calc(${100 - progress}% - 50px)` : "calc(100% + 24px)";
+  const left = driven ? `calc(${100 - progress}% - 54px)` : "calc(100% + 24px)";
 
   return (
     <div
       ref={ref}
       aria-hidden
-      className="relative h-20 w-full overflow-hidden bg-paper"
+      className={`relative h-20 w-full overflow-hidden ${dark ? "bg-tarmac" : "bg-paper"}`}
     >
       {/* asphalt */}
-      <div className="absolute inset-x-0 bottom-0 h-6 bg-[#5c626a]">
+      <div className="absolute inset-x-0 bottom-0 h-7 bg-[#5c626a]">
         <div
           className="absolute inset-x-0 top-1/2 h-[4px] -translate-y-1/2"
           style={{
@@ -119,7 +116,7 @@ export function RoadDivider({
       )}
 
       <div
-        className="absolute bottom-0.5 w-[100px] transition-[left] duration-[2200ms] ease-out motion-reduce:transition-none"
+        className="absolute bottom-0.5 w-[108px] transition-[left] duration-[2200ms] ease-out motion-reduce:transition-none"
         style={{ left }}
       >
         <Car />
