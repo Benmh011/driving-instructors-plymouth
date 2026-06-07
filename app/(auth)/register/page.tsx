@@ -19,7 +19,7 @@ export default async function RegisterPage({
       footer={
         <>
           Already have an account?{" "}
-          <Link href="/login" className="font-semibold text-ink link-grow">
+          <Link href="/login" className="font-semibold text-paper link-grow">
             Sign in
           </Link>
         </>
