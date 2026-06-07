@@ -31,6 +31,12 @@ enum JoinRequestStatus {
   DECLINED
 }
 
+enum AdiStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
 model User {
   id                 String   @id @default(cuid())
   email              String   @unique
@@ -78,6 +84,10 @@ model InstructorProfile {
   hourlyRate   Int // whole pounds per hour
   carDetails   String?
   bio          String?
+
+  // ADI verification (manual admin review against the DVSA register)
+  adiStatus     AdiStatus @default(PENDING)
+  adiReviewedAt DateTime?
 
   // Roster + invites
   inviteCode              String?  @unique // reusable join-link token, generated lazily

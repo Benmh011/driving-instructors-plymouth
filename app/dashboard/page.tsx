@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
+import { isAdminEmail } from "@/lib/admin";
 
 export const metadata = { title: "Dashboard" };
 
@@ -28,6 +29,7 @@ export default async function DashboardPage({
   if (!user.onboardingComplete) redirect("/onboarding");
 
   const isInstructor = user.role === "INSTRUCTOR";
+  const admin = isAdminEmail(user.email);
   const l = user.learnerProfile;
   const i = user.instructorProfile;
   const instructor = l?.activeInstructor;
@@ -58,6 +60,31 @@ export default async function DashboardPage({
           Your account is set up. Here&rsquo;s what you told us — you&rsquo;ll be able to
           edit all of this once profiles go live.
         </p>
+
+        {isInstructor && i && i.adiStatus === "PENDING" && (
+          <div className="mt-6 rounded-2xl border border-line/40 bg-line/10 px-5 py-4">
+            <p className="text-[15px] font-medium text-ink">
+              Your ADI badge is being verified. Your profile appears in the public
+              directory once we&rsquo;ve confirmed it against the DVSA register.
+            </p>
+          </div>
+        )}
+        {isInstructor && i && i.adiStatus === "REJECTED" && (
+          <div className="mt-6 rounded-2xl border border-signal/30 bg-signal/10 px-5 py-4">
+            <p className="text-[15px] font-medium text-ink">
+              We couldn&rsquo;t verify your ADI details. Please get in touch so we can
+              sort it out.
+            </p>
+          </div>
+        )}
+        {isInstructor && i && i.adiStatus === "VERIFIED" && (
+          <div className="mt-6 rounded-2xl border border-go/30 bg-go/10 px-5 py-4">
+            <p className="text-[15px] font-medium text-ink">
+              Your ADI registration is verified &mdash; you&rsquo;re live in the
+              directory.
+            </p>
+          </div>
+        )}
 
         <div className="mt-9 grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline sm:grid-cols-2">
           {isInstructor && i ? (
@@ -106,6 +133,15 @@ export default async function DashboardPage({
             desc="Browse approved instructors near you and request lessons."
             className="mt-5"
           />
+        )}
+
+        {admin && (
+          <Link
+            href="/admin/verification"
+            className="mt-8 inline-block text-sm font-semibold text-sea link-grow"
+          >
+            Admin: ADI verification &rarr;
+          </Link>
         )}
       </main>
     </div>

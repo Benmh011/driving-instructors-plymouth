@@ -15,7 +15,8 @@ export const authConfig = {
         path.startsWith("/dashboard") ||
         path.startsWith("/onboarding") ||
         path.startsWith("/students") ||
-        path.startsWith("/diary");
+        path.startsWith("/diary") ||
+        path.startsWith("/admin");
       const isAuthPage = path === "/login" || path === "/register";
 
       if (isProtected && !isLoggedIn) return false; // -> redirected to /login

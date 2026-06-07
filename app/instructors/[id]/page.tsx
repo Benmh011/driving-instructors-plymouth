@@ -59,6 +59,7 @@ export default async function InstructorProfilePage({
     !instructor.acceptingStudents || instructor._count.roster >= MAX_ROSTER;
   const name = instructor.businessName || instructor.user.name;
   const instructorId: string = instructor.id;
+  const verified = instructor.adiStatus === "VERIFIED";
 
   const learner = viewer?.learnerProfile ?? null;
   const isOwnProfile = viewer?.instructorProfile?.id === instructor.id;
@@ -90,6 +91,13 @@ export default async function InstructorProfilePage({
       return (
         <p className="text-[15px] text-ink-soft">
           You&rsquo;re signed in as an instructor.
+        </p>
+      );
+    }
+    if (!verified) {
+      return (
+        <p className="text-[15px] text-ink-soft">
+          This instructor isn&rsquo;t taking new requests through the marketplace yet.
         </p>
       );
     }
@@ -229,7 +237,9 @@ export default async function InstructorProfilePage({
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">
               ADI badge
             </p>
-            <p className="mt-1 font-medium">Verified</p>
+            <p className={`mt-1 font-medium ${verified ? "text-go" : "text-ink-soft"}`}>
+              {verified ? "DVSA approved" : "Awaiting verification"}
+            </p>
           </div>
         </div>
 
