@@ -35,14 +35,18 @@ export default async function InstructorsPage({
   const { area = "", transmission = "" } = await searchParams;
   const session = await auth();
 
-  const where: Record<string, unknown> = { user: { onboardingComplete: true } };
-  if (area.trim()) where.postcodes = { contains: area.trim(), mode: "insensitive" };
-  if (transmission === "MANUAL") where.transmission = { in: ["MANUAL", "BOTH"] };
-  else if (transmission === "AUTOMATIC")
-    where.transmission = { in: ["AUTOMATIC", "BOTH"] };
-
+  const areaTrim = area.trim();
   const instructors: DirItem[] = await prisma.instructorProfile.findMany({
-    where,
+    where: {
+      user: { onboardingComplete: true },
+      postcodes: areaTrim ? { contains: areaTrim, mode: "insensitive" } : undefined,
+      transmission:
+        transmission === "MANUAL"
+          ? { in: ["MANUAL", "BOTH"] }
+          : transmission === "AUTOMATIC"
+            ? { in: ["AUTOMATIC", "BOTH"] }
+            : undefined,
+    },
     orderBy: [{ acceptingStudents: "desc" }, { createdAt: "asc" }],
     include: { user: true, _count: { select: { roster: true } } },
   });
