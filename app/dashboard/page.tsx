@@ -80,35 +80,63 @@ export default async function DashboardPage({
         </div>
 
         {isInstructor ? (
-          <Link
-            href="/students"
-            className="mt-5 flex items-center justify-between rounded-2xl border border-hairline bg-paper p-6 transition-colors hover:border-ink/30"
-          >
-            <div>
-              <p className="font-display text-lg font-semibold">Your students</p>
-              <p className="mt-1 text-[15px] text-ink-soft">
-                Share your invite link and manage who&rsquo;s on your list.
-              </p>
-            </div>
-            <span className="ml-4 shrink-0 text-2xl text-ink-soft" aria-hidden>
-              &rarr;
-            </span>
-          </Link>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <NavCard
+              href="/students"
+              title="Your students"
+              desc="Share your invite link and manage your roster."
+            />
+            <NavCard
+              href="/diary"
+              title="Your diary"
+              desc="Book and manage your lessons."
+            />
+          </div>
+        ) : instructorName ? (
+          <NavCard
+            href="/diary"
+            title="Your lessons"
+            desc={`See your lessons with ${instructorName}.`}
+            className="mt-5"
+          />
         ) : (
           <div className="mt-5 rounded-2xl border border-dashed border-ink/20 bg-paper-dim/40 p-6">
-            <p className="font-display text-lg font-semibold">
-              {instructorName ? "Booking your lessons" : "Joining an instructor"}
-            </p>
+            <p className="font-display text-lg font-semibold">Joining an instructor</p>
             <p className="mt-1 text-[15px] text-ink-soft">
-              {instructorName
-                ? instructorName +
-                  " can now book your lessons — they'll show up here once the diary's live."
-                : "If your instructor sent you an invite link, open it to join their list. Searching for an instructor here is coming soon."}
+              If your instructor sent you an invite link, open it to join their list.
+              Searching for an instructor here is coming soon.
             </p>
           </div>
         )}
       </main>
     </div>
+  );
+}
+
+function NavCard({
+  href,
+  title,
+  desc,
+  className = "",
+}: {
+  href: string;
+  title: string;
+  desc: string;
+  className?: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`flex items-center justify-between rounded-2xl border border-hairline bg-paper p-6 transition-colors hover:border-ink/30 ${className}`}
+    >
+      <div>
+        <p className="font-display text-lg font-semibold">{title}</p>
+        <p className="mt-1 text-[15px] text-ink-soft">{desc}</p>
+      </div>
+      <span className="ml-4 shrink-0 text-2xl text-ink-soft" aria-hidden>
+        &rarr;
+      </span>
+    </Link>
   );
 }
 
