@@ -88,6 +88,7 @@ model InstructorProfile {
   // ADI verification (manual admin review against the DVSA register)
   adiStatus     AdiStatus @default(PENDING)
   adiReviewedAt DateTime?
+  adiBadgeUrl   String?
 
   // Roster + invites
   inviteCode              String?  @unique // reusable join-link token, generated lazily

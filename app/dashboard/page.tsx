@@ -67,14 +67,26 @@ export default async function DashboardPage({
               Your ADI badge is being verified. Your profile appears in the public
               directory once we&rsquo;ve confirmed it against the DVSA register.
             </p>
+            <Link
+              href="/dashboard/badge"
+              className="mt-1 inline-block text-sm font-semibold text-sea link-grow"
+            >
+              {i.adiBadgeUrl ? "Update your badge photo" : "Upload your ADI badge"} &rarr;
+            </Link>
           </div>
         )}
         {isInstructor && i && i.adiStatus === "REJECTED" && (
           <div className="mt-6 rounded-2xl border border-signal/30 bg-signal/10 px-5 py-4">
             <p className="text-[15px] font-medium text-ink">
-              We couldn&rsquo;t verify your ADI details. Please get in touch so we can
-              sort it out.
+              We couldn&rsquo;t verify your ADI details. Please upload a clear photo of
+              your badge, or get in touch so we can sort it out.
             </p>
+            <Link
+              href="/dashboard/badge"
+              className="mt-1 inline-block text-sm font-semibold text-sea link-grow"
+            >
+              Upload your ADI badge &rarr;
+            </Link>
           </div>
         )}
         {isInstructor && i && i.adiStatus === "VERIFIED" && (

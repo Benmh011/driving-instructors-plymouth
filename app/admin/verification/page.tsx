@@ -16,6 +16,7 @@ type Row = {
   postcodes: string;
   transmission: string;
   adiStatus: string;
+  adiBadgeUrl: string | null;
   createdAt: string | Date;
   user: { name: string; email: string };
 };
@@ -90,6 +91,21 @@ export default async function VerificationPage() {
             >
               View public profile
             </Link>
+            {i.adiBadgeUrl ? (
+              <a href={`/api/badge/${i.id}`} target="_blank" rel="noopener noreferrer" className="mt-3 block">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/api/badge/${i.id}`}
+                  alt={`${i.user.name}'s ADI badge`}
+                  className="max-h-40 rounded-xl border border-hairline"
+                />
+                <span className="mt-1 inline-block text-xs font-semibold text-sea">
+                  Open full size
+                </span>
+              </a>
+            ) : (
+              <p className="mt-3 text-sm text-ink-soft">No badge photo uploaded yet.</p>
+            )}
           </div>
           <div className="flex shrink-0 gap-2">
             {i.adiStatus !== "VERIFIED" && (
