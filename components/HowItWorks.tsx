@@ -37,7 +37,12 @@ export function HowItWorks() {
       <div className="grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline sm:grid-cols-3">
         {STEPS.map((s) => (
           <div key={s.n} className="bg-paper p-7 transition-colors hover:bg-paper-dim/50">
-            <div className="lplate mb-6 h-11 w-11 text-base">{s.n}</div>
+            <div
+              className="lplate mb-6 h-11 w-11 text-base"
+              style={{ background: "var(--color-sea)" }}
+            >
+              {s.n}
+            </div>
             <h3 className="mb-2 font-display text-xl font-bold">{s.title}</h3>
             <p className="text-[15px] leading-relaxed text-ink-soft">{s.body}</p>
           </div>
