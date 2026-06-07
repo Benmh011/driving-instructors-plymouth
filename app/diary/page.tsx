@@ -93,7 +93,7 @@ export default async function DiaryPage() {
         </h1>
 
         {isInstructor && (
-          <section className="mt-9 rounded-2xl border border-hairline bg-paper p-6">
+          <section className="mt-9 rounded-2xl border border-hairline bg-cream p-6">
             <p className="font-display text-lg font-semibold">Book a lesson</p>
             {roster.length === 0 ? (
               <p className="mt-2 text-[15px] text-ink-soft">

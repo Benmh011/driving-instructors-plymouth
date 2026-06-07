@@ -97,12 +97,12 @@ export default function LessonCalendar({
     .sort((a, b) => a.start.localeCompare(b.start));
 
   const navBtn =
-    "grid h-9 w-9 place-items-center rounded-full text-xl text-paper/80 transition-colors hover:bg-white/10";
+    "grid h-9 w-9 place-items-center rounded-full text-xl text-cream/80 transition-colors hover:bg-white/10";
 
   return (
     <div>
-      <div className="overflow-hidden rounded-2xl border border-hairline bg-paper">
-        <div className="flex items-center justify-between bg-tarmac px-5 py-4 text-paper">
+      <div className="overflow-hidden rounded-2xl border border-hairline bg-cream">
+        <div className="flex items-center justify-between bg-tarmac px-5 py-4 text-cream">
           <button type="button" onClick={prevMonth} className={navBtn} aria-label="Previous month">
             &lsaquo;
           </button>
@@ -137,8 +137,8 @@ export default function LessonCalendar({
                   isSel
                     ? "bg-sea font-semibold text-white"
                     : isToday
-                      ? "bg-paper-dim font-semibold"
-                      : "hover:bg-paper-dim"
+                      ? "bg-sea/10 font-semibold"
+                      : "hover:bg-sea/10"
                 }`}
               >
                 {d}
@@ -161,7 +161,7 @@ export default function LessonCalendar({
         {selLessons.length === 0 ? (
           <p className="mt-2 text-[15px] text-ink-soft">No lessons this day.</p>
         ) : (
-          <ul className="mt-3 grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline">
+          <ul className="mt-3 space-y-2.5">
             {selLessons.map((l) => {
               const upcoming = new Date(l.start) >= new Date();
               const cancellable = l.status === "BOOKED" && upcoming;
@@ -173,7 +173,7 @@ export default function LessonCalendar({
                 ? `This lesson is inside the ${l.noticeHours}-hour notice window. Cancel it anyway?`
                 : "Cancel this lesson?";
               return (
-                <li key={l.id} className="bg-paper p-5">
+                <li key={l.id} className="rounded-2xl border border-hairline border-l-4 border-l-sea bg-cream p-5 shadow-sm">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <p className="font-semibold">

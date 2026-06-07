@@ -8,6 +8,7 @@
 @theme {
   --color-paper: #c9cdca; /* French grey */
   --color-paper-dim: #bbc0bc;
+  --color-cream: #f5f0e4; /* warm cream — cards/surfaces */
   --color-tarmac: #122842; /* Plymouth Sound navy — dark sections */
   --color-tarmac-soft: #1c3550;
   --color-ink: #142436; /* deep navy ink */

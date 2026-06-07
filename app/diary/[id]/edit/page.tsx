@@ -64,7 +64,7 @@ export default async function EditLessonPage({
           With {studentName} — currently {fmtWhen(booking.start)}.
         </p>
 
-        <div className="mt-8 rounded-2xl border border-hairline bg-paper p-6">
+        <div className="mt-8 rounded-2xl border border-hairline bg-cream p-6">
           <EditLessonForm
             id={booking.id}
             defaultStart={defaultStart}
