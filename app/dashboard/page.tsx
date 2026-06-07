@@ -127,7 +127,7 @@ function NavCard({
   return (
     <Link
       href={href}
-      className={`flex items-center justify-between rounded-2xl border border-hairline bg-paper p-6 transition-colors hover:border-ink/30 ${className}`}
+      className={`flex items-center justify-between rounded-2xl border border-hairline bg-surface p-6 transition-colors hover:border-ink/30 ${className}`}
     >
       <div>
         <p className="font-display text-lg font-semibold">{title}</p>
@@ -142,7 +142,7 @@ function NavCard({
 
 function Cell({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-paper p-5">
+    <div className="bg-surface p-5">
       <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">
         {label}
       </p>

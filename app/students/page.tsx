@@ -72,7 +72,7 @@ export default async function StudentsPage() {
         </p>
 
         {/* Invite link */}
-        <section className="mt-9 rounded-2xl border border-hairline bg-paper p-6">
+        <section className="mt-9 rounded-2xl border border-hairline bg-cream p-6">
           <p className="font-display text-lg font-semibold">Your invite link</p>
           <p className="mt-1 mb-4 text-[15px] text-ink-soft">
             Anyone who opens this and signs up as a learner joins your list straight away.
@@ -81,7 +81,7 @@ export default async function StudentsPage() {
         </section>
 
         {/* Availability */}
-        <section className="mt-5 flex flex-col gap-4 rounded-2xl border border-hairline bg-paper p-6 sm:flex-row sm:items-center sm:justify-between">
+        <section className="mt-5 flex flex-col gap-4 rounded-2xl border border-hairline bg-cream p-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="font-display text-lg font-semibold">Taking new students</p>
             <p className="mt-1 text-[15px] text-ink-soft">
@@ -124,7 +124,7 @@ export default async function StudentsPage() {
         ) : (
           <ul className="mt-4 grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline sm:grid-cols-2">
             {roster.map((learner) => (
-              <li key={learner.id} className="bg-paper p-5">
+              <li key={learner.id} className="bg-cream p-5">
                 <p className="font-semibold">{learner.user.name}</p>
                 <p className="mt-1 text-sm text-ink-soft">
                   {learner.postcode} &middot; {pretty(learner.transmission)}

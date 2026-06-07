@@ -11,7 +11,7 @@ function Shell({ children }: { children: React.ReactNode }) {
     <div className="relative z-10 min-h-dvh">
       <AppHeader />
       <main className="mx-auto grid max-w-md place-items-center px-5 py-16">
-        <div className="w-full rounded-2xl border border-hairline bg-paper p-8">
+        <div className="w-full rounded-2xl border border-hairline bg-surface p-8">
           {children}
         </div>
       </main>
