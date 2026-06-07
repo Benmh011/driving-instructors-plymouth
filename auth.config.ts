@@ -12,7 +12,9 @@ export const authConfig = {
       const isLoggedIn = !!auth?.user;
       const path = nextUrl.pathname;
       const isProtected =
-        path.startsWith("/dashboard") || path.startsWith("/onboarding");
+        path.startsWith("/dashboard") ||
+        path.startsWith("/onboarding") ||
+        path.startsWith("/students");
       const isAuthPage = path === "/login" || path === "/register";
 
       if (isProtected && !isLoggedIn) return false; // -> redirected to /login

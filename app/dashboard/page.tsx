@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { Logo } from "@/components/Logo";
@@ -6,13 +7,22 @@ import SignOutButton from "@/components/auth/SignOutButton";
 
 export const metadata = { title: "Dashboard" };
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ joined?: string }>;
+}) {
+  const { joined } = await searchParams;
+
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    include: { learnerProfile: true, instructorProfile: true },
+    include: {
+      learnerProfile: { include: { activeInstructor: { include: { user: true } } } },
+      instructorProfile: true,
+    },
   });
   if (!user) redirect("/login");
   if (!user.onboardingComplete) redirect("/onboarding");
@@ -20,6 +30,10 @@ export default async function DashboardPage() {
   const isInstructor = user.role === "INSTRUCTOR";
   const l = user.learnerProfile;
   const i = user.instructorProfile;
+  const instructor = l?.activeInstructor;
+  const instructorName = instructor
+    ? instructor.businessName || instructor.user.name
+    : null;
 
   return (
     <div className="relative z-10 min-h-dvh">
@@ -31,6 +45,14 @@ export default async function DashboardPage() {
       </header>
 
       <main className="mx-auto max-w-4xl px-5 py-14 sm:px-8">
+        {joined && instructorName && (
+          <div className="mb-8 rounded-2xl border border-sea/30 bg-sea/10 px-5 py-4">
+            <p className="text-[15px] font-medium text-ink">
+              You&rsquo;re now on {instructorName}&rsquo;s student list.
+            </p>
+          </div>
+        )}
+
         <span className="text-sm font-semibold uppercase tracking-[0.14em] text-sea">
           {isInstructor ? "Instructor account" : "Learner account"}
         </span>
@@ -57,18 +79,39 @@ export default async function DashboardPage() {
               <Cell label="Area" value={l.postcode} />
               <Cell label="Transmission" value={pretty(l.transmission)} />
               {l.goal && <Cell label="Goal" value={l.goal} />}
+              <Cell label="Your instructor" value={instructorName ?? "Not joined yet"} />
             </>
           ) : null}
         </div>
 
-        <div className="mt-10 rounded-2xl border border-dashed border-ink/20 bg-paper-dim/40 p-6">
-          <p className="font-display text-lg font-semibold">Coming next</p>
-          <p className="mt-1 text-[15px] text-ink-soft">
-            {isInstructor
-              ? "Your public profile, availability calendar, and incoming booking requests."
-              : "Search and matching by area, instructor profiles, and booking lessons."}
-          </p>
-        </div>
+        {isInstructor ? (
+          <Link
+            href="/students"
+            className="mt-5 flex items-center justify-between rounded-2xl border border-hairline bg-paper p-6 transition-colors hover:border-ink/30"
+          >
+            <div>
+              <p className="font-display text-lg font-semibold">Your students</p>
+              <p className="mt-1 text-[15px] text-ink-soft">
+                Share your invite link and manage who&rsquo;s on your list.
+              </p>
+            </div>
+            <span className="ml-4 shrink-0 text-2xl text-ink-soft" aria-hidden>
+              &rarr;
+            </span>
+          </Link>
+        ) : (
+          <div className="mt-5 rounded-2xl border border-dashed border-ink/20 bg-paper-dim/40 p-6">
+            <p className="font-display text-lg font-semibold">
+              {instructorName ? "Booking your lessons" : "Joining an instructor"}
+            </p>
+            <p className="mt-1 text-[15px] text-ink-soft">
+              {instructorName
+                ? instructorName +
+                  " can now book your lessons — they'll show up here once the diary's live."
+                : "If your instructor sent you an invite link, open it to join their list. Searching for an instructor here is coming soon."}
+            </p>
+          </div>
+        )}
       </main>
     </div>
   );
@@ -77,7 +120,9 @@ export default async function DashboardPage() {
 function Cell({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-paper p-5">
-      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">{label}</p>
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">
+        {label}
+      </p>
       <p className="mt-1 font-medium">{value}</p>
     </div>
   );
