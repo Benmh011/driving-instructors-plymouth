@@ -21,7 +21,7 @@ export function HowItWorks() {
     <section id="how" className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
       <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <span className="text-sm font-semibold uppercase tracking-[0.14em] text-ink">
+          <span className="text-sm font-semibold uppercase tracking-[0.14em] text-sea">
             For learners
           </span>
           <h2 className="mt-2 max-w-md font-display text-4xl font-bold leading-tight tracking-tight sm:text-5xl">

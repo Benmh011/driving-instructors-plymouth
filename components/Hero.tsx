@@ -1,10 +1,14 @@
 export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
-      {/* tarmac edge bleeding in from the right */}
+      {/* teal atmosphere on the right */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-32 top-10 hidden h-[120%] w-[45%] -rotate-6 bg-tarmac/[0.04] lg:block"
+        className="pointer-events-none absolute -right-32 top-10 hidden h-[120%] w-[45%] -rotate-6 bg-sea/[0.06] lg:block"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute right-8 top-20 hidden h-80 w-80 rounded-full bg-sea/25 blur-[90px] lg:block"
       />
       <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-16 sm:px-8 sm:pt-24">
         <p
@@ -21,7 +25,7 @@ export function Hero() {
         >
           Learn to drive,
           <br />
-          <span className="text-ink">without the faff.</span>
+          <span className="text-sea">without the faff.</span>
         </h1>
 
         <p
@@ -64,7 +68,7 @@ export function Hero() {
           </div>
           <a
             href="/register"
-            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-tarmac px-6 py-3 text-base font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-tarmac-soft"
+            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-sea px-6 py-3 text-base font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-sea-dark"
           >
             Find lessons
             <span aria-hidden>→</span>

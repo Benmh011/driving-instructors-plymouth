@@ -16,6 +16,7 @@
   --color-signal-dark: #a62a24;
   --color-line: #c9a24b; /* brass — road-marking centre line */
   --color-sea: #2c8aa0; /* Tinside teal — secondary accent */
+  --color-sea-dark: #236f80;
   --color-go: #2f8f5b; /* pass/go green, used sparingly */
   --color-hairline: rgba(20, 36, 54, 0.12);
 
@@ -125,4 +126,36 @@ body::before {
 }
 .link-grow:hover {
   background-size: 100% 2px;
+}
+
+/* Long-form legal pages */
+.legal-prose h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--color-ink);
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+.legal-prose p {
+  color: var(--color-ink-soft);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+.legal-prose ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--color-ink-soft);
+}
+.legal-prose li {
+  margin-bottom: 0.4rem;
+  line-height: 1.6;
+}
+.legal-prose a {
+  color: var(--color-ink);
+  text-decoration: underline;
+}
+.legal-prose strong {
+  color: var(--color-ink);
 }

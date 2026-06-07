@@ -31,7 +31,7 @@ export default async function DashboardPage() {
       </header>
 
       <main className="mx-auto max-w-4xl px-5 py-14 sm:px-8">
-        <span className="text-sm font-semibold uppercase tracking-[0.14em] text-ink">
+        <span className="text-sm font-semibold uppercase tracking-[0.14em] text-sea">
           {isInstructor ? "Instructor account" : "Learner account"}
         </span>
         <h1 className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">

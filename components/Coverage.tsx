@@ -22,7 +22,7 @@ export function Coverage() {
     <section id="coverage" className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
       <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
         <div>
-          <span className="text-sm font-semibold uppercase tracking-[0.14em] text-ink">
+          <span className="text-sm font-semibold uppercase tracking-[0.14em] text-sea">
             Where we cover
           </span>
           <h2 className="mt-2 font-display text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
