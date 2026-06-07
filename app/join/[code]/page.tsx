@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { Logo } from "@/components/Logo";
+import { AppHeader } from "@/components/AppHeader";
 import { joinInstructor } from "./actions";
 
 export const metadata = { title: "Join your instructor" };
@@ -9,11 +9,7 @@ export const metadata = { title: "Join your instructor" };
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative z-10 min-h-dvh">
-      <header className="border-b border-hairline bg-paper/85 backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-4xl items-center px-5 sm:px-8">
-          <Logo />
-        </div>
-      </header>
+      <AppHeader />
       <main className="mx-auto grid max-w-md place-items-center px-5 py-16">
         <div className="w-full rounded-2xl border border-hairline bg-paper p-8">
           {children}

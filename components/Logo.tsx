@@ -1,16 +1,18 @@
 export function Logo({
   className = "",
   variant = "onLight",
+  href = "#top",
 }: {
   className?: string;
   variant?: "onLight" | "onDark";
+  href?: string;
 }) {
   const text = variant === "onLight" ? "text-ink" : "text-paper";
   // The L-plate is always red (traditional learner plate). The period
   // accent is red on dark backgrounds, navy on light ones.
   const period = variant === "onDark" ? "text-signal" : "text-ink";
   return (
-    <a href="#top" className={`group inline-flex items-center gap-2.5 ${className}`}>
+    <a href={href} className={`group inline-flex items-center gap-2.5 ${className}`}>
       <span className="lplate h-9 w-9 shrink-0 text-lg leading-none transition-transform duration-300 group-hover:-rotate-6">
         L
       </span>

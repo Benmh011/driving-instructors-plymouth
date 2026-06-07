@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { Logo } from "@/components/Logo";
+import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import InviteLink from "@/components/students/InviteLink";
 import { generateInviteCode } from "@/lib/inviteCode";
@@ -53,12 +53,7 @@ export default async function StudentsPage() {
 
   return (
     <div className="relative z-10 min-h-dvh">
-      <header className="border-b border-hairline bg-paper/85 backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-5 sm:px-8">
-          <Logo />
-          <SignOutButton />
-        </div>
-      </header>
+      <AppHeader home="/dashboard" right={<SignOutButton />} />
 
       <main className="mx-auto max-w-4xl px-5 py-14 sm:px-8">
         <Link
