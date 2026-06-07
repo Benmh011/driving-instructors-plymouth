@@ -97,12 +97,12 @@ export default function LessonCalendar({
     .sort((a, b) => a.start.localeCompare(b.start));
 
   const navBtn =
-    "grid h-9 w-9 place-items-center rounded-full text-xl text-ink-soft transition-colors hover:bg-paper-dim";
+    "grid h-9 w-9 place-items-center rounded-full text-xl text-paper/80 transition-colors hover:bg-white/10";
 
   return (
     <div>
-      <div className="rounded-2xl border border-hairline bg-paper p-5">
-        <div className="flex items-center justify-between">
+      <div className="overflow-hidden rounded-2xl border border-hairline bg-paper">
+        <div className="flex items-center justify-between bg-tarmac px-5 py-4 text-paper">
           <button type="button" onClick={prevMonth} className={navBtn} aria-label="Previous month">
             &lsaquo;
           </button>
@@ -114,7 +114,8 @@ export default function LessonCalendar({
           </button>
         </div>
 
-        <div className="mt-4 grid grid-cols-7 gap-1 text-center text-xs font-semibold uppercase tracking-wide text-ink-soft">
+        <div className="p-5">
+          <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold uppercase tracking-wide text-ink-soft">
           {WEEKDAYS.map((w) => (
             <div key={w}>{w}</div>
           ))}
@@ -132,7 +133,7 @@ export default function LessonCalendar({
                 key={idx}
                 type="button"
                 onClick={() => setSelKey(k)}
-                className={`relative grid aspect-square place-items-center rounded-lg text-sm transition-colors ${
+                className={`relative grid aspect-square place-items-center rounded-lg border border-sea/40 text-sm transition-colors ${
                   isSel
                     ? "bg-sea font-semibold text-white"
                     : isToday
@@ -151,6 +152,7 @@ export default function LessonCalendar({
               </button>
             );
           })}
+        </div>
         </div>
       </div>
 
