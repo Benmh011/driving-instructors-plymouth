@@ -58,6 +58,7 @@ export default async function InstructorProfilePage({
   const full =
     !instructor.acceptingStudents || instructor._count.roster >= MAX_ROSTER;
   const name = instructor.businessName || instructor.user.name;
+  const instructorId: string = instructor.id;
 
   const learner = viewer?.learnerProfile ?? null;
   const isOwnProfile = viewer?.instructorProfile?.id === instructor.id;
@@ -140,7 +141,7 @@ export default async function InstructorProfilePage({
           <p className="mb-3 text-[15px] font-medium text-ink">
             Request sent &mdash; waiting for {name} to respond.
           </p>
-          <form action={withdrawJoinRequest.bind(null, instructor.id)}>
+          <form action={withdrawJoinRequest.bind(null, instructorId)}>
             <button
               type="submit"
               className="rounded-full border border-ink/20 px-5 py-2.5 text-sm font-semibold text-ink-soft transition-colors hover:border-signal hover:text-signal"
@@ -153,7 +154,7 @@ export default async function InstructorProfilePage({
     }
     // No active request (or previously declined) → show the request form.
     return (
-      <form action={createJoinRequest.bind(null, instructor.id)} className="space-y-3">
+      <form action={createJoinRequest.bind(null, instructorId)} className="space-y-3">
         {existingStatus === "DECLINED" && (
           <p className="text-[15px] text-ink-soft">
             Your previous request wasn&rsquo;t accepted, but you can ask again.
