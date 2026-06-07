@@ -4,29 +4,29 @@ import { useEffect, useRef, useState } from "react";
 
 function Car() {
   return (
-    <svg width="64" height="34" viewBox="0 0 64 34" fill="none" aria-hidden>
+    <svg width="92" height="48" viewBox="0 0 92 48" fill="none" aria-hidden>
       {/* wheels */}
-      <circle cx="17" cy="27" r="5.2" fill="#14202e" />
-      <circle cx="17" cy="27" r="2" fill="#c9cdca" />
-      <circle cx="46" cy="27" r="5.2" fill="#14202e" />
-      <circle cx="46" cy="27" r="2" fill="#c9cdca" />
+      <circle cx="30" cy="38" r="7.5" fill="#14202e" />
+      <circle cx="30" cy="38" r="3" fill="#c9cdca" />
+      <circle cx="72" cy="38" r="7.5" fill="#14202e" />
+      <circle cx="72" cy="38" r="3" fill="#c9cdca" />
       {/* body */}
       <path
-        d="M5 26 L5 21 Q5 18 8 18 L20 18 L26 11 Q27 10 29 10 L40 10 Q42 10 43 12 L47 18 L58 18 Q60 18 60 21 L60 26 Z"
+        d="M8 38 L8 30 Q8 26 12 26 L30 26 L38 15 Q39.5 13 43 13 L57 13 Q60 13 62 16 L68 26 L84 26 Q88 26 88 30 L88 38 Z"
         fill="#2c8aa0"
       />
       {/* window */}
-      <path d="M27 17 L31 13 L40 13 L43 17 Z" fill="#dcecef" />
+      <path d="M39 25 L44 17 L56 17 L60 25 Z" fill="#dcecef" />
       {/* headlight */}
-      <circle cx="59" cy="21.5" r="1.5" fill="#ffe6a3" />
+      <circle cx="86" cy="30" r="2" fill="#ffe6a3" />
       {/* rear L-plate */}
-      <rect x="5" y="18.5" width="8.5" height="8.5" rx="1.5" fill="#c8362f" />
+      <rect x="9" y="26.5" width="13" height="10.5" rx="2" fill="#c8362f" />
       <text
-        x="9.25"
-        y="25.2"
+        x="15.5"
+        y="35"
         textAnchor="middle"
         fontFamily="Arial, sans-serif"
-        fontSize="7"
+        fontSize="10"
         fontWeight="700"
         fill="#ffffff"
       >
@@ -38,16 +38,16 @@ function Car() {
 
 function Flag() {
   return (
-    <svg width="22" height="34" viewBox="0 0 22 34" fill="none" aria-hidden>
-      <line x1="3" y1="2" x2="3" y2="34" stroke="#c9cdca" strokeWidth="2" />
-      <rect x="4" y="2" width="16" height="11" fill="#ffffff" />
+    <svg width="26" height="48" viewBox="0 0 26 48" fill="none" aria-hidden>
+      <line x1="3" y1="4" x2="3" y2="46" stroke="#e7e9e7" strokeWidth="2.5" />
+      <rect x="4" y="4" width="20" height="15" fill="#ffffff" />
       <g fill="#142436">
-        <rect x="4" y="2" width="4" height="3.6" />
-        <rect x="12" y="2" width="4" height="3.6" />
-        <rect x="8" y="5.6" width="4" height="3.6" />
-        <rect x="16" y="5.6" width="4" height="3.6" />
-        <rect x="4" y="9.2" width="4" height="3.8" />
-        <rect x="12" y="9.2" width="4" height="3.8" />
+        <rect x="4" y="4" width="5" height="5" />
+        <rect x="14" y="4" width="5" height="5" />
+        <rect x="9" y="9" width="5" height="5" />
+        <rect x="19" y="9" width="5" height="5" />
+        <rect x="4" y="14" width="5" height="5" />
+        <rect x="14" y="14" width="5" height="5" />
       </g>
     </svg>
   );
@@ -80,29 +80,29 @@ export function RoadDivider({
   }, []);
 
   return (
-    <div ref={ref} aria-hidden className="relative h-16 w-full overflow-hidden">
-      {/* tarmac */}
-      <div className="absolute inset-x-0 top-1/2 h-5 -translate-y-1/2 bg-tarmac-soft">
-        <div className="absolute inset-x-0 top-0 h-px bg-white/25" />
-        <div className="absolute inset-x-0 bottom-0 h-px bg-white/25" />
-        <div
-          className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(to right, #ffffff 0, #ffffff 22px, transparent 22px, transparent 40px)",
-          }}
-        />
-      </div>
+    <div
+      ref={ref}
+      aria-hidden
+      className="relative h-16 w-full overflow-hidden bg-[#5c626a]"
+    >
+      {/* lane markings */}
+      <div
+        className="absolute inset-x-0 top-1/2 h-[4px] -translate-y-1/2"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(to right, #f1f2f0 0, #f1f2f0 26px, transparent 26px, transparent 46px)",
+        }}
+      />
 
       {finish && (
-        <div className="absolute right-5 top-1/2 -translate-y-[62%]">
+        <div className="absolute right-6 top-1/2 -translate-y-1/2">
           <Flag />
         </div>
       )}
 
       <div
-        className="absolute top-1/2 w-16 -translate-y-[78%] transition-[left] duration-[2200ms] ease-out motion-reduce:transition-none"
-        style={{ left: driven ? `calc(${progress}% - 32px)` : "-72px" }}
+        className="absolute top-1/2 w-[92px] -translate-y-1/2 transition-[left] duration-[2200ms] ease-out motion-reduce:transition-none"
+        style={{ left: driven ? `calc(${progress}% - 46px)` : "-110px" }}
       >
         <Car />
       </div>
