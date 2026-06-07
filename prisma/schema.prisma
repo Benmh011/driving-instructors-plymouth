@@ -19,6 +19,12 @@ enum Transmission {
   BOTH
 }
 
+enum BookingStatus {
+  BOOKED
+  COMPLETED
+  CANCELLED
+}
+
 model User {
   id                 String   @id @default(cuid())
   email              String   @unique
@@ -29,8 +35,8 @@ model User {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
-  learnerProfile     LearnerProfile?
-  instructorProfile  InstructorProfile?
+  learnerProfile    LearnerProfile?
+  instructorProfile InstructorProfile?
 }
 
 model LearnerProfile {
@@ -40,8 +46,17 @@ model LearnerProfile {
   postcode     String
   transmission Transmission @default(MANUAL)
   goal         String?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+
+  // The learner's current instructor — at most one at a time. Null = unattached.
+  activeInstructorId String?
+  activeInstructor   InstructorProfile? @relation("Roster", fields: [activeInstructorId], references: [id], onDelete: SetNull)
+
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([activeInstructorId])
 }
 
 model InstructorProfile {
@@ -55,6 +70,38 @@ model InstructorProfile {
   hourlyRate   Int // whole pounds per hour
   carDetails   String?
   bio          String?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+
+  // Roster + invites
+  inviteCode              String?  @unique // reusable join-link token, generated lazily
+  acceptingStudents       Boolean  @default(true) // instructor's own availability toggle
+  cancellationNoticeHours Int      @default(48) // instructor-set notice window
+
+  roster   LearnerProfile[] @relation("Roster")
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Booking {
+  id           String            @id @default(cuid())
+  instructorId String
+  instructor   InstructorProfile @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  learnerId    String
+  learner      LearnerProfile    @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  start        DateTime
+  durationMins Int           @default(60)
+  status       BookingStatus @default(BOOKED)
+  pricePence   Int? // snapshot of the agreed price; optional until payments land
+  paid         Boolean       @default(false)
+  notes        String?
+  cancelledAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([instructorId])
+  @@index([learnerId])
+  @@index([start])
 }
