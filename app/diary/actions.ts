@@ -12,7 +12,13 @@ const lessonSchema = z.object({
   learnerId: z.string().min(1, "Choose a student."),
   start: z.string().min(1, "Pick a date and time."),
   durationMins: z.coerce.number().int().min(30).max(240),
-  notes: z.string().max(300).optional(),
+  notes: z.string().max(500).optional(),
+});
+
+const editSchema = z.object({
+  start: z.string().min(1, "Pick a date and time."),
+  durationMins: z.coerce.number().int().min(30).max(240),
+  notes: z.string().max(500).optional(),
 });
 
 // Instructor books a lesson for one of their roster learners.
@@ -40,7 +46,6 @@ export async function createLesson(
 
   const { learnerId, start, durationMins, notes } = parsed.data;
 
-  // The learner must actually be on this instructor's roster.
   const learner = await prisma.learnerProfile.findUnique({ where: { id: learnerId } });
   if (!learner || learner.activeInstructorId !== instructor.id) {
     return { error: "That learner isn't on your list." };
@@ -51,7 +56,6 @@ export async function createLesson(
     return { error: "That date and time didn't look right." };
   }
 
-  // Snapshot the price from the instructor's hourly rate (used later for tax).
   const pricePence = Math.round(instructor.hourlyRate * 100 * (durationMins / 60));
 
   await prisma.booking.create({
@@ -62,6 +66,50 @@ export async function createLesson(
       durationMins,
       pricePence,
       notes: notes ?? null,
+    },
+  });
+
+  redirect("/diary");
+}
+
+// Instructor edits a lesson — reschedule and/or notes (before or after the lesson).
+export async function updateLesson(
+  id: string,
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const session = await auth();
+  if (!session?.user?.id) redirect("/login");
+
+  const instructor = await prisma.instructorProfile.findUnique({
+    where: { userId: session.user.id },
+  });
+  if (!instructor) redirect("/dashboard");
+
+  const booking = await prisma.booking.findUnique({ where: { id } });
+  if (!booking || booking.instructorId !== instructor.id) redirect("/diary");
+  if (booking.status === "CANCELLED") redirect("/diary");
+
+  const parsed = editSchema.safeParse({
+    start: formData.get("start"),
+    durationMins: formData.get("durationMins"),
+    notes: formData.get("notes") || undefined,
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Please check the details." };
+  }
+
+  const startDate = new Date(parsed.data.start);
+  if (Number.isNaN(startDate.getTime())) {
+    return { error: "That date and time didn't look right." };
+  }
+
+  await prisma.booking.update({
+    where: { id },
+    data: {
+      start: startDate,
+      durationMins: parsed.data.durationMins,
+      notes: parsed.data.notes ?? null,
     },
   });
 

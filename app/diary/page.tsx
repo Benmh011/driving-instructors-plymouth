@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import BookLessonForm from "@/components/diary/BookLessonForm";
-import CancelButton from "@/components/diary/CancelButton";
+import LessonCalendar, { type CalLesson } from "@/components/diary/LessonCalendar";
 
 export const metadata = { title: "Diary" };
 
@@ -14,6 +14,7 @@ type Row = {
   start: string | Date;
   durationMins: number;
   status: string;
+  notes: string | null;
   learner?: { user: { name: string } };
   instructor?: {
     user: { name: string };
@@ -21,23 +22,6 @@ type Row = {
     cancellationNoticeHours: number;
   };
 };
-
-function fmtWhen(d: string | Date) {
-  return new Date(d).toLocaleString("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-    timeZone: "UTC",
-  });
-}
-
-function fmtLength(m: number) {
-  if (m % 60 === 0) return `${m / 60} hr${m === 60 ? "" : "s"}`;
-  return `${m} min`;
-}
 
 export default async function DiaryPage() {
   const session = await auth();
@@ -56,7 +40,6 @@ export default async function DiaryPage() {
   if (!user.onboardingComplete) redirect("/onboarding");
 
   const isInstructor = user.role === "INSTRUCTOR";
-  const now = new Date();
 
   let bookings: Row[] = [];
   if (isInstructor && user.instructorProfile) {
@@ -73,47 +56,25 @@ export default async function DiaryPage() {
     });
   }
 
-  const upcoming = bookings.filter(
-    (b) => b.status === "BOOKED" && new Date(b.start) >= now,
-  );
-  const past = bookings
-    .filter((b) => !(b.status === "BOOKED" && new Date(b.start) >= now))
-    .reverse();
-
   const ownNotice = user.instructorProfile?.cancellationNoticeHours ?? 48;
+
+  const lessons: CalLesson[] = bookings.map((b) => ({
+    id: b.id,
+    start: new Date(b.start).toISOString(),
+    durationMins: b.durationMins,
+    status: b.status,
+    other: isInstructor
+      ? (b.learner?.user.name ?? "Student")
+      : (b.instructor?.businessName || b.instructor?.user.name || "Instructor"),
+    notes: b.notes ?? null,
+    noticeHours: isInstructor
+      ? ownNotice
+      : (b.instructor?.cancellationNoticeHours ?? 48),
+  }));
 
   const rosterRaw: { id: string; user: { name: string } }[] =
     user.instructorProfile?.roster ?? [];
   const roster = rosterRaw.map((r) => ({ id: r.id, name: r.user.name }));
-
-  function otherParty(b: Row) {
-    if (isInstructor) return b.learner?.user.name ?? "Student";
-    return b.instructor?.businessName || b.instructor?.user.name || "Instructor";
-  }
-
-  function LessonRow({ b, cancellable }: { b: Row; cancellable: boolean }) {
-    const noticeHours = isInstructor
-      ? ownNotice
-      : b.instructor?.cancellationNoticeHours ?? 48;
-    const hoursUntil = (new Date(b.start).getTime() - now.getTime()) / 3_600_000;
-    const late = hoursUntil < noticeHours;
-    const confirmText = late
-      ? `This lesson is inside the ${noticeHours}-hour notice window. Cancel it anyway?`
-      : "Cancel this lesson?";
-
-    return (
-      <li className="flex items-center justify-between gap-4 bg-paper p-5">
-        <div>
-          <p className="font-semibold">{fmtWhen(b.start)}</p>
-          <p className="mt-0.5 text-sm text-ink-soft">
-            {fmtLength(b.durationMins)} &middot; {otherParty(b)}
-            {b.status === "CANCELLED" && " · cancelled"}
-          </p>
-        </div>
-        {cancellable && <CancelButton id={b.id} confirmText={confirmText} />}
-      </li>
-    );
-  }
 
   return (
     <div className="relative z-10 min-h-dvh">
@@ -131,7 +92,6 @@ export default async function DiaryPage() {
           {isInstructor ? "Your diary" : "Your lessons"}
         </h1>
 
-        {/* Instructor: book a lesson */}
         {isInstructor && (
           <section className="mt-9 rounded-2xl border border-hairline bg-paper p-6">
             <p className="font-display text-lg font-semibold">Book a lesson</p>
@@ -151,35 +111,9 @@ export default async function DiaryPage() {
           </section>
         )}
 
-        {/* Upcoming */}
-        <h2 className="mt-10 font-display text-2xl font-bold tracking-tight">
-          Upcoming
-        </h2>
-        {upcoming.length === 0 ? (
-          <div className="mt-4 rounded-2xl border border-dashed border-ink/20 bg-paper-dim/40 p-6">
-            <p className="text-[15px] text-ink-soft">No upcoming lessons.</p>
-          </div>
-        ) : (
-          <ul className="mt-4 grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline">
-            {upcoming.map((b) => (
-              <LessonRow key={b.id} b={b} cancellable />
-            ))}
-          </ul>
-        )}
-
-        {/* Past / cancelled */}
-        {past.length > 0 && (
-          <>
-            <h2 className="mt-10 font-display text-2xl font-bold tracking-tight">
-              Earlier
-            </h2>
-            <ul className="mt-4 grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline">
-              {past.map((b) => (
-                <LessonRow key={b.id} b={b} cancellable={false} />
-              ))}
-            </ul>
-          </>
-        )}
+        <div className="mt-9">
+          <LessonCalendar lessons={lessons} isInstructor={isInstructor} />
+        </div>
       </main>
     </div>
   );
