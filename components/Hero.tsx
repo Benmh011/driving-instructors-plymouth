@@ -69,7 +69,7 @@ export function Hero() {
             />
           </div>
           <a
-            href="/register"
+            href="/instructors"
             className="inline-flex items-center justify-center gap-1.5 rounded-full bg-sea px-6 py-3 text-base font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-sea-dark"
           >
             Find lessons

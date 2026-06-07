@@ -7,7 +7,7 @@ import SignOutButton from "@/components/auth/SignOutButton";
 import InviteLink from "@/components/students/InviteLink";
 import { generateInviteCode } from "@/lib/inviteCode";
 import { SITE_URL, MAX_ROSTER } from "@/lib/constants";
-import { toggleAccepting } from "./actions";
+import { toggleAccepting, acceptJoinRequest, declineJoinRequest } from "./actions";
 
 export const metadata = { title: "Your students" };
 
@@ -23,7 +23,14 @@ export default async function StudentsPage() {
     where: { id: session.user.id },
     include: {
       instructorProfile: {
-        include: { roster: { include: { user: true }, orderBy: { createdAt: "asc" } } },
+        include: {
+          roster: { include: { user: true }, orderBy: { createdAt: "asc" } },
+          joinRequests: {
+            where: { status: "PENDING" },
+            include: { learner: { include: { user: true } } },
+            orderBy: { createdAt: "asc" },
+          },
+        },
       },
     },
   });
@@ -50,6 +57,14 @@ export default async function StudentsPage() {
     goal: string | null;
     user: { name: string };
   }[] = i.roster ?? [];
+
+  const requests: {
+    id: string;
+    message: string | null;
+    learner: { postcode: string; transmission: string; user: { name: string } };
+  }[] = i.joinRequests ?? [];
+
+  const full = roster.length >= MAX_ROSTER;
 
   return (
     <div className="relative z-10 min-h-dvh">
@@ -103,6 +118,60 @@ export default async function StudentsPage() {
             </button>
           </form>
         </section>
+
+        {/* Pending requests */}
+        {requests.length > 0 && (
+          <section className="mt-10">
+            <h2 className="font-display text-2xl font-bold tracking-tight">
+              Requests to join
+            </h2>
+            {full && (
+              <p className="mt-2 text-[15px] font-medium text-signal">
+                You&rsquo;re at your roster cap ({MAX_ROSTER}). Free up a space before
+                accepting.
+              </p>
+            )}
+            <ul className="mt-4 space-y-2.5">
+              {requests.map((r) => (
+                <li
+                  key={r.id}
+                  className="rounded-2xl border border-hairline bg-cream p-5"
+                >
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
+                      <p className="font-semibold">{r.learner.user.name}</p>
+                      <p className="mt-0.5 text-sm text-ink-soft">
+                        {r.learner.postcode} &middot; {pretty(r.learner.transmission)}
+                      </p>
+                      {r.message && (
+                        <p className="mt-2 text-sm text-ink">&ldquo;{r.message}&rdquo;</p>
+                      )}
+                    </div>
+                    <div className="flex shrink-0 gap-2">
+                      <form action={acceptJoinRequest.bind(null, r.id)}>
+                        <button
+                          type="submit"
+                          disabled={full}
+                          className="rounded-full bg-go px-4 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          Accept
+                        </button>
+                      </form>
+                      <form action={declineJoinRequest.bind(null, r.id)}>
+                        <button
+                          type="submit"
+                          className="rounded-full border border-ink/20 px-4 py-2 text-sm font-semibold text-ink-soft transition-colors hover:border-signal hover:text-signal"
+                        >
+                          Decline
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {/* Roster */}
         <div className="mt-10 flex items-baseline justify-between">

@@ -100,13 +100,12 @@ export default async function DashboardPage({
             className="mt-5"
           />
         ) : (
-          <div className="mt-5 rounded-2xl border border-dashed border-ink/20 bg-paper-dim/40 p-6">
-            <p className="font-display text-lg font-semibold">Joining an instructor</p>
-            <p className="mt-1 text-[15px] text-ink-soft">
-              If your instructor sent you an invite link, open it to join their list.
-              Searching for an instructor here is coming soon.
-            </p>
-          </div>
+          <NavCard
+            href="/instructors"
+            title="Find an instructor"
+            desc="Browse approved instructors near you and request lessons."
+            className="mt-5"
+          />
         )}
       </main>
     </div>

@@ -27,7 +27,7 @@ export function Header() {
             I&rsquo;m an instructor
           </a>
           <a
-            href="/register"
+            href="/instructors"
             className="inline-flex items-center gap-1.5 rounded-full bg-signal px-4 py-2 text-sm font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-signal-dark"
           >
             Find an instructor

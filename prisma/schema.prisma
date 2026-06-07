@@ -25,6 +25,12 @@ enum BookingStatus {
   CANCELLED
 }
 
+enum JoinRequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
 model User {
   id                 String   @id @default(cuid())
   email              String   @unique
@@ -53,6 +59,8 @@ model LearnerProfile {
 
   bookings Booking[]
 
+  joinRequests JoinRequest[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -79,6 +87,8 @@ model InstructorProfile {
   roster   LearnerProfile[] @relation("Roster")
   bookings Booking[]
 
+  joinRequests JoinRequest[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -104,4 +114,22 @@ model Booking {
   @@index([instructorId])
   @@index([learnerId])
   @@index([start])
+}
+
+model JoinRequest {
+  id           String            @id @default(cuid())
+  instructorId String
+  instructor   InstructorProfile @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  learnerId    String
+  learner      LearnerProfile    @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  status  JoinRequestStatus @default(PENDING)
+  message String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([instructorId, learnerId])
+  @@index([instructorId, status])
+  @@index([learnerId])
 }

@@ -69,7 +69,7 @@ export function TwoSided() {
               {data.heading}
             </h2>
             <a
-              href={side === "instructors" ? "/register?role=instructor" : "/register"}
+              href={side === "instructors" ? "/register?role=instructor" : "/instructors"}
               className="mt-9 inline-flex items-center gap-2 rounded-full bg-signal px-6 py-3 font-semibold text-white transition-transform hover:-translate-y-0.5 hover:bg-signal-dark"
             >
               {data.cta}
