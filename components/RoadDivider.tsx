@@ -4,30 +4,41 @@ import { useEffect, useRef, useState } from "react";
 
 function Car() {
   return (
-    <svg width="96" height="52" viewBox="0 0 96 52" fill="none" aria-hidden>
-      {/* wheels (body overlaps tops for an arch) */}
-      <circle cx="26" cy="41" r="8" fill="#14202e" />
-      <circle cx="26" cy="41" r="3.2" fill="#c9cdca" />
-      <circle cx="72" cy="41" r="8" fill="#14202e" />
-      <circle cx="72" cy="41" r="3.2" fill="#c9cdca" />
-      {/* rounded body, facing left */}
+    <svg width="100" height="58" viewBox="0 0 100 58" fill="none" aria-hidden>
+      {/* teal body, facing left */}
       <path
-        d="M14 42 Q8 42 8 36 L8 31 Q9 24 16 22 Q22 9 38 8 L60 8 Q78 9 82 24 L84 30 Q90 31 90 36 L90 39 Q90 42 84 42 Z"
+        d="M12 47 Q8 47 8 41 L8 35 Q8 28 15 25 Q19 10 42 9 L58 9 Q81 10 85 25 Q92 28 92 35 L92 41 Q92 47 86 47 Z"
         fill="#2c8aa0"
       />
-      {/* windows */}
-      <path d="M22 21 L28 11 L42 11 L42 21 Z" fill="#dcecef" />
-      <path d="M46 21 L46 11 L62 11 Q74 12 76 21 Z" fill="#dcecef" />
-      {/* headlight (front / left) */}
-      <circle cx="10" cy="31" r="2" fill="#ffe6a3" />
-      {/* rear L-plate (right) */}
-      <rect x="74" y="28" width="13" height="11" rx="2" fill="#c8362f" />
+      {/* grey wheel arches */}
+      <circle cx="28" cy="45" r="10.5" fill="#a9aeb4" />
+      <circle cx="72" cy="45" r="10.5" fill="#a9aeb4" />
+      {/* grey lower skirt */}
+      <path
+        d="M8 40 L92 40 L92 41 Q92 47 86 47 L12 47 Q8 47 8 41 Z"
+        fill="#a9aeb4"
+      />
+      {/* tyres + hubs */}
+      <circle cx="28" cy="45" r="8" fill="#14202e" />
+      <circle cx="28" cy="45" r="3.2" fill="#d7dbde" />
+      <circle cx="72" cy="45" r="8" fill="#14202e" />
+      <circle cx="72" cy="45" r="3.2" fill="#d7dbde" />
+      {/* domed window */}
+      <path d="M20 24 Q22 13 40 12 L56 12 Q74 13 78 24 Z" fill="#d4ecf2" />
+      <path
+        d="M30 23 L40 13.5 L46 13.5 L36 23 Z"
+        fill="#ffffff"
+        opacity="0.55"
+      />
+      <path d="M50 23 L57 14 L61 14.5 L54 23 Z" fill="#ffffff" opacity="0.45" />
+      {/* centred L-plate */}
+      <rect x="43" y="28" width="14" height="12" rx="2" fill="#c8362f" />
       <text
-        x="80.5"
-        y="37"
+        x="50"
+        y="38"
         textAnchor="middle"
         fontFamily="Arial, sans-serif"
-        fontSize="10"
+        fontSize="11"
         fontWeight="700"
         fill="#ffffff"
       >
@@ -80,9 +91,9 @@ export function RoadDivider({
     return () => obs.disconnect();
   }, []);
 
-  // We drive on the left: the car faces left and travels right -> left.
+  // We drive on the left: car faces left, travels right -> left.
   // Higher progress = further along = further to the left.
-  const left = driven ? `calc(${100 - progress}% - 48px)` : "calc(100% + 24px)";
+  const left = driven ? `calc(${100 - progress}% - 50px)` : "calc(100% + 24px)";
 
   return (
     <div
@@ -108,7 +119,7 @@ export function RoadDivider({
       )}
 
       <div
-        className="absolute bottom-2 w-[96px] transition-[left] duration-[2200ms] ease-out motion-reduce:transition-none"
+        className="absolute bottom-0.5 w-[100px] transition-[left] duration-[2200ms] ease-out motion-reduce:transition-none"
         style={{ left }}
       >
         <Car />
