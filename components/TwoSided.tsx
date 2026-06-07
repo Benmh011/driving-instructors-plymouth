@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { RoadDivider } from "./RoadDivider";
 
 const CONTENT = {
   learners: {
@@ -40,7 +41,7 @@ export function TwoSided() {
       id="instructors"
       className="relative overflow-hidden bg-tarmac text-paper"
     >
-      <div className="roadline" aria-hidden />
+      <RoadDivider progress={45} />
       <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
         {/* toggle */}
         <div className="mb-14 inline-flex rounded-full border border-white/15 bg-white/5 p-1">
@@ -99,7 +100,7 @@ export function TwoSided() {
           </ul>
         </div>
       </div>
-      <div className="roadline" aria-hidden />
+      <RoadDivider progress={72} />
     </section>
   );
 }

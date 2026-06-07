@@ -1,9 +1,10 @@
 import { Logo } from "./Logo";
+import { RoadDivider } from "./RoadDivider";
 
 export function Footer() {
   return (
     <footer className="bg-tarmac text-paper">
-      <div className="roadline" aria-hidden />
+      <RoadDivider progress={88} finish />
       <div className="mx-auto max-w-6xl px-5 py-14 sm:px-8">
         <div className="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-sm">

@@ -1,3 +1,5 @@
+import { RoadDivider } from "./RoadDivider";
+
 export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
@@ -96,7 +98,7 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="roadline" aria-hidden />
+      <RoadDivider progress={18} />
     </section>
   );
 }
