@@ -22,8 +22,11 @@ export default function BadgeUpload() {
       startTransition(() => {
         saveBadge(blob.pathname);
       });
-    } catch {
-      setError("Upload failed — try a JPG, PNG or WebP under 15MB.");
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Upload failed — please try again.",
+      );
+      console.error("Badge upload error:", err);
     } finally {
       setUploading(false);
     }
