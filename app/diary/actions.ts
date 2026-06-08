@@ -12,12 +12,14 @@ const lessonSchema = z.object({
   learnerId: z.string().min(1, "Choose a student."),
   start: z.string().min(1, "Pick a date and time."),
   durationMins: z.coerce.number().int().min(30).max(240),
+  price: z.coerce.number().min(0).max(10000).optional(),
   notes: z.string().max(500).optional(),
 });
 
 const editSchema = z.object({
   start: z.string().min(1, "Pick a date and time."),
   durationMins: z.coerce.number().int().min(30).max(240),
+  price: z.coerce.number().min(0, "Enter a price (0 or more).").max(10000),
   notes: z.string().max(500).optional(),
 });
 
@@ -38,6 +40,7 @@ export async function createLesson(
     learnerId: formData.get("learnerId"),
     start: formData.get("start"),
     durationMins: formData.get("durationMins"),
+    price: formData.get("price") || undefined,
     notes: formData.get("notes") || undefined,
   });
   if (!parsed.success) {
@@ -56,7 +59,10 @@ export async function createLesson(
     return { error: "That date and time didn't look right." };
   }
 
-  const pricePence = Math.round(instructor.hourlyRate * 100 * (durationMins / 60));
+  const pricePence =
+    parsed.data.price != null
+      ? Math.round(parsed.data.price * 100)
+      : Math.round(instructor.hourlyRate * 100 * (durationMins / 60));
 
   await prisma.booking.create({
     data: {
@@ -93,6 +99,7 @@ export async function updateLesson(
   const parsed = editSchema.safeParse({
     start: formData.get("start"),
     durationMins: formData.get("durationMins"),
+    price: formData.get("price"),
     notes: formData.get("notes") || undefined,
   });
   if (!parsed.success) {
@@ -109,6 +116,7 @@ export async function updateLesson(
     data: {
       start: startDate,
       durationMins: parsed.data.durationMins,
+      pricePence: Math.round(parsed.data.price * 100),
       notes: parsed.data.notes ?? null,
     },
   });

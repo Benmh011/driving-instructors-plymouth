@@ -53,6 +53,21 @@ export default function BookLessonForm({
       </div>
 
       <div>
+        <label className={label} htmlFor="price">
+          Price (£) <span className="font-normal text-ink-soft">(optional)</span>
+        </label>
+        <input
+          id="price"
+          name="price"
+          type="number"
+          step="0.01"
+          min="0"
+          placeholder="Leave blank to use your hourly rate"
+          className={field}
+        />
+      </div>
+
+      <div>
         <label className={label} htmlFor="notes">
           Notes <span className="font-normal text-ink-soft">(optional)</span>
         </label>

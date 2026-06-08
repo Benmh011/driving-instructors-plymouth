@@ -18,11 +18,13 @@ export default function EditLessonForm({
   id,
   defaultStart,
   defaultDuration,
+  defaultPrice,
   defaultNotes,
 }: {
   id: string;
   defaultStart: string;
   defaultDuration: number;
+  defaultPrice: number;
   defaultNotes: string;
 }) {
   const [state, action, pending] = useActionState(
@@ -67,6 +69,25 @@ export default function EditLessonForm({
             ))}
           </select>
         </div>
+      </div>
+
+      <div>
+        <label className={label} htmlFor="price">
+          Price (£)
+        </label>
+        <input
+          id="price"
+          name="price"
+          type="number"
+          step="0.01"
+          min="0"
+          defaultValue={defaultPrice}
+          required
+          className={field}
+        />
+        <p className="mt-1 text-xs text-ink-soft">
+          This is what counts towards your earnings once the lesson is marked complete.
+        </p>
       </div>
 
       <div>

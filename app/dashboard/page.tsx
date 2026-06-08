@@ -57,8 +57,7 @@ export default async function DashboardPage({
           Welcome, {user.name.split(" ")[0]}.
         </h1>
         <p className="mt-3 max-w-lg text-ink-soft">
-          Your account is set up. Here&rsquo;s what you told us — you&rsquo;ll be able to
-          edit all of this once profiles go live.
+          Your account is set up. Here&rsquo;s what you told us.
         </p>
 
         {isInstructor && i && i.adiStatus === "PENDING" && (
@@ -117,6 +116,15 @@ export default async function DashboardPage({
             </>
           ) : null}
         </div>
+
+        {isInstructor && i && (
+          <Link
+            href="/dashboard/profile"
+            className="mt-3 inline-block text-sm font-semibold text-sea link-grow"
+          >
+            Edit your details &rarr;
+          </Link>
+        )}
 
         {isInstructor ? (
           <div className="mt-5 grid gap-4 sm:grid-cols-2">

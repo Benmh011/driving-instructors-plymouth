@@ -69,6 +69,7 @@ export default async function EditLessonPage({
             id={booking.id}
             defaultStart={defaultStart}
             defaultDuration={booking.durationMins}
+            defaultPrice={(booking.pricePence ?? 0) / 100}
             defaultNotes={booking.notes ?? ""}
           />
         </div>

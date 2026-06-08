@@ -27,3 +27,16 @@ export const instructorSchema = z.object({
   carDetails: z.string().max(120).optional(),
   bio: z.string().max(400).optional(),
 });
+
+// Editing an existing instructor profile — same as setup but without the ADI
+// number (that's tied to verification and can't be changed here), plus the
+// cancellation-notice setting.
+export const instructorProfileSchema = z.object({
+  businessName: z.string().max(120).optional(),
+  postcodes: z.string().min(2, "Enter the areas you cover"),
+  transmission: z.enum(["MANUAL", "AUTOMATIC", "BOTH"]),
+  hourlyRate: z.coerce.number().int().min(1, "Enter your hourly rate"),
+  carDetails: z.string().max(120).optional(),
+  bio: z.string().max(400).optional(),
+  cancellationNoticeHours: z.coerce.number().int().min(0).max(168),
+});
