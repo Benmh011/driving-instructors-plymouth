@@ -28,7 +28,10 @@ export async function GET(
     if (!isAdminEmail(me?.email)) return new Response("Forbidden", { status: 403 });
   }
 
-  const result = await get(profile.adiBadgeUrl, { access: "private" });
+  const result = await get(profile.adiBadgeUrl, {
+    access: "private",
+    token: process.env.BLOB_READ_WRITE_TOKEN,
+  });
   if (!result || result.statusCode !== 200) {
     return new Response("Not found", { status: 404 });
   }
