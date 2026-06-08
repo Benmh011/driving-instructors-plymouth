@@ -130,6 +130,11 @@ export default async function DashboardPage({
               title="Your diary"
               desc="Book and manage your lessons."
             />
+            <NavCard
+              href="/dashboard/tax"
+              title="Tax & earnings"
+              desc="Income and expenses for Self Assessment."
+            />
           </div>
         ) : instructorName ? (
           <NavCard

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import CancelButton from "./CancelButton";
+import CompleteButton from "./CompleteButton";
 
 export type CalLesson = {
   id: string;
@@ -165,6 +166,8 @@ export default function LessonCalendar({
             {selLessons.map((l) => {
               const upcoming = new Date(l.start) >= new Date();
               const cancellable = l.status === "BOOKED" && upcoming;
+              const completable = isInstructor && l.status === "BOOKED" && !upcoming;
+              const completed = l.status === "COMPLETED";
               const editable = isInstructor && l.status !== "CANCELLED";
               const late =
                 (new Date(l.start).getTime() - Date.now()) / 3_600_000 <
@@ -173,7 +176,12 @@ export default function LessonCalendar({
                 ? `This lesson is inside the ${l.noticeHours}-hour notice window. Cancel it anyway?`
                 : "Cancel this lesson?";
               return (
-                <li key={l.id} className="rounded-2xl border border-hairline border-l-4 border-l-sea bg-cream p-5 shadow-sm">
+                <li
+                  key={l.id}
+                  className={`rounded-2xl border border-hairline border-l-4 bg-cream p-5 shadow-sm ${
+                    completed ? "border-l-go" : "border-l-sea"
+                  }`}
+                >
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <p className="font-semibold">
@@ -182,12 +190,13 @@ export default function LessonCalendar({
                       <p className="mt-0.5 text-sm text-ink-soft">
                         {l.other}
                         {l.status === "CANCELLED" && " · cancelled"}
+                        {completed && " · completed"}
                       </p>
                       {l.notes && (
                         <p className="mt-2 text-sm text-ink">{l.notes}</p>
                       )}
                     </div>
-                    <div className="flex shrink-0 gap-2">
+                    <div className="flex shrink-0 flex-wrap justify-end gap-2">
                       {editable && (
                         <Link
                           href={`/diary/${l.id}/edit`}
@@ -195,6 +204,10 @@ export default function LessonCalendar({
                         >
                           Edit
                         </Link>
+                      )}
+                      {completable && <CompleteButton id={l.id} mode="complete" />}
+                      {completed && isInstructor && (
+                        <CompleteButton id={l.id} mode="reopen" />
                       )}
                       {cancellable && (
                         <CancelButton id={l.id} confirmText={confirmText} />

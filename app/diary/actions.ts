@@ -143,3 +143,38 @@ export async function cancelLesson(bookingId: string) {
 
   revalidatePath("/diary");
 }
+
+// Instructor marks a lesson as completed (this is what counts it as income in the tax tracker).
+export async function markLessonComplete(bookingId: string) {
+  await setLessonCompletion(bookingId, true);
+}
+
+// Undo: put a completed lesson back to booked.
+export async function reopenLesson(bookingId: string) {
+  await setLessonCompletion(bookingId, false);
+}
+
+async function setLessonCompletion(bookingId: string, complete: boolean) {
+  const session = await auth();
+  if (!session?.user?.id) return;
+
+  const instructor = await prisma.instructorProfile.findUnique({
+    where: { userId: session.user.id },
+  });
+  if (!instructor) return;
+
+  const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
+  if (!booking || booking.instructorId !== instructor.id) return;
+
+  // Only move between BOOKED and COMPLETED — never touch a cancelled lesson.
+  if (complete && booking.status !== "BOOKED") return;
+  if (!complete && booking.status !== "COMPLETED") return;
+
+  await prisma.booking.update({
+    where: { id: bookingId },
+    data: { status: complete ? "COMPLETED" : "BOOKED" },
+  });
+
+  revalidatePath("/diary");
+  revalidatePath("/dashboard/tax");
+}

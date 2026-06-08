@@ -99,6 +99,7 @@ model InstructorProfile {
   bookings Booking[]
 
   joinRequests JoinRequest[]
+  expenses     Expense[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -143,4 +144,20 @@ model JoinRequest {
   @@unique([instructorId, learnerId])
   @@index([instructorId, status])
   @@index([learnerId])
+}
+
+model Expense {
+  id           String            @id @default(cuid())
+  instructorId String
+  instructor   InstructorProfile @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  date        DateTime
+  amountPence Int
+  category    String
+  note        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([instructorId, date])
 }
