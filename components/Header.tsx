@@ -15,11 +15,14 @@ export function Header() {
           <a href="#coverage" className="link-grow hover:text-paper">
             Areas
           </a>
-          <a href="/login" className="link-grow hover:text-paper">
+        </nav>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <a
+            href="/login"
+            className="rounded-full px-3 py-2 text-sm font-semibold text-paper/90 transition-colors hover:text-paper"
+          >
             Log in
           </a>
-        </nav>
-        <div className="flex items-center gap-2">
           <a
             href="/register?role=instructor"
             className="hidden rounded-full border border-paper/25 px-4 py-2 text-sm font-semibold text-paper transition-colors hover:border-paper hover:bg-paper hover:text-tarmac sm:inline-flex"

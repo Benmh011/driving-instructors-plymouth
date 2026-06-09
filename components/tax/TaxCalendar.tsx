@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import DeleteExpenseButton from "./DeleteExpenseButton";
 
 type CalLesson = { start: string; pricePence: number; name: string };
 type CalExpense = {
@@ -226,7 +227,10 @@ export default function TaxCalendar({
                       {e.category}
                       {e.note ? <span className="text-ink-soft"> · {e.note}</span> : null}
                     </span>
-                    <span className="shrink-0 font-semibold text-signal">&minus;{money(e.amountPence)}</span>
+                    <div className="flex shrink-0 items-center gap-3">
+                      <span className="font-semibold text-signal">&minus;{money(e.amountPence)}</span>
+                      <DeleteExpenseButton id={e.id} />
+                    </div>
                   </div>
                 ))}
               </div>
