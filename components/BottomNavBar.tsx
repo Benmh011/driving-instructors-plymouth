@@ -49,6 +49,11 @@ const icons = {
       <path d="m20 20-3.5-3.5" />
     </svg>
   ),
+  chat: (
+    <svg {...iconProps}>
+      <path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5Z" />
+    </svg>
+  ),
 };
 
 type Tab = {
@@ -70,12 +75,14 @@ const instructorTabs: Tab[] = [
   },
   { href: "/diary", label: "Diary", icon: icons.calendar, match: (p) => p.startsWith("/diary") },
   { href: "/students", label: "Students", icon: icons.users, match: (p) => p.startsWith("/students") },
+  { href: "/messages", label: "Messages", icon: icons.chat, match: (p) => p.startsWith("/messages") },
   { href: "/dashboard/tax", label: "Earnings", icon: icons.money, match: (p) => p.startsWith("/dashboard/tax") },
 ];
 
 const learnerTabs: Tab[] = [
   { href: "/dashboard", label: "Home", icon: icons.home, match: (p) => p === "/dashboard" },
   { href: "/diary", label: "Lessons", icon: icons.calendar, match: (p) => p.startsWith("/diary") },
+  { href: "/messages", label: "Messages", icon: icons.chat, match: (p) => p.startsWith("/messages") },
   { href: "/instructors", label: "Find", icon: icons.search, match: (p) => p.startsWith("/instructors") },
 ];
 

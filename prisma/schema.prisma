@@ -66,6 +66,7 @@ model LearnerProfile {
   bookings Booking[]
 
   joinRequests JoinRequest[]
+  messages     Message[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -100,6 +101,7 @@ model InstructorProfile {
 
   joinRequests JoinRequest[]
   expenses     Expense[]
+  messages     Message[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -160,4 +162,18 @@ model Expense {
   updatedAt DateTime @updatedAt
 
   @@index([instructorId, date])
+}
+
+model Message {
+  id           String            @id @default(cuid())
+  instructorId String
+  instructor   InstructorProfile @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  learnerId    String
+  learner      LearnerProfile    @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  senderId     String // User.id of the sender (instructor or learner)
+  body         String
+  readAt       DateTime?
+  createdAt    DateTime          @default(now())
+
+  @@index([instructorId, learnerId, createdAt])
 }

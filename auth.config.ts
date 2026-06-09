@@ -16,6 +16,7 @@ export const authConfig = {
         path.startsWith("/onboarding") ||
         path.startsWith("/students") ||
         path.startsWith("/diary") ||
+        path.startsWith("/messages") ||
         path.startsWith("/admin");
       const isAuthPage = path === "/login" || path === "/register";
 

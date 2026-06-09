@@ -144,14 +144,25 @@ export default async function DashboardPage({
               title="Tax & earnings"
               desc="Income and expenses for Self Assessment."
             />
+            <NavCard
+              href="/messages"
+              title="Messages"
+              desc="Message your students."
+            />
           </div>
         ) : instructorName ? (
-          <NavCard
-            href="/diary"
-            title="Your lessons"
-            desc={`See your lessons with ${instructorName}.`}
-            className="mt-5"
-          />
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <NavCard
+              href="/diary"
+              title="Your lessons"
+              desc={`See your lessons with ${instructorName}.`}
+            />
+            <NavCard
+              href="/messages"
+              title="Messages"
+              desc={`Message ${instructorName}.`}
+            />
+          </div>
         ) : (
           <NavCard
             href="/instructors"
