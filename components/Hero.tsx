@@ -45,7 +45,10 @@ export function Hero() {
           className="rise mt-9 flex w-full max-w-lg flex-col gap-2.5 sm:flex-row"
           style={{ animationDelay: "240ms" }}
         >
-          <div className="flex flex-1 items-center gap-2.5 rounded-full border border-ink/20 bg-white/70 px-4 py-3">
+          <a
+            href="/instructors"
+            className="flex flex-1 items-center gap-2.5 rounded-full border border-ink/20 bg-white/70 px-4 py-3 text-base text-ink-soft/70 transition-colors hover:border-ink/40"
+          >
             <svg
               width="18"
               height="18"
@@ -61,13 +64,8 @@ export function Hero() {
               />
               <circle cx="12" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.7" />
             </svg>
-            <input
-              type="text"
-              placeholder="Your postcode or area (e.g. PL1)"
-              aria-label="Your postcode or area"
-              className="w-full bg-transparent text-base outline-none placeholder:text-ink-soft/70"
-            />
-          </div>
+            <span>Your postcode or area (e.g. PL1)</span>
+          </a>
           <a
             href="/instructors"
             className="inline-flex items-center justify-center gap-1.5 rounded-full bg-sea px-6 py-3 text-base font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-sea-dark"
