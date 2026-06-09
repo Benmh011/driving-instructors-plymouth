@@ -7,6 +7,7 @@ import SignOutButton from "@/components/auth/SignOutButton";
 import ExpenseForm from "@/components/tax/ExpenseForm";
 import DeleteExpenseButton from "@/components/tax/DeleteExpenseButton";
 import TaxCalendar from "@/components/tax/TaxCalendar";
+import CollapsiblePanel from "@/components/tax/CollapsiblePanel";
 
 export const metadata = { title: "Tax & earnings" };
 
@@ -64,13 +65,21 @@ export default async function TaxPage({
   const rangeStart = new Date(Date.UTC(startYear, 3, 6));
   const rangeEnd = new Date(Date.UTC(startYear + 1, 3, 6));
 
-  const completed: { start: Date; pricePence: number | null }[] = await prisma.booking.findMany({
+  const completed: {
+    start: Date;
+    pricePence: number | null;
+    learner: { user: { name: string | null } | null } | null;
+  }[] = await prisma.booking.findMany({
     where: {
       instructorId,
       status: "COMPLETED",
       start: { gte: rangeStart, lt: rangeEnd },
     },
-    select: { start: true, pricePence: true },
+    select: {
+      start: true,
+      pricePence: true,
+      learner: { select: { user: { select: { name: true } } } },
+    },
   });
   const income = completed.reduce((sum, b) => sum + (b.pricePence ?? 0), 0);
 
@@ -98,6 +107,7 @@ export default async function TaxPage({
   const calLessons = completed.map((b) => ({
     start: new Date(b.start).toISOString(),
     pricePence: b.pricePence ?? 0,
+    name: b.learner?.user?.name ?? "a learner",
   }));
   const calExpenses = expenses.map((e) => ({
     id: e.id,
@@ -197,12 +207,9 @@ export default async function TaxPage({
         <TaxCalendar lessons={calLessons} expenses={calExpenses} />
 
         {/* Add expense */}
-        <section className="mt-9 rounded-2xl border border-hairline bg-cream p-6">
-          <p className="font-display text-lg font-semibold">Add an expense</p>
-          <div className="mt-4">
-            <ExpenseForm year={startYear} />
-          </div>
-        </section>
+        <CollapsiblePanel title="Add an expense">
+          <ExpenseForm year={startYear} />
+        </CollapsiblePanel>
 
         {/* Expense list */}
         <h2 className="mt-9 font-display text-2xl font-bold tracking-tight">

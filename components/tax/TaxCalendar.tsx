@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-type CalLesson = { start: string; pricePence: number };
+type CalLesson = { start: string; pricePence: number; name: string };
 type CalExpense = {
   id: string;
   date: string;
@@ -212,7 +212,7 @@ export default function TaxCalendar({
                     className="flex items-center justify-between gap-4 rounded-2xl border border-hairline border-l-4 border-l-go bg-cream p-4"
                   >
                     <span className="text-[15px]">
-                      {fmtTime(l.start)} &middot; completed lesson
+                      {fmtTime(l.start)} &middot; lesson with {l.name}
                     </span>
                     <span className="shrink-0 font-semibold text-go">+{money(l.pricePence)}</span>
                   </div>
