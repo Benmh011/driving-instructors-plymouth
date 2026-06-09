@@ -47,7 +47,7 @@ export default function RegisterForm({ defaultRole = "LEARNER" }: { defaultRole?
         <label className={label} htmlFor="email">
           Email
         </label>
-        <input id="email" name="email" type="email" autoComplete="email" required className={field} />
+        <input id="email" name="email" type="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} inputMode="email" required className={field} />
       </div>
       <div>
         <label className={label} htmlFor="password">
