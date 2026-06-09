@@ -6,6 +6,7 @@ import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import ExpenseForm from "@/components/tax/ExpenseForm";
 import DeleteExpenseButton from "@/components/tax/DeleteExpenseButton";
+import TaxCalendar from "@/components/tax/TaxCalendar";
 
 export const metadata = { title: "Tax & earnings" };
 
@@ -63,13 +64,13 @@ export default async function TaxPage({
   const rangeStart = new Date(Date.UTC(startYear, 3, 6));
   const rangeEnd = new Date(Date.UTC(startYear + 1, 3, 6));
 
-  const completed: { pricePence: number | null }[] = await prisma.booking.findMany({
+  const completed: { start: Date; pricePence: number | null }[] = await prisma.booking.findMany({
     where: {
       instructorId,
       status: "COMPLETED",
       start: { gte: rangeStart, lt: rangeEnd },
     },
-    select: { pricePence: true },
+    select: { start: true, pricePence: true },
   });
   const income = completed.reduce((sum, b) => sum + (b.pricePence ?? 0), 0);
 
@@ -93,6 +94,18 @@ export default async function TaxPage({
   const categories = [...byCat.entries()].sort((a, b) => b[1] - a[1]);
 
   const years = [curStart, curStart - 1, curStart - 2];
+
+  const calLessons = completed.map((b) => ({
+    start: new Date(b.start).toISOString(),
+    pricePence: b.pricePence ?? 0,
+  }));
+  const calExpenses = expenses.map((e) => ({
+    id: e.id,
+    date: new Date(e.date).toISOString(),
+    category: e.category,
+    amountPence: e.amountPence,
+    note: e.note,
+  }));
 
   return (
     <div className="relative z-10 min-h-dvh">
@@ -179,6 +192,9 @@ export default async function TaxPage({
             </ul>
           </div>
         )}
+
+        {/* Day view */}
+        <TaxCalendar lessons={calLessons} expenses={calExpenses} />
 
         {/* Add expense */}
         <section className="mt-9 rounded-2xl border border-hairline bg-cream p-6">
