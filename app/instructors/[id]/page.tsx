@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
+import BottomNav from "@/components/BottomNav";
 import SignOutButton from "@/components/auth/SignOutButton";
 import { MAX_ROSTER } from "@/lib/constants";
 import { createJoinRequest, withdrawJoinRequest } from "../actions";
@@ -262,6 +263,7 @@ export default async function InstructorProfilePage({
           <RequestPanel />
         </div>
       </main>
+      <BottomNav />
     </div>
   );
 }

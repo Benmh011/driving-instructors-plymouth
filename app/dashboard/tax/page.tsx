@@ -3,6 +3,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
+import BottomNav from "@/components/BottomNav";
 import SignOutButton from "@/components/auth/SignOutButton";
 import ExpenseForm from "@/components/tax/ExpenseForm";
 import DeleteExpenseButton from "@/components/tax/DeleteExpenseButton";
@@ -252,6 +253,7 @@ export default async function TaxPage({
           to your situation.
         </p>
       </main>
+      <BottomNav />
     </div>
   );
 }

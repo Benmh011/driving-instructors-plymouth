@@ -2,6 +2,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
+import BottomNav from "@/components/BottomNav";
 import SignOutButton from "@/components/auth/SignOutButton";
 import { MAX_ROSTER } from "@/lib/constants";
 
@@ -165,6 +166,7 @@ export default async function InstructorsPage({
           </ul>
         )}
       </main>
+      <BottomNav />
     </div>
   );
 }

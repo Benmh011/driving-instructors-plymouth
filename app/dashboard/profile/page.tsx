@@ -3,6 +3,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
+import BottomNav from "@/components/BottomNav";
 import SignOutButton from "@/components/auth/SignOutButton";
 import EditProfileForm from "@/components/profile/EditProfileForm";
 
@@ -63,6 +64,7 @@ export default async function EditProfilePage() {
           />
         </div>
       </main>
+      <BottomNav />
     </div>
   );
 }

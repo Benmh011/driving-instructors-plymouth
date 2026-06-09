@@ -3,6 +3,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
+import BottomNav from "@/components/BottomNav";
 import SignOutButton from "@/components/auth/SignOutButton";
 import InviteLink from "@/components/students/InviteLink";
 import { generateInviteCode } from "@/lib/inviteCode";
@@ -204,6 +205,7 @@ export default async function StudentsPage() {
           </ul>
         )}
       </main>
+      <BottomNav />
     </div>
   );
 }

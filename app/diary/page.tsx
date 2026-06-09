@@ -3,6 +3,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
+import BottomNav from "@/components/BottomNav";
 import SignOutButton from "@/components/auth/SignOutButton";
 import BookLessonForm from "@/components/diary/BookLessonForm";
 import LessonCalendar, { type CalLesson } from "@/components/diary/LessonCalendar";
@@ -115,6 +116,7 @@ export default async function DiaryPage() {
           <LessonCalendar lessons={lessons} isInstructor={isInstructor} />
         </div>
       </main>
+      <BottomNav />
     </div>
   );
 }
