@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { authorizeConversation } from "@/lib/chat";
+import { sendPushToUser } from "@/lib/push";
 
 export type SendState = { error?: string } | undefined;
 
@@ -26,6 +27,22 @@ export async function sendMessage(
 
   await prisma.message.create({
     data: { instructorId, learnerId, senderId: party.meId, body: parsed.data },
+  });
+
+  // Notify the *other* party on their devices (best-effort).
+  const recipientUserId =
+    party.role === "INSTRUCTOR" ? party.learnerUserId : party.instructorUserId;
+  const senderName =
+    party.role === "INSTRUCTOR" ? party.instructorName : party.learnerName;
+  // Instructors land in the specific thread; learners have a single thread.
+  const url = party.role === "INSTRUCTOR" ? "/messages" : `/messages/${learnerId}`;
+  const preview =
+    parsed.data.length > 120 ? `${parsed.data.slice(0, 117)}…` : parsed.data;
+  await sendPushToUser(recipientUserId, {
+    title: `New message from ${senderName}`,
+    body: preview,
+    url,
+    tag: `chat-${instructorId}-${learnerId}`,
   });
 
   revalidatePath("/messages");

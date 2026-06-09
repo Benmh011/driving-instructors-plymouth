@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import BottomNav from "@/components/BottomNav";
 import SignOutButton from "@/components/auth/SignOutButton";
+import EnablePush from "@/components/push/EnablePush";
 import { isAdminEmail } from "@/lib/admin";
 
 export const metadata = { title: "Dashboard" };
@@ -171,6 +172,10 @@ export default async function DashboardPage({
             className="mt-5"
           />
         )}
+
+        <div className="mt-5">
+          <EnablePush />
+        </div>
 
         {admin && (
           <Link
