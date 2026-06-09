@@ -94,12 +94,12 @@ export default function BottomNavBar({ role }: { role: string }) {
 
   return (
     <>
-      <div className="h-20 md:hidden" aria-hidden />
-      <nav
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-hairline bg-cream/95 backdrop-blur-md md:hidden"
+      <div className="h-28 md:hidden" aria-hidden />
+      <div
+        className="fixed inset-x-0 bottom-0 z-50 px-3 md:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="mx-auto flex max-w-md items-stretch justify-around">
+        <nav className="mx-auto mb-2 flex max-w-md items-stretch justify-around rounded-2xl border border-hairline bg-cream/95 shadow-[0_6px_24px_rgba(20,36,54,0.16)] backdrop-blur-md">
           {tabs.map((t) => {
             const active = t.match(pathname);
             return (
@@ -115,8 +115,8 @@ export default function BottomNavBar({ role }: { role: string }) {
               </Link>
             );
           })}
-        </div>
-      </nav>
+        </nav>
+      </div>
     </>
   );
 }
