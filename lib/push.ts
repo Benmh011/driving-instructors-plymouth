@@ -21,6 +21,18 @@ export type PushPayload = {
   tag?: string;
 };
 
+// Lessons are stored & shown in UTC across the app — keep notifications consistent.
+export function formatLessonWhen(date: Date): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "UTC",
+  }).format(date);
+}
+
 // Best-effort: sends to every device the user has registered. Silently prunes
 // subscriptions the push service reports as gone (404/410). Never throws.
 export async function sendPushToUser(userId: string, payload: PushPayload): Promise<void> {

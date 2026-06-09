@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { sendPushToUser, formatLessonWhen } from "@/lib/push";
 
 export type ActionState = { error?: string } | undefined;
 
@@ -33,6 +34,7 @@ export async function createLesson(
 
   const instructor = await prisma.instructorProfile.findUnique({
     where: { userId: session.user.id },
+    include: { user: true },
   });
   if (!instructor) redirect("/dashboard");
 
@@ -73,6 +75,15 @@ export async function createLesson(
       pricePence,
       notes: notes ?? null,
     },
+  });
+
+  // Let the student know a lesson was booked for them.
+  const instructorName = instructor.businessName || instructor.user.name;
+  await sendPushToUser(learner.userId, {
+    title: "Lesson booked",
+    body: `${instructorName} booked you a lesson — ${formatLessonWhen(startDate)}.`,
+    url: "/diary",
+    tag: `booked-${learnerId}`,
   });
 
   redirect("/diary");
@@ -135,7 +146,13 @@ export async function cancelLesson(bookingId: string) {
   });
   if (!user) return;
 
-  const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    include: {
+      learner: { include: { user: true } },
+      instructor: { include: { user: true } },
+    },
+  });
   if (!booking || booking.status !== "BOOKED") return;
 
   const ownsAsInstructor =
@@ -148,6 +165,26 @@ export async function cancelLesson(bookingId: string) {
     where: { id: bookingId },
     data: { status: "CANCELLED", cancelledAt: new Date() },
   });
+
+  // Notify whoever didn't cancel.
+  const when = formatLessonWhen(booking.start);
+  if (ownsAsLearner) {
+    await sendPushToUser(booking.instructor.userId, {
+      title: "Lesson cancelled",
+      body: `${booking.learner.user.name} cancelled their lesson — ${when}.`,
+      url: "/diary",
+      tag: `cancel-${bookingId}`,
+    });
+  } else {
+    const instructorName =
+      booking.instructor.businessName || booking.instructor.user.name;
+    await sendPushToUser(booking.learner.userId, {
+      title: "Lesson cancelled",
+      body: `${instructorName} cancelled your lesson — ${when}.`,
+      url: "/diary",
+      tag: `cancel-${bookingId}`,
+    });
+  }
 
   revalidatePath("/diary");
 }
