@@ -93,6 +93,10 @@ export default async function DiaryPage() {
           {isInstructor ? "Your diary" : "Your lessons"}
         </h1>
 
+        <div className="mt-9">
+          <LessonCalendar lessons={lessons} isInstructor={isInstructor} />
+        </div>
+
         {isInstructor && (
           <section className="mt-9 rounded-2xl border border-hairline bg-cream p-6">
             <p className="font-display text-lg font-semibold">Book a lesson</p>
@@ -111,10 +115,6 @@ export default async function DiaryPage() {
             )}
           </section>
         )}
-
-        <div className="mt-9">
-          <LessonCalendar lessons={lessons} isInstructor={isInstructor} />
-        </div>
       </main>
       <BottomNav />
     </div>
