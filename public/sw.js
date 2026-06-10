@@ -1,6 +1,6 @@
 // Clutch service worker — minimal offline shell for the first push.
 // As the PWA grows, expand the precache list and add runtime strategies.
-const CACHE = "clutch-v2";
+const CACHE = "clutch-v3";
 const SHELL = ["/", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
