@@ -112,6 +112,17 @@ model InstructorProfile {
   slug                    String?  @unique // SEO-friendly profile URL
   photoUrl                String? // public profile photo (Vercel Blob URL)
 
+  // Stripe subscription (billing). Synced from Stripe webhooks; Stripe is the
+  // source of truth — these are a local mirror for gating + display.
+  stripeCustomerId     String?   @unique
+  stripeSubscriptionId String?   @unique
+  subscriptionStatus   String? // trialing | active | past_due | unpaid | canceled | incomplete...
+  subscriptionPriceId  String? // which Stripe price (founder vs standard)
+  isFounder            Boolean   @default(false) // locked founder rate
+  trialEndsAt          DateTime?
+  currentPeriodEnd     DateTime? // end of current paid period / trial — drives grace + renewal display
+  cancelAtPeriodEnd    Boolean   @default(false)
+
   roster   LearnerProfile[] @relation("Roster")
   bookings Booking[]
 
