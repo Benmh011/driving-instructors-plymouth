@@ -59,11 +59,11 @@ export default async function BillingPage({
       profile = await prisma.instructorProfile.findUnique({
         where: { userId: session.user.id },
       });
-      if (!profile) redirect("/dashboard");
     } catch {
       // Non-fatal — the webhook will catch up.
     }
   }
+  if (!profile) redirect("/dashboard");
 
   const state = accessState(profile);
   const pricePence = profile.isFounder ? FOUNDER_PRICE_PENCE : STANDARD_PRICE_PENCE;
