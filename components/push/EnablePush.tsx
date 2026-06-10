@@ -35,6 +35,17 @@ function isStandalone(): boolean {
   );
 }
 
+// Reject after `ms` so a stalled step (pushManager.subscribe is notorious for
+// hanging on iOS PWAs) can't leave the button stuck on "One sec…".
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error("timeout")), ms),
+    ),
+  ]);
+}
+
 export default function EnablePush() {
   const [state, setState] = useState<State>("loading");
 
@@ -98,26 +109,49 @@ export default function EnablePush() {
         setState(permission === "denied" ? "denied" : "off");
         return;
       }
-      const reg = await navigator.serviceWorker.ready;
-      const sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as BufferSource,
-      });
-      const res = await fetch("/api/push/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(sub.toJSON()),
-      });
-      setState(res.ok ? "on" : "off");
+      const reg = await withTimeout(navigator.serviceWorker.ready, 5000);
+      // Reuse an existing browser subscription if there is one; only create a
+      // fresh one when needed (re-subscribing can stall on iOS).
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) {
+        sub = await withTimeout(
+          reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(
+              VAPID_PUBLIC_KEY,
+            ) as BufferSource,
+          }),
+          12000,
+        );
+      }
+      // Register server-side, but don't let a slow/failed POST strand the UI —
+      // the device is subscribed at the browser level either way.
+      await withTimeout(
+        fetch("/api/push/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(sub.toJSON()),
+        }),
+        8000,
+      ).catch(() => {});
+      setState("on");
     } catch {
-      setState("off");
+      // Whatever went wrong, settle on the truth: does the browser actually
+      // have a subscription? Never leave the button stuck on "working".
+      try {
+        const reg = await withTimeout(navigator.serviceWorker.ready, 3000);
+        const sub = await reg.pushManager.getSubscription();
+        setState(sub ? "on" : "off");
+      } catch {
+        setState("off");
+      }
     }
   }
 
   async function disable() {
     setState("working");
     try {
-      const reg = await navigator.serviceWorker.ready;
+      const reg = await withTimeout(navigator.serviceWorker.ready, 5000);
       const sub = await reg.pushManager.getSubscription();
       if (sub) {
         await fetch("/api/push/unsubscribe", {
