@@ -3,7 +3,6 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
-import BottomNav from "@/components/BottomNav";
 import SignOutButton from "@/components/auth/SignOutButton";
 import EnablePush from "@/components/push/EnablePush";
 import { isAdminEmail } from "@/lib/admin";
@@ -186,7 +185,6 @@ export default async function DashboardPage({
           </Link>
         )}
       </main>
-      <BottomNav />
     </div>
   );
 }

@@ -3,7 +3,6 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
-import BottomNav from "@/components/BottomNav";
 import SignOutButton from "@/components/auth/SignOutButton";
 import BookLessonForm from "@/components/diary/BookLessonForm";
 import LessonCalendar, { type CalLesson } from "@/components/diary/LessonCalendar";
@@ -16,6 +15,8 @@ type Row = {
   durationMins: number;
   status: string;
   notes: string | null;
+  paid: boolean;
+  pricePence: number | null;
   learner?: { user: { name: string } };
   instructor?: {
     user: { name: string };
@@ -71,6 +72,8 @@ export default async function DiaryPage() {
     noticeHours: isInstructor
       ? ownNotice
       : (b.instructor?.cancellationNoticeHours ?? 48),
+    paid: b.paid,
+    pricePence: b.pricePence ?? null,
   }));
 
   const rosterRaw: { id: string; user: { name: string } }[] =
@@ -116,7 +119,6 @@ export default async function DiaryPage() {
           </section>
         )}
       </main>
-      <BottomNav />
     </div>
   );
 }

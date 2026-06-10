@@ -3,7 +3,6 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
-import BottomNav from "@/components/BottomNav";
 import SignOutButton from "@/components/auth/SignOutButton";
 import EditLessonForm from "@/components/diary/EditLessonForm";
 
@@ -75,7 +74,6 @@ export default async function EditLessonPage({
           />
         </div>
       </main>
-      <BottomNav />
     </div>
   );
 }

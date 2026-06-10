@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import CancelButton from "./CancelButton";
 import CompleteButton from "./CompleteButton";
+import PaidButton from "./PaidButton";
 
 export type CalLesson = {
   id: string;
@@ -13,6 +14,8 @@ export type CalLesson = {
   other: string;
   notes: string | null;
   noticeHours: number;
+  paid: boolean;
+  pricePence: number | null;
 };
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -186,6 +189,12 @@ export default function LessonCalendar({
                     <div className="min-w-0">
                       <p className="font-semibold">
                         {fmtTime(l.start)} &middot; {fmtLen(l.durationMins)}
+                        {l.pricePence != null && (
+                          <span className="text-ink-soft">
+                            {" "}
+                            &middot; £{(l.pricePence / 100).toFixed(2)}
+                          </span>
+                        )}
                       </p>
                       <p className="mt-0.5 text-sm text-ink-soft">
                         {l.other}
@@ -208,6 +217,9 @@ export default function LessonCalendar({
                       {completable && <CompleteButton id={l.id} mode="complete" />}
                       {completed && isInstructor && (
                         <CompleteButton id={l.id} mode="reopen" />
+                      )}
+                      {isInstructor && l.status !== "CANCELLED" && (
+                        <PaidButton id={l.id} paid={l.paid} />
                       )}
                       {cancellable && (
                         <CancelButton id={l.id} confirmText={confirmText} />

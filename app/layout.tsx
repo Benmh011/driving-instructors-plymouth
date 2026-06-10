@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import ServiceWorker from "@/components/ServiceWorker";
+import AppChrome from "@/components/AppChrome";
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -52,13 +55,27 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+// Role drives which nav the app shell shows. Returns null for signed-out or
+// not-yet-onboarded users, in which case no shell is rendered.
+async function getNavRole(): Promise<string | null> {
+  const session = await auth();
+  if (!session?.user?.id) return null;
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true, onboardingComplete: true },
+  });
+  if (!user || !user.onboardingComplete) return null;
+  return user.role;
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const role = await getNavRole();
   return (
     <html lang="en-GB" className={`${GeistSans.variable} ${bricolage.variable}`}>
       <body>
-        {children}
+        <AppChrome role={role}>{children}</AppChrome>
         <ServiceWorker />
       </body>
     </html>

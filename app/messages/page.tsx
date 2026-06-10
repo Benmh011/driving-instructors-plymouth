@@ -4,7 +4,6 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
-import BottomNav from "@/components/BottomNav";
 import Conversation from "@/components/messages/Conversation";
 
 export const metadata = { title: "Messages" };
@@ -98,7 +97,6 @@ export default async function MessagesPage() {
             </ul>
           )}
         </main>
-        <BottomNav />
       </div>
     );
   }
@@ -126,7 +124,6 @@ export default async function MessagesPage() {
             </Link>
           </div>
         </main>
-        <BottomNav />
       </div>
     );
   }
@@ -171,7 +168,6 @@ export default async function MessagesPage() {
           />
         </div>
       </main>
-      <BottomNav />
     </div>
   );
 }

@@ -4,7 +4,6 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
-import BottomNav from "@/components/BottomNav";
 import Conversation from "@/components/messages/Conversation";
 import { authorizeConversation } from "@/lib/chat";
 
@@ -67,7 +66,6 @@ export default async function ThreadPage({
           />
         </div>
       </main>
-      <BottomNav />
     </div>
   );
 }

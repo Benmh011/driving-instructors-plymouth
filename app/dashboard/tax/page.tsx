@@ -3,7 +3,6 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
-import BottomNav from "@/components/BottomNav";
 import SignOutButton from "@/components/auth/SignOutButton";
 import ExpenseForm from "@/components/tax/ExpenseForm";
 import DeleteExpenseButton from "@/components/tax/DeleteExpenseButton";
@@ -66,14 +65,15 @@ export default async function TaxPage({
   const rangeStart = new Date(Date.UTC(startYear, 3, 6));
   const rangeEnd = new Date(Date.UTC(startYear + 1, 3, 6));
 
-  const completed: {
+  const paidLessons: {
     start: Date;
     pricePence: number | null;
     learner: { user: { name: string | null } | null } | null;
   }[] = await prisma.booking.findMany({
     where: {
       instructorId,
-      status: "COMPLETED",
+      paid: true,
+      status: { not: "CANCELLED" },
       start: { gte: rangeStart, lt: rangeEnd },
     },
     select: {
@@ -82,7 +82,19 @@ export default async function TaxPage({
       learner: { select: { user: { select: { name: true } } } },
     },
   });
-  const income = completed.reduce((sum, b) => sum + (b.pricePence ?? 0), 0);
+  const income = paidLessons.reduce((sum, b) => sum + (b.pricePence ?? 0), 0);
+
+  // Completed lessons that haven't been marked paid yet — money still owed.
+  const unpaid: { pricePence: number | null }[] = await prisma.booking.findMany({
+    where: {
+      instructorId,
+      paid: false,
+      status: "COMPLETED",
+      start: { gte: rangeStart, lt: rangeEnd },
+    },
+    select: { pricePence: true },
+  });
+  const outstandingTotal = unpaid.reduce((sum, b) => sum + (b.pricePence ?? 0), 0);
 
   const expenses: {
     id: string;
@@ -105,7 +117,7 @@ export default async function TaxPage({
 
   const years = [curStart, curStart - 1, curStart - 2];
 
-  const calLessons = completed.map((b) => ({
+  const calLessons = paidLessons.map((b) => ({
     start: new Date(b.start).toISOString(),
     pricePence: b.pricePence ?? 0,
     name: b.learner?.user?.name ?? "a learner",
@@ -134,8 +146,8 @@ export default async function TaxPage({
           Tax &amp; earnings
         </h1>
         <p className="mt-3 max-w-lg text-ink-soft">
-          Income from your completed lessons, minus expenses, for the UK tax year (6 Apr
-          &ndash; 5 Apr).
+          Income from lessons you&rsquo;ve marked as paid, minus expenses, for the UK tax
+          year (6 Apr &ndash; 5 Apr).
         </p>
 
         {/* Tax year selector */}
@@ -163,7 +175,7 @@ export default async function TaxPage({
             </p>
             <p className="mt-1 font-display text-2xl font-bold">{money(income)}</p>
             <p className="mt-0.5 text-sm text-ink-soft">
-              {completed.length} completed lesson{completed.length === 1 ? "" : "s"}
+              {paidLessons.length} paid lesson{paidLessons.length === 1 ? "" : "s"}
             </p>
           </div>
           <div className="bg-cream p-5">
@@ -189,6 +201,19 @@ export default async function TaxPage({
             <p className="mt-0.5 text-sm text-ink-soft">income &minus; expenses</p>
           </div>
         </div>
+
+        {outstandingTotal > 0 && (
+          <div className="mt-4 flex items-center gap-3 rounded-2xl border border-line/40 bg-line/10 p-4">
+            <span className="text-xl">💷</span>
+            <p className="text-[15px] text-ink">
+              <span className="font-semibold">{money(outstandingTotal)} awaiting payment</span>{" "}
+              <span className="text-ink-soft">
+                &mdash; {unpaid.length} completed lesson{unpaid.length === 1 ? "" : "s"} not yet
+                marked paid.
+              </span>
+            </p>
+          </div>
+        )}
 
         {categories.length > 0 && (
           <div className="mt-4 rounded-2xl border border-hairline bg-cream p-5">
@@ -248,12 +273,11 @@ export default async function TaxPage({
         <p className="mt-10 text-sm leading-relaxed text-ink-soft">
           This is a running summary to help you prepare your Self Assessment &mdash; it
           isn&rsquo;t submitted to HMRC and isn&rsquo;t tax advice. Income is counted from
-          lessons you&rsquo;ve marked complete in your diary. Check current HMRC rules
+          lessons you&rsquo;ve marked as paid in your diary. Check current HMRC rules
           (including Making Tax Digital) or speak to an accountant for anything specific
           to your situation.
         </p>
       </main>
-      <BottomNav />
     </div>
   );
 }
