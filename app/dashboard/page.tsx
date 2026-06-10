@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import EnablePush from "@/components/push/EnablePush";
+import CollapsiblePanel from "@/components/tax/CollapsiblePanel";
 import { ensureInstructorSlug } from "@/lib/slug";
 import { isAdminEmail } from "@/lib/admin";
 
@@ -109,46 +110,47 @@ export default async function DashboardPage({
           </div>
         )}
 
-        <div className="mt-9 grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline sm:grid-cols-2">
-          {isInstructor && i ? (
-            <>
-              <Cell label="ADI badge number" value={i.adiNumber} />
-              <Cell label="Areas covered" value={i.postcodes} />
-              <Cell label="Transmission" value={pretty(i.transmission)} />
-              <Cell label="Hourly rate" value={`£${i.hourlyRate}`} />
-              {i.businessName && <Cell label="Business" value={i.businessName} />}
-              {i.carDetails && <Cell label="Car" value={i.carDetails} />}
-            </>
-          ) : l ? (
-            <>
-              <Cell label="Area" value={l.postcode} />
-              <Cell label="Transmission" value={pretty(l.transmission)} />
-              {l.goal && <Cell label="Goal" value={l.goal} />}
-              <Cell label="Your instructor" value={instructorName ?? "Not joined yet"} />
-            </>
-          ) : null}
-        </div>
-
-        {isInstructor && i && (
-          <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1">
-            <Link
-              href="/dashboard/profile"
-              className="inline-block text-sm font-semibold text-sea link-grow"
-            >
-              Edit your details &rarr;
-            </Link>
-            {publicSlug && (
-              <a
-                href={`/instructors/${publicSlug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block text-sm font-semibold text-sea link-grow"
+        {isInstructor && i ? (
+          <CollapsiblePanel title="Profile settings">
+            <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
+              <Field label="ADI badge number" value={i.adiNumber} />
+              <Field label="Areas covered" value={i.postcodes} />
+              <Field label="Transmission" value={pretty(i.transmission)} />
+              <Field label="Hourly rate" value={`£${i.hourlyRate}`} />
+              {i.businessName && <Field label="Business" value={i.businessName} />}
+              {i.carDetails && <Field label="Car" value={i.carDetails} />}
+            </dl>
+            <p className="mt-4 text-sm text-ink-soft">
+              Your ADI badge number is tied to DVSA verification and can&rsquo;t be edited
+              here.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                href="/dashboard/profile"
+                className="rounded-full bg-sea px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-sea-dark"
               >
-                View public profile &#8599;
-              </a>
-            )}
+                Edit your details
+              </Link>
+              {publicSlug && (
+                <a
+                  href={`/instructors/${publicSlug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-ink/20 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink"
+                >
+                  View public profile &#8599;
+                </a>
+              )}
+            </div>
+          </CollapsiblePanel>
+        ) : l ? (
+          <div className="mt-9 grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline sm:grid-cols-2">
+            <Cell label="Area" value={l.postcode} />
+            <Cell label="Transmission" value={pretty(l.transmission)} />
+            {l.goal && <Cell label="Goal" value={l.goal} />}
+            <Cell label="Your instructor" value={instructorName ?? "Not joined yet"} />
           </div>
-        )}
+        ) : null}
 
         {isInstructor ? (
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -236,6 +238,17 @@ function NavCard({
         &rarr;
       </span>
     </Link>
+  );
+}
+
+function Field({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">
+        {label}
+      </dt>
+      <dd className="mt-1 font-medium">{value}</dd>
+    </div>
   );
 }
 

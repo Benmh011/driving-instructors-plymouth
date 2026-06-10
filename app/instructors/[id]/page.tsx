@@ -134,6 +134,14 @@ export default async function InstructorProfilePage({
   const full =
     !instructor.acceptingStudents || instructor._count.roster >= MAX_ROSTER;
   const name = instructor.businessName || instructor.user.name;
+  const initials =
+    name
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((w: string) => w[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase() || "?";
   const instructorId: string = instructor.id;
   const verified = instructor.adiStatus === "VERIFIED";
 
@@ -278,34 +286,44 @@ export default async function InstructorProfilePage({
           &larr; All instructors
         </Link>
 
-        <div className="mt-4 flex items-start justify-between gap-4">
-          <div>
-            <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">
-              {name}
-            </h1>
-            <p className="mt-2 text-ink-soft">
-              {instructor.postcodes} &middot; {pretty(instructor.transmission)}
-            </p>
-            {reviewCount > 0 && (
-              <div className="mt-2 flex items-center gap-2 text-sm">
-                <Stars value={avgRating} />
-                <span className="font-semibold">{avgRating.toFixed(1)}</span>
-                <span className="text-ink-soft">
-                  ({reviewCount} review{reviewCount === 1 ? "" : "s"})
-                </span>
-              </div>
-            )}
+        <section className="mt-4 overflow-hidden rounded-3xl bg-tarmac text-cream">
+          <div className="flex flex-col gap-5 p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-9">
+            <div
+              className="grid h-20 w-20 shrink-0 place-items-center rounded-2xl bg-sea/30 font-display text-3xl font-bold text-white ring-1 ring-white/15"
+              aria-hidden
+            >
+              {initials}
+            </div>
+            <div className="min-w-0 flex-1">
+              <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">
+                {name}
+              </h1>
+              <p className="mt-2 text-cream/70">
+                {instructor.postcodes} &middot; {pretty(instructor.transmission)}
+              </p>
+              {reviewCount > 0 && (
+                <p className="mt-2 flex items-center gap-1.5 text-sm">
+                  <svg viewBox="0 0 24 24" className="h-4 w-4 text-line" fill="currentColor" aria-hidden>
+                    <path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.9 6.1 21.5l1.2-6.5L2.5 9.4l6.6-.9z" />
+                  </svg>
+                  <span className="font-semibold text-cream">{avgRating.toFixed(1)}</span>
+                  <span className="text-cream/60">
+                    ({reviewCount} review{reviewCount === 1 ? "" : "s"})
+                  </span>
+                </p>
+              )}
+            </div>
+            <span
+              className={`shrink-0 self-start rounded-full px-3.5 py-1.5 text-xs font-semibold ${
+                full ? "bg-white/10 text-cream/70" : "bg-go text-white"
+              }`}
+            >
+              {full ? "Books full" : "Taking students"}
+            </span>
           </div>
-          <span
-            className={`mt-2 shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${
-              full ? "bg-ink/10 text-ink-soft" : "bg-go/15 text-go"
-            }`}
-          >
-            {full ? "Books full" : "Taking students"}
-          </span>
-        </div>
+        </section>
 
-        <div className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline sm:grid-cols-3">
+        <div className="mt-6 grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline sm:grid-cols-3">
           <div className="bg-cream p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">
               Hourly rate

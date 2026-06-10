@@ -191,7 +191,7 @@ export default async function DiaryPage() {
                       href={`/instructors/${pl.slug}`}
                       className="shrink-0 rounded-full border border-ink/20 px-3.5 py-1.5 text-sm font-semibold text-ink-soft transition-colors hover:border-ink hover:text-ink"
                     >
-                      View profile &rarr;
+                      View instructor profile &rarr;
                     </Link>
                   </li>
                 ))}
