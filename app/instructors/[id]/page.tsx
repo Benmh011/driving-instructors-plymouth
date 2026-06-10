@@ -7,6 +7,7 @@ import SignOutButton from "@/components/auth/SignOutButton";
 import { MAX_ROSTER } from "@/lib/constants";
 import { ensureInstructorSlug } from "@/lib/slug";
 import { Stars } from "@/components/reviews/Stars";
+import { Avatar } from "@/components/profile/Avatar";
 import ReviewForm from "@/components/reviews/ReviewForm";
 import { createJoinRequest, withdrawJoinRequest } from "../actions";
 
@@ -288,12 +289,13 @@ export default async function InstructorProfilePage({
 
         <section className="mt-4 overflow-hidden rounded-3xl bg-tarmac text-cream">
           <div className="flex flex-col gap-5 p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-9">
-            <div
-              className="grid h-20 w-20 shrink-0 place-items-center rounded-2xl bg-sea/30 font-display text-3xl font-bold text-white ring-1 ring-white/15"
-              aria-hidden
-            >
-              {initials}
-            </div>
+            <Avatar
+              photoUrl={instructor.photoUrl}
+              initials={initials}
+              className="h-20 w-20 rounded-2xl"
+              textClassName="text-3xl"
+              tone="onDark"
+            />
             <div className="min-w-0 flex-1">
               <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">
                 {name}

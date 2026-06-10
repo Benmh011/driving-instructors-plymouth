@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { del } from "@vercel/blob";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { uniqueInstructorSlug } from "@/lib/slug";
@@ -65,4 +66,55 @@ export async function updateInstructorProfile(
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/profile");
   redirect("/dashboard");
+}
+
+// Saves the public Blob URL of a freshly uploaded profile photo.
+export async function savePhoto(url: string) {
+  const session = await auth();
+  if (!session?.user?.id) return;
+  const instructor = await prisma.instructorProfile.findUnique({
+    where: { userId: session.user.id },
+    select: { id: true, photoUrl: true },
+  });
+  if (!instructor) return;
+  if (typeof url !== "string" || !url.startsWith("https://")) return;
+
+  // Best-effort cleanup of the previous photo.
+  if (instructor.photoUrl && instructor.photoUrl !== url) {
+    await del(instructor.photoUrl).catch(() => {});
+  }
+
+  await prisma.instructorProfile.update({
+    where: { id: instructor.id },
+    data: { photoUrl: url },
+  });
+
+  revalidatePath("/dashboard/profile");
+  revalidatePath("/dashboard");
+  revalidatePath("/instructors");
+  revalidatePath("/instructors/[id]", "page");
+}
+
+// Removes the current profile photo.
+export async function removePhoto() {
+  const session = await auth();
+  if (!session?.user?.id) return;
+  const instructor = await prisma.instructorProfile.findUnique({
+    where: { userId: session.user.id },
+    select: { id: true, photoUrl: true },
+  });
+  if (!instructor) return;
+
+  if (instructor.photoUrl) {
+    await del(instructor.photoUrl).catch(() => {});
+  }
+  await prisma.instructorProfile.update({
+    where: { id: instructor.id },
+    data: { photoUrl: null },
+  });
+
+  revalidatePath("/dashboard/profile");
+  revalidatePath("/dashboard");
+  revalidatePath("/instructors");
+  revalidatePath("/instructors/[id]", "page");
 }

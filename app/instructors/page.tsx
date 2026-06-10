@@ -5,6 +5,7 @@ import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import { MAX_ROSTER } from "@/lib/constants";
 import { ensureInstructorSlug } from "@/lib/slug";
+import { Avatar } from "@/components/profile/Avatar";
 
 export const metadata = {
   title: "Find a driving instructor in Plymouth",
@@ -15,6 +16,7 @@ export const metadata = {
 type DirItem = {
   id: string;
   slug: string | null;
+  photoUrl: string | null;
   businessName: string | null;
   postcodes: string;
   transmission: string;
@@ -27,6 +29,18 @@ type DirItem = {
 
 function pretty(t: string) {
   return t === "BOTH" ? "Manual & automatic" : t.charAt(0) + t.slice(1).toLowerCase();
+}
+
+function initialsOf(name: string) {
+  return (
+    name
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((w) => w[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase() || "?"
+  );
 }
 
 export default async function InstructorsPage({
@@ -146,9 +160,17 @@ export default async function InstructorsPage({
                     className="flex h-full flex-col rounded-2xl border border-hairline bg-cream p-6 transition-colors hover:border-ink/30"
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <p className="font-display text-lg font-semibold">
-                        {i.businessName || i.user.name}
-                      </p>
+                      <div className="flex min-w-0 items-center gap-3">
+                        <Avatar
+                          photoUrl={i.photoUrl}
+                          initials={initialsOf(i.businessName || i.user.name)}
+                          className="h-11 w-11 rounded-xl"
+                          textClassName="text-sm"
+                        />
+                        <p className="font-display text-lg font-semibold">
+                          {i.businessName || i.user.name}
+                        </p>
+                      </div>
                       <span
                         className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${
                           full

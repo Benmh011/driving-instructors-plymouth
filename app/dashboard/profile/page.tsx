@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import EditProfileForm from "@/components/profile/EditProfileForm";
+import PhotoUpload from "@/components/profile/PhotoUpload";
+import { Avatar } from "@/components/profile/Avatar";
 import { ensureInstructorSlug } from "@/lib/slug";
 
 export const metadata = { title: "Your profile" };
@@ -26,6 +28,14 @@ export default async function EditProfilePage() {
 
   const p = user.instructorProfile;
   const displayName = p.businessName || user.name;
+  const initials =
+    displayName
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((w: string) => w[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase() || "?";
   const verified = p.adiStatus === "VERIFIED";
   const slug = await ensureInstructorSlug({
     id: p.id,
@@ -62,14 +72,31 @@ export default async function EditProfilePage() {
           View public profile &#8599;
         </a>
 
+        <div className="mt-6 rounded-2xl border border-hairline bg-cream p-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">
+            Profile photo
+          </p>
+          <div className="mt-3">
+            <PhotoUpload photoUrl={p.photoUrl} initials={initials} />
+          </div>
+        </div>
+
         {/* Preview (no reviews — those live on the public page) */}
         <div className="mt-6 rounded-2xl border border-hairline bg-cream p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">
             Preview
           </p>
-          <h2 className="mt-1 font-display text-2xl font-bold tracking-tight">
-            {displayName}
-          </h2>
+          <div className="mt-1 flex items-center gap-4">
+            <Avatar
+              photoUrl={p.photoUrl}
+              initials={initials}
+              className="h-14 w-14 rounded-2xl"
+              textClassName="text-xl"
+            />
+            <h2 className="font-display text-2xl font-bold tracking-tight">
+              {displayName}
+            </h2>
+          </div>
           <p className="mt-1 text-ink-soft">
             {p.postcodes} &middot; {pretty(p.transmission)} &middot; £{p.hourlyRate}/hr
           </p>

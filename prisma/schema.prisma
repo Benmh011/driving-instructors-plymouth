@@ -110,6 +110,7 @@ model InstructorProfile {
   acceptingStudents       Boolean  @default(true) // instructor's own availability toggle
   cancellationNoticeHours Int      @default(48) // instructor-set notice window
   slug                    String?  @unique // SEO-friendly profile URL
+  photoUrl                String? // public profile photo (Vercel Blob URL)
 
   roster   LearnerProfile[] @relation("Roster")
   bookings Booking[]
