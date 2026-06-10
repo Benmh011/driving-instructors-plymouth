@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { uniqueInstructorSlug } from "@/lib/slug";
 import { instructorProfileSchema } from "@/lib/validators";
 
 export type ActionState = { error?: string } | undefined;
@@ -34,6 +35,19 @@ export async function updateInstructorProfile(
   }
 
   const d = parsed.data;
+
+  // Backfill a slug for older profiles that predate slugs. Kept stable once set.
+  let slugPatch: { slug?: string } = {};
+  if (!instructor.slug) {
+    const u = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { name: true },
+    });
+    slugPatch = {
+      slug: await uniqueInstructorSlug(d.businessName || u?.name || "instructor", instructor.id),
+    };
+  }
+
   await prisma.instructorProfile.update({
     where: { id: instructor.id },
     data: {
@@ -44,6 +58,7 @@ export async function updateInstructorProfile(
       carDetails: d.carDetails ?? null,
       bio: d.bio ?? null,
       cancellationNoticeHours: d.cancellationNoticeHours,
+      ...slugPatch,
     },
   });
 

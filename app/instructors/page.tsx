@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import { MAX_ROSTER } from "@/lib/constants";
+import { ensureInstructorSlug } from "@/lib/slug";
 
 export const metadata = {
   title: "Find a driving instructor in Plymouth",
@@ -13,6 +14,7 @@ export const metadata = {
 
 type DirItem = {
   id: string;
+  slug: string | null;
   businessName: string | null;
   postcodes: string;
   transmission: string;
@@ -51,6 +53,12 @@ export default async function InstructorsPage({
     orderBy: [{ acceptingStudents: "desc" }, { createdAt: "asc" }],
     include: { user: true, _count: { select: { roster: true } } },
   });
+
+  // Ensure each listed instructor has a slug (lazy backfill for older profiles).
+  const slugById = new Map<string, string>();
+  for (const i of instructors) {
+    slugById.set(i.id, await ensureInstructorSlug(i));
+  }
 
   const right = session ? (
     <SignOutButton />
@@ -134,7 +142,7 @@ export default async function InstructorsPage({
               return (
                 <li key={i.id}>
                   <Link
-                    href={`/instructors/${i.id}`}
+                    href={`/instructors/${slugById.get(i.id) ?? i.id}`}
                     className="flex h-full flex-col rounded-2xl border border-hairline bg-cream p-6 transition-colors hover:border-ink/30"
                   >
                     <div className="flex items-start justify-between gap-3">

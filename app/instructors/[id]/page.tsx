@@ -1,14 +1,55 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import { MAX_ROSTER } from "@/lib/constants";
+import { ensureInstructorSlug } from "@/lib/slug";
+import { Stars } from "@/components/reviews/Stars";
+import ReviewForm from "@/components/reviews/ReviewForm";
 import { createJoinRequest, withdrawJoinRequest } from "../actions";
 
 function pretty(t: string) {
   return t === "BOTH" ? "Manual & automatic" : t.charAt(0) + t.slice(1).toLowerCase();
+}
+
+function fmtDate(d: string | Date) {
+  return new Date(d).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+function firstName(name: string) {
+  return name.split(" ")[0] || name;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id: param } = await params;
+  const i = await prisma.instructorProfile.findFirst({
+    where: { OR: [{ slug: param }, { id: param }] },
+    select: {
+      businessName: true,
+      postcodes: true,
+      transmission: true,
+      user: { select: { name: true } },
+    },
+  });
+  if (!i) return { title: "Instructor" };
+  const nm = i.businessName || i.user.name;
+  return {
+    title: `${nm} — Driving Instructor in Plymouth`,
+    description: `Book driving lessons with ${nm}, covering ${i.postcodes}. ${pretty(
+      i.transmission,
+    )} tuition. Compare and request lessons on Driving Instructors Plymouth.`,
+  };
 }
 
 export default async function InstructorProfilePage({
@@ -16,13 +57,31 @@ export default async function InstructorProfilePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
+  const { id: param } = await params;
 
-  const instructor = await prisma.instructorProfile.findUnique({
-    where: { id },
-    include: { user: true, _count: { select: { roster: true } } },
+  const instructor = await prisma.instructorProfile.findFirst({
+    where: { OR: [{ slug: param }, { id: param }] },
+    include: {
+      user: true,
+      _count: { select: { roster: true } },
+      reviews: {
+        orderBy: { createdAt: "desc" },
+        include: { learner: { include: { user: { select: { name: true } } } } },
+      },
+    },
   });
   if (!instructor) notFound();
+
+  // Canonicalise to the slug URL (older /instructors/<id> links 308 to the slug).
+  const slug = await ensureInstructorSlug(instructor);
+  if (param !== slug) redirect(`/instructors/${slug}`);
+
+  const reviews = instructor.reviews;
+  const reviewCount = reviews.length;
+  const avgRating =
+    reviewCount > 0
+      ? reviews.reduce((s: number, r: { rating: number }) => s + r.rating, 0) / reviewCount
+      : 0;
 
   const session = await auth();
   let viewer:
@@ -33,6 +92,8 @@ export default async function InstructorProfilePage({
       }
     | null = null;
   let existingStatus: string | null = null;
+  let canReview = false;
+  let myReview: { rating: number; body: string | null } | null = null;
 
   if (session?.user?.id) {
     viewer = await prisma.user.findUnique({
@@ -52,6 +113,21 @@ export default async function InstructorProfilePage({
         },
       });
       existingStatus = req?.status ?? null;
+
+      const booked = await prisma.booking.findFirst({
+        where: { instructorId: instructor.id, learnerId: viewer.learnerProfile.id },
+        select: { id: true },
+      });
+      canReview = !!booked;
+      myReview = await prisma.review.findUnique({
+        where: {
+          instructorId_learnerId: {
+            instructorId: instructor.id,
+            learnerId: viewer.learnerProfile.id,
+          },
+        },
+        select: { rating: true, body: true },
+      });
     }
   }
 
@@ -210,6 +286,15 @@ export default async function InstructorProfilePage({
             <p className="mt-2 text-ink-soft">
               {instructor.postcodes} &middot; {pretty(instructor.transmission)}
             </p>
+            {reviewCount > 0 && (
+              <div className="mt-2 flex items-center gap-2 text-sm">
+                <Stars value={avgRating} />
+                <span className="font-semibold">{avgRating.toFixed(1)}</span>
+                <span className="text-ink-soft">
+                  ({reviewCount} review{reviewCount === 1 ? "" : "s"})
+                </span>
+              </div>
+            )}
           </div>
           <span
             className={`mt-2 shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${
@@ -261,6 +346,54 @@ export default async function InstructorProfilePage({
         <div className="mt-8 rounded-2xl border border-hairline bg-cream p-6">
           <RequestPanel />
         </div>
+
+        <section className="mt-10">
+          <h2 className="font-display text-2xl font-bold tracking-tight">Reviews</h2>
+
+          {canReview && (
+            <div className="mt-4 rounded-2xl border border-hairline bg-cream p-6">
+              <p className="font-display text-lg font-semibold">
+                {myReview ? "Your review" : `Leave a review for ${name}`}
+              </p>
+              <div className="mt-3">
+                <ReviewForm
+                  instructorId={instructorId}
+                  initialRating={myReview?.rating ?? 0}
+                  initialBody={myReview?.body ?? ""}
+                />
+              </div>
+            </div>
+          )}
+
+          {reviewCount === 0 ? (
+            <p className="mt-4 text-[15px] text-ink-soft">
+              No reviews yet{canReview ? " — be the first to leave one." : "."}
+            </p>
+          ) : (
+            <ul className="mt-4 space-y-3">
+              {reviews.map(
+                (r: {
+                  id: string;
+                  rating: number;
+                  body: string | null;
+                  createdAt: string | Date;
+                  learner: { user: { name: string } };
+                }) => (
+                  <li key={r.id} className="rounded-2xl border border-hairline bg-cream p-5">
+                    <div className="flex items-center justify-between gap-3">
+                      <Stars value={r.rating} />
+                      <span className="text-sm text-ink-soft">{fmtDate(r.createdAt)}</span>
+                    </div>
+                    {r.body && <p className="mt-2 text-[15px] text-ink">{r.body}</p>}
+                    <p className="mt-2 text-sm font-medium text-ink-soft">
+                      {firstName(r.learner.user.name)}
+                    </p>
+                  </li>
+                ),
+              )}
+            </ul>
+          )}
+        </section>
       </main>
     </div>
   );

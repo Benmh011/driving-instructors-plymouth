@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { uniqueInstructorSlug } from "@/lib/slug";
 import { learnerSchema, instructorSchema } from "@/lib/validators";
 
 export type ActionState = { error?: string } | undefined;
@@ -61,10 +62,17 @@ export async function completeInstructor(
   const userId = session.user.id;
   const data = parsed.data;
 
+  // Give the public profile a stable, SEO-friendly slug.
+  const currentUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { name: true },
+  });
+  const slug = await uniqueInstructorSlug(data.businessName || currentUser?.name || "instructor");
+
   await prisma.$transaction([
     prisma.instructorProfile.upsert({
       where: { userId },
-      create: { userId, ...data },
+      create: { userId, slug, ...data },
       update: { ...data },
     }),
     prisma.user.update({ where: { id: userId }, data: { onboardingComplete: true } }),

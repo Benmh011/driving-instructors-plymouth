@@ -80,6 +80,7 @@ model LearnerProfile {
 
   joinRequests JoinRequest[]
   messages     Message[]
+  reviews      Review[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -108,6 +109,7 @@ model InstructorProfile {
   inviteCode              String?  @unique // reusable join-link token, generated lazily
   acceptingStudents       Boolean  @default(true) // instructor's own availability toggle
   cancellationNoticeHours Int      @default(48) // instructor-set notice window
+  slug                    String?  @unique // SEO-friendly profile URL
 
   roster   LearnerProfile[] @relation("Roster")
   bookings Booking[]
@@ -115,6 +117,7 @@ model InstructorProfile {
   joinRequests JoinRequest[]
   expenses     Expense[]
   messages     Message[]
+  reviews      Review[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -190,4 +193,19 @@ model Message {
   createdAt    DateTime          @default(now())
 
   @@index([instructorId, learnerId, createdAt])
+}
+
+model Review {
+  id           String            @id @default(cuid())
+  instructorId String
+  instructor   InstructorProfile @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  learnerId    String
+  learner      LearnerProfile    @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  rating       Int // 1–5
+  body         String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@unique([instructorId, learnerId])
+  @@index([instructorId])
 }
