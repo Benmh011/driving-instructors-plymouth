@@ -1,11 +1,12 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { accessState } from "@/lib/subscription";
+import { accessState, isFounderEligible } from "@/lib/subscription";
 import {
   STANDARD_PRICE_PENCE,
   FOUNDER_PRICE_PENCE,
   TRIAL_DAYS,
+  FOUNDER_WINDOW_END,
 } from "@/lib/constants";
 import { stripeConfigured } from "@/lib/stripe";
 import { startCheckout, openPortal } from "./actions";
@@ -54,6 +55,20 @@ export default async function BillingPage({
   const trialLeft = daysUntil(profile.trialEndsAt);
   const renews = fmtDate(profile.currentPeriodEnd);
 
+  // For the pre-subscribe pitch: an eligible instructor would actually be
+  // charged the founder rate, so show that (not the standard price).
+  const founderEligible = isFounderEligible();
+  const pitchPence = founderEligible ? FOUNDER_PRICE_PENCE : STANDARD_PRICE_PENCE;
+
+  const included = [
+    "Manage your students and roster in one place",
+    "Take, schedule and track lesson bookings",
+    "Get matched with new local learners",
+    "Message your pupils directly",
+    "Income & expenses ready for Self Assessment",
+    "Automatic lesson reminders for learners",
+  ];
+
   return (
     <div className="mx-auto w-full max-w-2xl px-5 py-8">
       <h1 className="font-display text-3xl font-bold text-ink">Subscription</h1>
@@ -86,25 +101,60 @@ export default async function BillingPage({
       <div className="mt-6 space-y-5">
         {state === "none" && (
           <div className={card}>
-            <p className="text-sm font-semibold uppercase tracking-wide text-sea">
-              {profile.isFounder ? "Founder rate" : "Membership"}
+            {founderEligible && (
+              <span className="inline-flex items-center rounded-full bg-line/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-ink">
+                ★ Founder price
+              </span>
+            )}
+
+            <h2 className="mt-3 font-display text-2xl font-bold text-ink">
+              Run your whole driving business from one place
+            </h2>
+            <p className="mt-2 text-[15px] text-ink-soft">
+              Your diary, your students, your earnings and a steady stream of
+              new local learners — all in your pocket, with none of the Sunday-night
+              admin.
             </p>
-            <p className="mt-2 font-display text-2xl font-bold text-ink">
-              {money(pricePence)}
-              <span className="text-base font-normal text-ink-soft"> / month</span>
-            </p>
-            {profile.isFounder && (
+
+            <div className="mt-5 flex items-baseline gap-3">
+              <span className="font-display text-3xl font-bold text-ink">
+                {money(pitchPence)}
+                <span className="text-base font-normal text-ink-soft"> / month</span>
+              </span>
+              {founderEligible && (
+                <span className="text-base text-ink-soft line-through">
+                  {money(STANDARD_PRICE_PENCE)}
+                </span>
+              )}
+            </div>
+            {founderEligible && (
               <p className="mt-1 text-sm text-ink-soft">
-                Locked founder price — yours for as long as you stay subscribed.
+                Lock in the founder rate for as long as you stay subscribed —
+                available until {fmtDate(FOUNDER_WINDOW_END)}.
               </p>
             )}
-            <p className="mt-4 text-[15px] text-ink-soft">
-              Start with a <strong className="text-ink">{TRIAL_DAYS}-day free trial</strong>.
-              You won&rsquo;t be charged until it ends, and you can cancel any time.
-            </p>
+
+            <ul className="mt-5 space-y-2.5">
+              {included.map((item) => (
+                <li key={item} className="flex items-start gap-2.5 text-[15px] text-ink">
+                  <span className="mt-0.5 text-go" aria-hidden>
+                    ✓
+                  </span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-6 rounded-xl border border-hairline bg-paper/60 px-4 py-3 text-[15px] text-ink-soft">
+              Start with a{" "}
+              <strong className="text-ink">{TRIAL_DAYS}-day free trial</strong>.
+              Nothing&rsquo;s charged today, and you can cancel any time before it
+              ends.
+            </div>
+
             <form action={startCheckout} className="mt-5">
               <button type="submit" className={primaryBtn}>
-                Start {TRIAL_DAYS}-day free trial
+                Start my {TRIAL_DAYS}-day free trial
               </button>
             </form>
           </div>
