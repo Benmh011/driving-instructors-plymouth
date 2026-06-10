@@ -1,6 +1,6 @@
 // Clutch service worker — minimal offline shell for the first push.
 // As the PWA grows, expand the precache list and add runtime strategies.
-const CACHE = "clutch-v3";
+const CACHE = "clutch-v4";
 const SHELL = ["/", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
@@ -26,6 +26,26 @@ self.addEventListener("fetch", (event) => {
   // Only handle GET navigations/assets; let the API hit the network.
   if (request.method !== "GET" || request.url.includes("/api/")) return;
 
+  // Page navigations: always fetch fresh HTML, bypassing the browser's HTTP
+  // cache. iOS PWAs can otherwise serve a stale page that survives reinstalls,
+  // which strands the app on an old build. Fall back to the cached shell only
+  // when genuinely offline.
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request, { cache: "no-store" })
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE).then((cache) => cache.put(request, copy));
+          return res;
+        })
+        .catch(() =>
+          caches.match(request).then((r) => r || caches.match("/")),
+        ),
+    );
+    return;
+  }
+
+  // Other assets: network-first, cache as we go.
   event.respondWith(
     fetch(request)
       .then((res) => {

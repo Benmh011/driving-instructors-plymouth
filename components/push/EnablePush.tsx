@@ -60,10 +60,33 @@ export default function EnablePush() {
       return;
     }
 
+    // Guard against navigator.serviceWorker.ready never resolving (seen on
+    // some installed iOS PWAs) — if it hasn't settled shortly, fall back to
+    // "off" so the enable button still appears instead of a blank loading box.
+    let settled = false;
+    const fallback = window.setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        setState("off");
+      }
+    }, 4000);
+
     navigator.serviceWorker.ready
       .then((reg) => reg.pushManager.getSubscription())
-      .then((sub) => setState(sub ? "on" : "off"))
-      .catch(() => setState("off"));
+      .then((sub) => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(fallback);
+        setState(sub ? "on" : "off");
+      })
+      .catch(() => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(fallback);
+        setState("off");
+      });
+
+    return () => window.clearTimeout(fallback);
   }, []);
 
   async function enable() {
@@ -110,13 +133,32 @@ export default function EnablePush() {
     }
   }
 
-  // Nothing to show until configured / on unsupported desktop browsers.
-  if (state === "loading" || state === "nokey" || state === "unsupported") {
+  // Hide only while still detecting, or when notifications aren't configured
+  // for the site at all.
+  if (state === "loading" || state === "nokey") {
     return null;
   }
 
   const shell =
     "rounded-2xl border border-hairline bg-cream p-5 flex items-start gap-4";
+
+  if (state === "unsupported") {
+    return (
+      <div className={shell}>
+        <div className="text-2xl leading-none">🔔</div>
+        <div className="text-[15px] text-ink-soft">
+          <p className="font-display font-semibold text-ink">
+            Notifications not available here
+          </p>
+          <p className="mt-1">
+            This device or browser can&rsquo;t show app notifications. On iPhone
+            you need iOS 16.4 or newer, and the app must be opened from your Home
+            Screen (not Safari).
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (state === "ios-needs-install") {
     return (
