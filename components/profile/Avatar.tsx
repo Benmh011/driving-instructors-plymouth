@@ -1,24 +1,20 @@
 export function Avatar({
-  photoUrl,
+  photoSrc,
   initials,
   className = "h-12 w-12 rounded-xl",
   textClassName = "text-base",
   tone = "onLight",
 }: {
-  photoUrl: string | null;
+  photoSrc: string | null;
   initials: string;
   className?: string;
   textClassName?: string;
   tone?: "onLight" | "onDark";
 }) {
-  if (photoUrl) {
+  if (photoSrc) {
     // eslint-disable-next-line @next/next/no-img-element
     return (
-      <img
-        src={photoUrl}
-        alt=""
-        className={`${className} shrink-0 object-cover`}
-      />
+      <img src={photoSrc} alt="" className={`${className} shrink-0 object-cover`} />
     );
   }
   const toneCls =

@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
-// Receives a (browser-resized) image and stores it as a public Blob.
+// Receives a (browser-resized) image and stores it as a private Blob.
+// It's served publicly via /api/instructor-photo/[id].
 export async function POST(request: Request): Promise<NextResponse> {
   const session = await auth();
   if (!session?.user?.id) {
@@ -29,20 +30,19 @@ export async function POST(request: Request): Promise<NextResponse> {
   if (!(file instanceof File) || file.size === 0) {
     return NextResponse.json({ error: "No image received" }, { status: 400 });
   }
-  // Resized client-side, so this should be small. Guard anyway.
   if (file.size > 5 * 1024 * 1024) {
     return NextResponse.json({ error: "Image is too large" }, { status: 400 });
   }
 
-  let url: string;
+  let pathname: string;
   try {
     const blob = await put(`profile-photos/${profile.id}.jpg`, file, {
-      access: "public",
+      access: "private",
       token: process.env.BLOB_READ_WRITE_TOKEN,
       addRandomSuffix: true,
       contentType: "image/jpeg",
     });
-    url = blob.url;
+    pathname = blob.pathname;
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Upload failed" },
@@ -50,13 +50,15 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
-  // Clean up the previous photo, then save the new URL.
-  if (profile.photoUrl && profile.photoUrl !== url) {
-    await del(profile.photoUrl).catch(() => {});
+  // Remove the previous photo (best-effort), then save the new pathname.
+  if (profile.photoUrl && profile.photoUrl !== pathname) {
+    await del(profile.photoUrl, { token: process.env.BLOB_READ_WRITE_TOKEN }).catch(
+      () => {},
+    );
   }
   await prisma.instructorProfile.update({
     where: { id: profile.id },
-    data: { photoUrl: url },
+    data: { photoUrl: pathname },
   });
 
   revalidatePath("/dashboard/profile");
@@ -64,5 +66,5 @@ export async function POST(request: Request): Promise<NextResponse> {
   revalidatePath("/instructors");
   revalidatePath("/instructors/[id]", "page");
 
-  return NextResponse.json({ url });
+  return NextResponse.json({ ok: true });
 }

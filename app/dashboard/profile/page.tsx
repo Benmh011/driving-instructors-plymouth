@@ -8,6 +8,7 @@ import EditProfileForm from "@/components/profile/EditProfileForm";
 import PhotoUpload from "@/components/profile/PhotoUpload";
 import { Avatar } from "@/components/profile/Avatar";
 import { ensureInstructorSlug } from "@/lib/slug";
+import { instructorPhotoSrc } from "@/lib/photo";
 
 export const metadata = { title: "Your profile" };
 
@@ -77,7 +78,7 @@ export default async function EditProfilePage() {
             Profile photo
           </p>
           <div className="mt-3">
-            <PhotoUpload photoUrl={p.photoUrl} initials={initials} />
+            <PhotoUpload photoSrc={instructorPhotoSrc(p.id, p.photoUrl)} initials={initials} />
           </div>
         </div>
 
@@ -88,7 +89,7 @@ export default async function EditProfilePage() {
           </p>
           <div className="mt-1 flex items-center gap-4">
             <Avatar
-              photoUrl={p.photoUrl}
+              photoSrc={instructorPhotoSrc(p.id, p.photoUrl)}
               initials={initials}
               className="h-14 w-14 rounded-2xl"
               textClassName="text-xl"

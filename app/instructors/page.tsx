@@ -5,6 +5,7 @@ import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import { MAX_ROSTER } from "@/lib/constants";
 import { ensureInstructorSlug } from "@/lib/slug";
+import { instructorPhotoSrc } from "@/lib/photo";
 import { Avatar } from "@/components/profile/Avatar";
 
 export const metadata = {
@@ -162,7 +163,7 @@ export default async function InstructorsPage({
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex min-w-0 items-center gap-3">
                         <Avatar
-                          photoUrl={i.photoUrl}
+                          photoSrc={instructorPhotoSrc(i.id, i.photoUrl)}
                           initials={initialsOf(i.businessName || i.user.name)}
                           className="h-11 w-11 rounded-xl"
                           textClassName="text-sm"

@@ -8,6 +8,7 @@ import { MAX_ROSTER } from "@/lib/constants";
 import { ensureInstructorSlug } from "@/lib/slug";
 import { Stars } from "@/components/reviews/Stars";
 import { Avatar } from "@/components/profile/Avatar";
+import { instructorPhotoSrc } from "@/lib/photo";
 import ReviewForm from "@/components/reviews/ReviewForm";
 import { createJoinRequest, withdrawJoinRequest } from "../actions";
 
@@ -290,7 +291,7 @@ export default async function InstructorProfilePage({
         <section className="mt-4 overflow-hidden rounded-3xl bg-tarmac text-cream">
           <div className="flex flex-col gap-5 p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-9">
             <Avatar
-              photoUrl={instructor.photoUrl}
+              photoSrc={instructorPhotoSrc(instructor.id, instructor.photoUrl)}
               initials={initials}
               className="h-20 w-20 rounded-2xl"
               textClassName="text-3xl"

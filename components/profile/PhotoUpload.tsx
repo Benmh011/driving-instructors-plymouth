@@ -42,10 +42,10 @@ async function toResizedJpeg(file: File): Promise<Blob> {
 }
 
 export default function PhotoUpload({
-  photoUrl,
+  photoSrc,
   initials,
 }: {
-  photoUrl: string | null;
+  photoSrc: string | null;
   initials: string;
 }) {
   const router = useRouter();
@@ -88,10 +88,10 @@ export default function PhotoUpload({
 
   return (
     <div className="flex items-center gap-5">
-      {photoUrl ? (
+      {photoSrc ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={photoUrl}
+          src={photoSrc}
           alt="Your profile photo"
           className="h-20 w-20 shrink-0 rounded-2xl object-cover"
         />
@@ -111,7 +111,7 @@ export default function PhotoUpload({
               working ? "cursor-not-allowed opacity-60" : ""
             }`}
           >
-            {working ? "Working…" : photoUrl ? "Change photo" : "Upload a photo"}
+            {working ? "Working…" : photoSrc ? "Change photo" : "Upload a photo"}
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp"
@@ -120,7 +120,7 @@ export default function PhotoUpload({
               onChange={onChange}
             />
           </label>
-          {photoUrl && (
+          {photoSrc && (
             <button
               type="button"
               onClick={onRemove}
