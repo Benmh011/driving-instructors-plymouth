@@ -1,5 +1,6 @@
-// Production base URL for building shareable links.
-export const SITE_URL = "https://drivinginstructorsplymouth.com";
+// Production base URL for building shareable links. Canonical host is www —
+// the apex 308-redirects to it, which breaks server-to-server callers (Stripe).
+export const SITE_URL = "https://www.drivinginstructorsplymouth.com";
 
 // Hard ceiling on an instructor's roster (safety cap; instructors can also
 // turn themselves "not taking students" before reaching it).

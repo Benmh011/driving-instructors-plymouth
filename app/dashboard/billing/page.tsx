@@ -9,6 +9,7 @@ import {
   FOUNDER_WINDOW_END,
 } from "@/lib/constants";
 import { stripeConfigured } from "@/lib/stripe";
+import { reconcileCustomerSubscription } from "@/lib/stripe-sync";
 import { startCheckout, openPortal } from "./actions";
 
 function money(pence: number) {
@@ -45,10 +46,24 @@ export default async function BillingPage({
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const profile = await prisma.instructorProfile.findUnique({
+  let profile = await prisma.instructorProfile.findUnique({
     where: { userId: session.user.id },
   });
   if (!profile) redirect("/dashboard");
+
+  // Just back from Checkout — pull the latest subscription straight from Stripe
+  // so we show the right state immediately, even if the webhook hasn't landed.
+  if (sp.status === "success" && stripeConfigured && profile.stripeCustomerId) {
+    try {
+      await reconcileCustomerSubscription(profile.stripeCustomerId);
+      profile = await prisma.instructorProfile.findUnique({
+        where: { userId: session.user.id },
+      });
+      if (!profile) redirect("/dashboard");
+    } catch {
+      // Non-fatal — the webhook will catch up.
+    }
+  }
 
   const state = accessState(profile);
   const pricePence = profile.isFounder ? FOUNDER_PRICE_PENCE : STANDARD_PRICE_PENCE;

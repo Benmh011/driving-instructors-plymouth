@@ -10,6 +10,7 @@ import CollapsiblePanel from "@/components/tax/CollapsiblePanel";
 import { ensureInstructorSlug } from "@/lib/slug";
 import { isAdminEmail } from "@/lib/admin";
 import { accessState } from "@/lib/subscription";
+import SubscriptionBanner from "@/components/billing/SubscriptionBanner";
 
 export const metadata = { title: "Dashboard" };
 
@@ -38,26 +39,8 @@ export default async function DashboardPage({
   const l = user.learnerProfile;
   const i = user.instructorProfile;
 
-  // Subscription status, surfaced as a dashboard card for instructors.
+  // Subscription status, surfaced as a banner at the top of the dashboard.
   const billing = i ? accessState(i) : "none";
-  const billingDesc =
-    billing === "trialing"
-      ? (() => {
-          const left = i?.trialEndsAt
-            ? Math.max(
-                0,
-                Math.ceil((i.trialEndsAt.getTime() - Date.now()) / 86_400_000),
-              )
-            : 0;
-          return `Free trial — ${left} ${left === 1 ? "day" : "days"} left.`;
-        })()
-      : billing === "active"
-        ? "Your membership is active."
-        : billing === "past_due"
-          ? "Payment failed — update your card."
-          : billing === "locked"
-            ? "Subscription ended — resubscribe to unlock."
-            : "Start your 30-day free trial.";
   const instructor = l?.activeInstructor;
   const instructorName = instructor
     ? instructor.businessName || instructor.user.name
@@ -78,6 +61,12 @@ export default async function DashboardPage({
       <AppHeader home="/dashboard" right={<SignOutButton />} />
 
       <main className="mx-auto max-w-4xl px-5 py-14 sm:px-8">
+        {isInstructor && (
+          <div className="mb-6">
+            <SubscriptionBanner state={billing} trialEndsAt={i?.trialEndsAt} />
+          </div>
+        )}
+
         <PushPrompt />
 
         {joined && instructorName && (
@@ -198,11 +187,6 @@ export default async function DashboardPage({
               href="/messages"
               title="Messages"
               desc="Message your students."
-            />
-            <NavCard
-              href="/dashboard/billing"
-              title="Subscription"
-              desc={billingDesc}
             />
           </div>
         ) : instructorName ? (

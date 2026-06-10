@@ -2,36 +2,13 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import type Stripe from "stripe";
 import { stripe, stripeConfigured } from "@/lib/stripe";
-import { prisma } from "@/lib/prisma";
+import { syncSubscriptionToDb } from "@/lib/stripe-sync";
 
 // Stripe needs the raw body for signature verification, and the SDK needs Node.
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-// Mirror a Stripe subscription onto the matching instructor profile.
-// NOTE (Stripe v22 / Basil): current_period_end now lives on the subscription
-// ITEM, not the subscription object.
-async function syncSubscription(sub: Stripe.Subscription) {
-  const item = sub.items.data[0];
-  const customerId =
-    typeof sub.customer === "string" ? sub.customer : sub.customer.id;
-
-  await prisma.instructorProfile.updateMany({
-    where: { stripeCustomerId: customerId },
-    data: {
-      stripeSubscriptionId: sub.id,
-      subscriptionStatus: sub.status,
-      subscriptionPriceId: item?.price.id ?? null,
-      currentPeriodEnd: item?.current_period_end
-        ? new Date(item.current_period_end * 1000)
-        : null,
-      trialEndsAt: sub.trial_end ? new Date(sub.trial_end * 1000) : null,
-      cancelAtPeriodEnd: sub.cancel_at_period_end ?? false,
-    },
-  });
-}
 
 export async function POST(req: Request) {
   if (!stripeConfigured || !webhookSecret) {
@@ -64,14 +41,14 @@ export async function POST(req: Request) {
             : s.subscription?.id;
         if (subId) {
           const sub = await stripe.subscriptions.retrieve(subId);
-          await syncSubscription(sub);
+          await syncSubscriptionToDb(sub);
         }
         break;
       }
       case "customer.subscription.created":
       case "customer.subscription.updated":
       case "customer.subscription.deleted": {
-        await syncSubscription(event.data.object as Stripe.Subscription);
+        await syncSubscriptionToDb(event.data.object as Stripe.Subscription);
         break;
       }
       default:
