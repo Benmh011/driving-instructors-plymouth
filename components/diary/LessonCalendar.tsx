@@ -47,9 +47,11 @@ function fmtLen(m: number) {
 export default function LessonCalendar({
   lessons,
   isInstructor,
+  readOnly = false,
 }: {
   lessons: CalLesson[];
   isInstructor: boolean;
+  readOnly?: boolean;
 }) {
   const today = new Date();
   const [viewY, setViewY] = useState(today.getUTCFullYear());
@@ -169,9 +171,11 @@ export default function LessonCalendar({
             {selLessons.map((l) => {
               const upcoming = new Date(l.start) >= new Date();
               const cancellable = l.status === "BOOKED" && upcoming;
-              const completable = isInstructor && l.status === "BOOKED" && !upcoming;
+              const completable =
+                isInstructor && l.status === "BOOKED" && !upcoming && !readOnly;
               const completed = l.status === "COMPLETED";
-              const editable = isInstructor && l.status !== "CANCELLED";
+              const editable =
+                isInstructor && l.status !== "CANCELLED" && !readOnly;
               const late =
                 (new Date(l.start).getTime() - Date.now()) / 3_600_000 <
                 l.noticeHours;
@@ -215,13 +219,13 @@ export default function LessonCalendar({
                         </Link>
                       )}
                       {completable && <CompleteButton id={l.id} mode="complete" />}
-                      {completed && isInstructor && (
+                      {completed && isInstructor && !readOnly && (
                         <CompleteButton id={l.id} mode="reopen" />
                       )}
-                      {isInstructor && l.status !== "CANCELLED" && (
+                      {isInstructor && l.status !== "CANCELLED" && !readOnly && (
                         <PaidButton id={l.id} paid={l.paid} />
                       )}
-                      {cancellable && (
+                      {cancellable && !readOnly && (
                         <CancelButton id={l.id} confirmText={confirmText} />
                       )}
                     </div>

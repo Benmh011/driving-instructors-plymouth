@@ -8,6 +8,7 @@ import ExpenseForm from "@/components/tax/ExpenseForm";
 import DeleteExpenseButton from "@/components/tax/DeleteExpenseButton";
 import TaxCalendar from "@/components/tax/TaxCalendar";
 import CollapsiblePanel from "@/components/tax/CollapsiblePanel";
+import { accessState, hasFullAccess } from "@/lib/subscription";
 
 export const metadata = { title: "Tax & earnings" };
 
@@ -52,6 +53,38 @@ export default async function TaxPage({
   });
   if (!user) redirect("/login");
   if (user.role !== "INSTRUCTOR" || !user.instructorProfile) redirect("/dashboard");
+
+  // Tax & earnings is a paid feature — blank it behind the paywall when locked.
+  if (!hasFullAccess(accessState(user.instructorProfile))) {
+    return (
+      <div className="relative z-10 min-h-dvh">
+        <AppHeader home="/dashboard" right={<SignOutButton />} />
+        <main className="mx-auto max-w-3xl px-5 py-14 sm:px-8">
+          <Link
+            href="/dashboard"
+            className="text-sm font-semibold text-ink-soft transition-colors hover:text-ink"
+          >
+            &larr; Back to dashboard
+          </Link>
+          <section className="mt-8 rounded-2xl border border-signal/40 bg-signal/10 p-6">
+            <h1 className="font-display text-2xl font-bold text-ink">
+              Tax &amp; earnings is locked
+            </h1>
+            <p className="mt-2 text-[15px] text-ink-soft">
+              Your subscription has ended. Resubscribe to see your income, log
+              expenses and track your Self Assessment figures again.
+            </p>
+            <Link
+              href="/dashboard/billing"
+              className="mt-4 inline-flex items-center justify-center rounded-full bg-signal px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-signal-dark"
+            >
+              Resubscribe
+            </Link>
+          </section>
+        </main>
+      </div>
+    );
+  }
 
   const instructorId = user.instructorProfile.id;
   const now = new Date();

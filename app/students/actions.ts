@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { MAX_ROSTER } from "@/lib/constants";
+import { accessState, hasFullAccess } from "@/lib/subscription";
 
 // Flip the instructor's "taking new students" availability.
 export async function toggleAccepting() {
@@ -14,6 +15,7 @@ export async function toggleAccepting() {
     where: { userId: session.user.id },
   });
   if (!profile) return;
+  if (!hasFullAccess(accessState(profile))) return;
 
   await prisma.instructorProfile.update({
     where: { id: profile.id },
@@ -39,6 +41,9 @@ export async function acceptJoinRequest(requestId: string) {
 
   // Respect the hard roster cap.
   if (profile._count.roster >= MAX_ROSTER) return;
+
+  // Locked instructors can't take on new students.
+  if (!hasFullAccess(accessState(profile))) return;
 
   await prisma.$transaction([
     prisma.learnerProfile.update({

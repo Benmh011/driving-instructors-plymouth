@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { accessState, hasFullAccess, LOCKED_MESSAGE } from "@/lib/subscription";
 
 export type ActionState = { error?: string } | undefined;
 
@@ -27,6 +28,7 @@ export async function addExpense(
     where: { userId: session.user.id },
   });
   if (!instructor) redirect("/dashboard");
+  if (!hasFullAccess(accessState(instructor))) return { error: LOCKED_MESSAGE };
 
   const parsed = expenseSchema.safeParse({
     date: formData.get("date"),

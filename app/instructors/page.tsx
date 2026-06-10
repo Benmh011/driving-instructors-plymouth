@@ -5,6 +5,7 @@ import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import { MAX_ROSTER } from "@/lib/constants";
 import { ensureInstructorSlug } from "@/lib/slug";
+import { accessState, hasFullAccess } from "@/lib/subscription";
 import { instructorPhotoSrc } from "@/lib/photo";
 import { Avatar } from "@/components/profile/Avatar";
 
@@ -24,6 +25,9 @@ type DirItem = {
   hourlyRate: number;
   bio: string | null;
   acceptingStudents: boolean;
+  subscriptionStatus: string | null;
+  trialEndsAt: Date | null;
+  currentPeriodEnd: Date | null;
   user: { name: string };
   _count: { roster: number };
 };
@@ -53,7 +57,7 @@ export default async function InstructorsPage({
   const session = await auth();
 
   const areaTrim = area.trim();
-  const instructors: DirItem[] = await prisma.instructorProfile.findMany({
+  const listed: DirItem[] = await prisma.instructorProfile.findMany({
     where: {
       user: { onboardingComplete: true },
       adiStatus: "VERIFIED",
@@ -68,6 +72,10 @@ export default async function InstructorsPage({
     orderBy: [{ acceptingStudents: "desc" }, { createdAt: "asc" }],
     include: { user: true, _count: { select: { roster: true } } },
   });
+
+  // Only instructors on an active/trialing/grace subscription appear in search —
+  // getting matched with new learners is a paid feature.
+  const instructors = listed.filter((i) => hasFullAccess(accessState(i)));
 
   // Ensure each listed instructor has a slug (lazy backfill for older profiles).
   const slugById = new Map<string, string>();

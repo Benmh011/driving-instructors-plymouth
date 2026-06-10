@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { accessState, hasFullAccess } from "@/lib/subscription";
 
 // A learner asks to join an instructor from the marketplace (cold request).
 export async function createJoinRequest(instructorId: string, formData: FormData) {
@@ -25,6 +26,8 @@ export async function createJoinRequest(instructorId: string, formData: FormData
     where: { id: instructorId },
   });
   if (!instructor) return;
+  // Can't request to join an instructor who isn't on an active subscription.
+  if (!hasFullAccess(accessState(instructor))) return;
 
   const message = (formData.get("message") as string | null)?.slice(0, 300) || null;
 

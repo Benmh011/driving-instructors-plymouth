@@ -43,6 +43,10 @@ export function hasFullAccess(state: AccessState): boolean {
   return state === "trialing" || state === "active" || state === "past_due";
 }
 
+// Shown when a locked instructor attempts a gated action server-side.
+export const LOCKED_MESSAGE =
+  "Your subscription has ended — resubscribe to do that.";
+
 // Founder pricing is offered to instructors who subscribe within the launch
 // window; once subscribed, Stripe keeps them on that price for the life of the
 // subscription.

@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { sendPushToUser, formatLessonWhen } from "@/lib/push";
+import { accessState, hasFullAccess, LOCKED_MESSAGE } from "@/lib/subscription";
 
 export type ActionState = { error?: string } | undefined;
 
@@ -37,6 +38,7 @@ export async function createLesson(
     include: { user: true },
   });
   if (!instructor) redirect("/dashboard");
+  if (!hasFullAccess(accessState(instructor))) return { error: LOCKED_MESSAGE };
 
   const parsed = lessonSchema.safeParse({
     learnerId: formData.get("learnerId"),
@@ -102,6 +104,7 @@ export async function updateLesson(
     where: { userId: session.user.id },
   });
   if (!instructor) redirect("/dashboard");
+  if (!hasFullAccess(accessState(instructor))) return { error: LOCKED_MESSAGE };
 
   const booking = await prisma.booking.findUnique({ where: { id } });
   if (!booking || booking.instructorId !== instructor.id) redirect("/diary");
@@ -161,6 +164,16 @@ export async function cancelLesson(bookingId: string) {
     !!user.learnerProfile && booking.learnerId === user.learnerProfile.id;
   if (!ownsAsInstructor && !ownsAsLearner) return;
 
+  // A locked instructor can't cancel — but the learner always can, so nobody is
+  // trapped in a lesson they can't get out of.
+  if (
+    ownsAsInstructor &&
+    user.instructorProfile &&
+    !hasFullAccess(accessState(user.instructorProfile))
+  ) {
+    return;
+  }
+
   await prisma.booking.update({
     where: { id: bookingId },
     data: { status: "CANCELLED", cancelledAt: new Date() },
@@ -198,6 +211,7 @@ export async function setLessonPaid(bookingId: string, paid: boolean) {
     where: { userId: session.user.id },
   });
   if (!instructor) return;
+  if (!hasFullAccess(accessState(instructor))) return;
 
   const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
   if (!booking || booking.instructorId !== instructor.id) return;
@@ -230,6 +244,7 @@ async function setLessonCompletion(bookingId: string, complete: boolean) {
     where: { userId: session.user.id },
   });
   if (!instructor) return;
+  if (!hasFullAccess(accessState(instructor))) return;
 
   const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
   if (!booking || booking.instructorId !== instructor.id) return;

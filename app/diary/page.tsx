@@ -3,6 +3,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { ensureInstructorSlug } from "@/lib/slug";
+import { accessState, hasFullAccess } from "@/lib/subscription";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import BookLessonForm from "@/components/diary/BookLessonForm";
@@ -58,6 +59,10 @@ export default async function DiaryPage() {
   if (!user.onboardingComplete) redirect("/onboarding");
 
   const isInstructor = user.role === "INSTRUCTOR";
+  const instructorLocked =
+    isInstructor && user.instructorProfile
+      ? !hasFullAccess(accessState(user.instructorProfile))
+      : false;
 
   let bookings: Row[] = [];
   if (isInstructor && user.instructorProfile) {
@@ -143,10 +148,33 @@ export default async function DiaryPage() {
         </h1>
 
         <div className="mt-9">
-          <LessonCalendar lessons={lessons} isInstructor={isInstructor} />
+          <LessonCalendar
+            lessons={lessons}
+            isInstructor={isInstructor}
+            readOnly={instructorLocked}
+          />
         </div>
 
-        {isInstructor && (
+        {isInstructor && instructorLocked && (
+          <section className="mt-9 rounded-2xl border border-signal/40 bg-signal/10 p-6">
+            <p className="font-display text-lg font-semibold text-ink">
+              Your subscription has ended
+            </p>
+            <p className="mt-2 text-[15px] text-ink-soft">
+              Your diary is read-only — your upcoming lessons are still shown so
+              you don&rsquo;t miss them. Resubscribe to book, edit and manage
+              lessons again.
+            </p>
+            <Link
+              href="/dashboard/billing"
+              className="mt-4 inline-flex items-center justify-center rounded-full bg-signal px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-signal-dark"
+            >
+              Resubscribe
+            </Link>
+          </section>
+        )}
+
+        {isInstructor && !instructorLocked && (
           <section className="mt-9 rounded-2xl border border-hairline bg-cream p-6">
             <p className="font-display text-lg font-semibold">Book a lesson</p>
             {roster.length === 0 ? (
