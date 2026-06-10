@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Logo } from "./Logo";
 
 const HIDDEN_ON = ["/", "/login", "/register", "/onboarding"];
+const STORAGE_KEY = "dip-sidebar-collapsed";
 
 const iconProps = {
   viewBox: "0 0 24 24",
@@ -95,8 +96,30 @@ export default function AppChrome({
   children: ReactNode;
 }) {
   const pathname = usePathname();
-  const show = !!role && !HIDDEN_ON.includes(pathname);
+  const [collapsed, setCollapsed] = useState(false);
 
+  // Restore the saved preference once on the client.
+  useEffect(() => {
+    try {
+      setCollapsed(localStorage.getItem(STORAGE_KEY) === "1");
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  function toggle() {
+    setCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(STORAGE_KEY, next ? "1" : "0");
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  }
+
+  const show = !!role && !HIDDEN_ON.includes(pathname);
   if (!show) return <>{children}</>;
 
   const tabs = role === "INSTRUCTOR" ? instructorTabs : learnerTabs;
@@ -104,10 +127,43 @@ export default function AppChrome({
   return (
     <div className="md:flex md:items-stretch">
       {/* Desktop sidebar */}
-      <aside className="sticky top-0 z-30 hidden h-dvh w-64 shrink-0 flex-col border-r border-white/10 bg-tarmac md:flex">
-        <div className="flex h-16 items-center border-b border-white/10 px-5">
-          <Logo variant="onDark" href="/dashboard" />
+      <aside
+        className={`sticky top-0 z-30 hidden h-dvh shrink-0 flex-col border-r border-white/10 bg-tarmac transition-[width] duration-200 ease-in-out md:flex ${
+          collapsed ? "md:w-[4.5rem]" : "md:w-64"
+        }`}
+      >
+        <div
+          className={`flex h-16 items-center border-b border-white/10 ${
+            collapsed ? "justify-center px-2" : "gap-2 px-4"
+          }`}
+        >
+          {!collapsed && (
+            <div className="flex-1 pl-1">
+              <Logo variant="onDark" href="/dashboard" />
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            className="grid h-9 w-9 place-items-center rounded-lg text-cream/70 transition-colors hover:bg-white/10 hover:text-cream"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={`h-5 w-5 transition-transform duration-200 ${
+                collapsed ? "rotate-180" : ""
+              }`}
+            >
+              <path d="M15 6l-6 6 6 6" />
+            </svg>
+          </button>
         </div>
+
         <nav className="flex-1 space-y-1 px-3 py-5">
           {tabs.map((t) => {
             const active = t.match(pathname);
@@ -115,14 +171,17 @@ export default function AppChrome({
               <Link
                 key={t.href}
                 href={t.href}
-                className={`flex items-center gap-3 rounded-xl px-4 py-2.5 text-[15px] font-semibold transition-colors ${
+                title={collapsed ? t.label : undefined}
+                className={`flex items-center gap-3 rounded-xl py-2.5 text-[15px] font-semibold transition-colors ${
+                  collapsed ? "justify-center px-0" : "px-4"
+                } ${
                   active
                     ? "bg-white/10 text-white"
                     : "text-cream/70 hover:bg-white/5 hover:text-cream"
                 }`}
               >
                 <span className={active ? "text-sea" : ""}>{t.icon}</span>
-                {t.label}
+                {!collapsed && t.label}
               </Link>
             );
           })}
