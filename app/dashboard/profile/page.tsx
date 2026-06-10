@@ -5,8 +5,13 @@ import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import EditProfileForm from "@/components/profile/EditProfileForm";
+import { ensureInstructorSlug } from "@/lib/slug";
 
-export const metadata = { title: "Edit your details" };
+export const metadata = { title: "Your profile" };
+
+function pretty(t: string) {
+  return t === "BOTH" ? "Manual & automatic" : t.charAt(0) + t.slice(1).toLowerCase();
+}
 
 export default async function EditProfilePage() {
   const session = await auth();
@@ -20,6 +25,14 @@ export default async function EditProfilePage() {
   if (user.role !== "INSTRUCTOR" || !user.instructorProfile) redirect("/dashboard");
 
   const p = user.instructorProfile;
+  const displayName = p.businessName || user.name;
+  const verified = p.adiStatus === "VERIFIED";
+  const slug = await ensureInstructorSlug({
+    id: p.id,
+    slug: p.slug,
+    businessName: p.businessName,
+    user: { name: user.name },
+  });
 
   return (
     <div className="relative z-10 min-h-dvh">
@@ -34,11 +47,44 @@ export default async function EditProfilePage() {
         </Link>
 
         <h1 className="mt-4 font-display text-4xl font-bold tracking-tight">
-          Edit your details
+          Your profile
         </h1>
         <p className="mt-2 text-ink-soft">
           This is what learners see in the directory. Changes go live straight away.
         </p>
+
+        <a
+          href={`/instructors/${slug}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-flex rounded-full border border-ink/20 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink"
+        >
+          View public profile &#8599;
+        </a>
+
+        {/* Preview (no reviews — those live on the public page) */}
+        <div className="mt-6 rounded-2xl border border-hairline bg-cream p-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">
+            Preview
+          </p>
+          <h2 className="mt-1 font-display text-2xl font-bold tracking-tight">
+            {displayName}
+          </h2>
+          <p className="mt-1 text-ink-soft">
+            {p.postcodes} &middot; {pretty(p.transmission)} &middot; £{p.hourlyRate}/hr
+          </p>
+          <p className={`mt-1 text-sm font-medium ${verified ? "text-go" : "text-ink-soft"}`}>
+            {verified ? "DVSA approved" : "ADI badge awaiting verification"}
+          </p>
+          {p.bio && (
+            <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-ink">
+              {p.bio}
+            </p>
+          )}
+          {p.carDetails && (
+            <p className="mt-3 text-[15px] text-ink-soft">Tuition car: {p.carDetails}</p>
+          )}
+        </div>
 
         <div className="mt-6 rounded-2xl border border-hairline bg-paper-dim/40 px-5 py-4">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">

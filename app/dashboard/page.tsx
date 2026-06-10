@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import EnablePush from "@/components/push/EnablePush";
+import { ensureInstructorSlug } from "@/lib/slug";
 import { isAdminEmail } from "@/lib/admin";
 
 export const metadata = { title: "Dashboard" };
@@ -37,6 +38,16 @@ export default async function DashboardPage({
   const instructorName = instructor
     ? instructor.businessName || instructor.user.name
     : null;
+
+  const publicSlug =
+    isInstructor && i
+      ? await ensureInstructorSlug({
+          id: i.id,
+          slug: i.slug,
+          businessName: i.businessName,
+          user: { name: user.name },
+        })
+      : null;
 
   return (
     <div className="relative z-10 min-h-dvh">
@@ -119,12 +130,24 @@ export default async function DashboardPage({
         </div>
 
         {isInstructor && i && (
-          <Link
-            href="/dashboard/profile"
-            className="mt-3 inline-block text-sm font-semibold text-sea link-grow"
-          >
-            Edit your details &rarr;
-          </Link>
+          <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1">
+            <Link
+              href="/dashboard/profile"
+              className="inline-block text-sm font-semibold text-sea link-grow"
+            >
+              Edit your details &rarr;
+            </Link>
+            {publicSlug && (
+              <a
+                href={`/instructors/${publicSlug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-sm font-semibold text-sea link-grow"
+              >
+                View public profile &#8599;
+              </a>
+            )}
+          </div>
         )}
 
         {isInstructor ? (
