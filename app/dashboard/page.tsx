@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import EnablePush from "@/components/push/EnablePush";
+import PushPrompt from "@/components/push/PushPrompt";
 import CollapsiblePanel from "@/components/tax/CollapsiblePanel";
 import { ensureInstructorSlug } from "@/lib/slug";
 import { isAdminEmail } from "@/lib/admin";
@@ -55,6 +56,8 @@ export default async function DashboardPage({
       <AppHeader home="/dashboard" right={<SignOutButton />} />
 
       <main className="mx-auto max-w-4xl px-5 py-14 sm:px-8">
+        <PushPrompt />
+
         {joined && instructorName && (
           <div className="mb-8 rounded-2xl border border-sea/30 bg-sea/10 px-5 py-4">
             <p className="text-[15px] font-medium text-ink">
