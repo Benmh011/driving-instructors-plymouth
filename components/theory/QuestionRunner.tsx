@@ -22,7 +22,7 @@ function mmss(total: number) {
 
 type Props = {
   questions: Question[];
-  mode: "practice" | "mock";
+  mode: "practice" | "mock" | "study";
   mockCount?: number;
   passMark?: number;
   timeSeconds?: number;
@@ -42,7 +42,8 @@ export default function QuestionRunner({
   const [items, setItems] = useState<Question[] | null>(null);
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<Record<string, number>>({});
-  const [started, setStarted] = useState(mode === "practice");
+  const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
+  const [started, setStarted] = useState(mode !== "mock");
   const [finished, setFinished] = useState(false);
   const [timeLeft, setTimeLeft] = useState(timeSeconds);
   const buildKey = useRef(0);
@@ -191,9 +192,15 @@ export default function QuestionRunner({
 
   const q = items[index];
   const mine = picked[q.id];
-  const revealed = mode === "practice" && mine != null;
+  const revealed =
+    (mode === "practice" && mine != null) ||
+    (mode === "study" && revealedIds.has(q.id));
 
   function choose(optIndex: number) {
+    if (mode === "study") {
+      setRevealedIds((s) => new Set(s).add(q.id));
+      return;
+    }
     if (mode === "practice" && picked[q.id] != null) return; // lock after answering
     setPicked((p) => ({ ...p, [q.id]: optIndex }));
   }
@@ -249,11 +256,22 @@ export default function QuestionRunner({
           })}
         </ul>
 
+        {mode === "study" && !revealed && (
+          <button
+            onClick={() => setRevealedIds((s) => new Set(s).add(q.id))}
+            className="mt-4 rounded-full border border-ink/20 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink"
+          >
+            Show answer
+          </button>
+        )}
+
         {revealed && (
           <div className="mt-4 rounded-xl border border-hairline bg-paper/60 p-4 text-[15px] text-ink-soft">
-            <span className="font-semibold text-ink">
-              {mine === q.answer ? "Correct. " : "Not quite. "}
-            </span>
+            {mode !== "study" && (
+              <span className="font-semibold text-ink">
+                {mine === q.answer ? "Correct. " : "Not quite. "}
+              </span>
+            )}
             {q.explanation}
           </div>
         )}

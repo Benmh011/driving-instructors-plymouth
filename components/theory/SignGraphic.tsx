@@ -109,10 +109,33 @@ const SIGNS: Record<SignId, React.ReactNode> = {
       <polygon points="26,50 46,34 46,44 72,44 72,56 46,56 46,66" fill={WHITE} />
     </BlueCircle>
   ),
+  "turn-right": (
+    <BlueCircle>
+      <polygon points="74,50 54,34 54,44 28,44 28,56 54,56 54,66" fill={WHITE} />
+    </BlueCircle>
+  ),
   "ahead-only": (
     <BlueCircle>
       <polygon points="50,26 36,46 45,46 45,74 55,74 55,46 64,46" fill={WHITE} />
     </BlueCircle>
+  ),
+  "two-way-traffic": (
+    <Triangle>
+      <g fill={BLACK}>
+        <polygon points="42,36 35,50 39,50 39,72 45,72 45,50 49,50" />
+        <polygon points="59,74 52,60 56,60 56,38 62,38 62,60 66,60" />
+      </g>
+    </Triangle>
+  ),
+  "no-stopping": (
+    <>
+      <circle cx="50" cy="50" r="46" fill={BLUE} />
+      <circle cx="50" cy="50" r="46" fill="none" stroke={RED} strokeWidth="9" />
+      <g stroke={RED} strokeWidth="9" strokeLinecap="round">
+        <line x1="26" y1="26" x2="74" y2="74" />
+        <line x1="74" y1="26" x2="26" y2="74" />
+      </g>
+    </>
   ),
   "warning-general": (
     <Triangle>

@@ -119,6 +119,19 @@ export default async function TheoryPage() {
         </span>
       </Link>
 
+      <Link
+        href="/theory/study"
+        className="mt-3 flex items-center justify-between gap-4 rounded-2xl border border-hairline bg-cream p-5 transition-colors hover:border-ink/20"
+      >
+        <div>
+          <p className="font-display text-lg font-bold text-ink">Study mode</p>
+          <p className="mt-0.5 text-[15px] text-ink-soft">
+            Browse every question, reveal answers as you go — no timer.
+          </p>
+        </div>
+        <span className="shrink-0 text-ink-soft">→</span>
+      </Link>
+
       <h2 className="mt-10 font-display text-2xl font-bold tracking-tight text-ink">
         Practise by topic
       </h2>

@@ -34,7 +34,10 @@ export type SignId =
   | "give-way"
   | "no-overtaking"
   | "turn-left"
+  | "turn-right"
   | "ahead-only"
+  | "two-way-traffic"
+  | "no-stopping"
   | "warning-general"
   | "warning-crossroads";
 
@@ -372,6 +375,347 @@ export const QUESTIONS: Question[] = [
     answer: 2,
     explanation:
       "Call 999 and keep the casualty safe. Don't move them or remove a helmet unless absolutely necessary.",
+  },
+  {
+    id: "q0025",
+    topic: "Motorway rules",
+    prompt: "What is the national speed limit for a car on a motorway?",
+    options: ["60 mph", "70 mph", "80 mph", "There is no limit"],
+    answer: 1,
+    explanation: "For cars, the motorway speed limit is 70 mph unless signs show otherwise.",
+  },
+  {
+    id: "q0026",
+    topic: "Motorway rules",
+    prompt: "On a motorway, what colour are the reflective studs that mark the slip-road exits and entrances?",
+    options: ["Red", "Amber", "Green", "White"],
+    answer: 2,
+    explanation:
+      "Green studs separate the main carriageway from slip roads. Red mark the left edge, amber the right, white the lanes.",
+  },
+  {
+    id: "q0027",
+    topic: "Motorway rules",
+    prompt: "What is the right-hand lane of a motorway normally used for?",
+    options: [
+      "Overtaking",
+      "Slow-moving vehicles",
+      "Large goods vehicles",
+      "Breakdowns",
+    ],
+    answer: 0,
+    explanation:
+      "The right-hand lane is for overtaking. Move back to the left once you've safely passed.",
+  },
+  {
+    id: "q0028",
+    topic: "Motorway rules",
+    prompt:
+      "Your car breaks down and you stop on the hard shoulder. What should you and your passengers do?",
+    options: [
+      "Stay in the car with seatbelts on",
+      "Leave by the left-hand doors and wait behind the safety barrier",
+      "Stand in front of the car to warn traffic",
+      "Attempt repairs in the running lane",
+    ],
+    answer: 1,
+    explanation:
+      "Get out on the left, away from traffic, and wait behind the barrier while you call for help.",
+  },
+  {
+    id: "q0029",
+    topic: "Rules of the road",
+    prompt: "At a mini-roundabout, who should you give way to?",
+    options: [
+      "Traffic coming from your right",
+      "Traffic coming from your left",
+      "Nobody — you have priority",
+      "Only large vehicles",
+    ],
+    answer: 0,
+    explanation:
+      "As with any roundabout, give way to traffic coming from your right unless signs say otherwise.",
+  },
+  {
+    id: "q0030",
+    topic: "Rules of the road",
+    prompt:
+      "The broken white line down the centre of the road becomes much longer as you drive on. What does this mean?",
+    options: [
+      "There is a hazard ahead",
+      "You may park here",
+      "The road is about to become one-way",
+      "You have right of way",
+    ],
+    answer: 0,
+    explanation:
+      "A hazard warning line — longer markings with shorter gaps — warns of a hazard such as a bend or junction ahead.",
+  },
+  {
+    id: "q0031",
+    topic: "Road and traffic signs",
+    prompt: "What does this sign mean?",
+    sign: "no-stopping",
+    options: [
+      "No stopping (clearway)",
+      "No through road",
+      "No parking on weekdays",
+      "No entry",
+    ],
+    answer: 0,
+    explanation:
+      "A blue circle with a red border and red cross means no stopping at any time — a clearway.",
+  },
+  {
+    id: "q0032",
+    topic: "Road and traffic signs",
+    prompt: "What does this sign mean?",
+    sign: "turn-right",
+    options: [
+      "Turn right ahead",
+      "No right turn",
+      "Bend to the right",
+      "One way to the right",
+    ],
+    answer: 0,
+    explanation:
+      "A blue circle with a white arrow pointing right gives the positive instruction to turn right ahead.",
+  },
+  {
+    id: "q0033",
+    topic: "Road and traffic signs",
+    prompt: "What does this sign mean?",
+    sign: "two-way-traffic",
+    options: [
+      "Two-way traffic ahead",
+      "Overtaking allowed",
+      "Dual carriageway ends",
+      "One-way street",
+    ],
+    answer: 0,
+    explanation:
+      "A red-bordered triangle with two vertical arrows warns of two-way traffic ahead.",
+  },
+  {
+    id: "q0034",
+    topic: "Road and traffic signs",
+    prompt: "On a motorway, what background colour do the direction signs have?",
+    options: ["Green", "Blue", "White", "Brown"],
+    answer: 1,
+    explanation:
+      "Motorway signs are blue. Primary routes are green, and other local routes are white.",
+  },
+  {
+    id: "q0035",
+    topic: "Documents",
+    prompt: "What is the minimum level of insurance you must have to drive on public roads?",
+    options: [
+      "Third party",
+      "Third party, fire and theft",
+      "Fully comprehensive",
+      "No insurance is required",
+    ],
+    answer: 0,
+    explanation:
+      "Third-party insurance is the legal minimum — it covers injury to others and damage to their property.",
+  },
+  {
+    id: "q0036",
+    topic: "Documents",
+    prompt:
+      "Within two years of passing your test, how many penalty points will cause your licence to be revoked?",
+    options: ["3 points", "6 points", "9 points", "12 points"],
+    answer: 1,
+    explanation:
+      "Under the New Drivers Act, 6 or more points within two years of passing means your licence is revoked.",
+  },
+  {
+    id: "q0037",
+    topic: "Safety and your vehicle",
+    prompt: "When may you use front fog lights?",
+    options: [
+      "Whenever it is dark",
+      "Only when visibility is seriously reduced (under 100 m)",
+      "On a clear motorway to be seen",
+      "Whenever it rains lightly",
+    ],
+    answer: 1,
+    explanation:
+      "Use fog lights only when visibility is seriously reduced, and switch them off when it improves so you don't dazzle others.",
+  },
+  {
+    id: "q0038",
+    topic: "Safety and your vehicle",
+    prompt: "What is the main benefit of anti-lock brakes (ABS)?",
+    options: [
+      "They let you brake later in all conditions",
+      "They help you keep steering control under heavy braking",
+      "They shorten stopping distances on ice",
+      "They remove the need to look ahead",
+    ],
+    answer: 1,
+    explanation:
+      "ABS stops the wheels locking, so you can keep steering while braking hard. It won't always shorten stopping distances.",
+  },
+  {
+    id: "q0039",
+    topic: "Safety and your vehicle",
+    prompt: "Which of these is most likely to increase your fuel consumption?",
+    options: [
+      "Keeping tyres correctly inflated",
+      "Carrying an empty roof rack",
+      "Gentle acceleration",
+      "Removing unnecessary weight",
+    ],
+    answer: 1,
+    explanation:
+      "An empty roof rack adds drag and uses more fuel. Remove it when you're not using it.",
+  },
+  {
+    id: "q0040",
+    topic: "Vehicle handling",
+    prompt: "Driving downhill, what happens to your stopping distance?",
+    options: [
+      "It increases",
+      "It decreases",
+      "It stays the same",
+      "It only changes in the wet",
+    ],
+    answer: 0,
+    explanation:
+      "Gravity adds to your momentum downhill, so stopping distances increase. Use a lower gear to help control speed.",
+  },
+  {
+    id: "q0041",
+    topic: "Vehicle handling",
+    prompt: "How should you drive in icy conditions?",
+    options: [
+      "Brake firmly and often to test grip",
+      "Slowly, with gentle steering, braking and acceleration",
+      "In a low gear at high revs",
+      "Closely behind the car in front",
+    ],
+    answer: 1,
+    explanation:
+      "On ice, everything should be gentle and gradual, and leave up to ten times the normal gap.",
+  },
+  {
+    id: "q0042",
+    topic: "Attitude",
+    prompt:
+      "An ambulance is behind you showing flashing blue lights. What should you do?",
+    options: [
+      "Brake hard immediately",
+      "Pull over and stop where it's safe to let it pass, without breaking the law",
+      "Speed up to get out of the way",
+      "Drive through a red light to clear the road",
+    ],
+    answer: 1,
+    explanation:
+      "Stay calm, look for a safe place to pull in and let it pass. Don't endanger others or break traffic laws to do so.",
+  },
+  {
+    id: "q0043",
+    topic: "Attitude",
+    prompt: "What is the speed limit for a car towing a trailer on a dual carriageway?",
+    options: ["50 mph", "60 mph", "70 mph", "40 mph"],
+    answer: 1,
+    explanation:
+      "When towing, the limit is 60 mph on dual carriageways and motorways, and 50 mph on single carriageways.",
+  },
+  {
+    id: "q0044",
+    topic: "Vulnerable road users",
+    prompt: "A toucan crossing is designed to be used by whom?",
+    options: [
+      "Pedestrians only",
+      "Cyclists only",
+      "Pedestrians and cyclists together",
+      "Horse riders only",
+    ],
+    answer: 2,
+    explanation:
+      "At a toucan crossing, pedestrians and cyclists cross together — 'two-can' cross.",
+  },
+  {
+    id: "q0045",
+    topic: "Vulnerable road users",
+    prompt: "At a pelican crossing, a flashing amber light means what?",
+    options: [
+      "Stop, the lights are faulty",
+      "Give way to pedestrians still on the crossing",
+      "Speed up before it turns red",
+      "Pedestrians must wait",
+    ],
+    answer: 1,
+    explanation:
+      "Flashing amber means you may go if the crossing is clear, but you must give way to anyone still crossing.",
+  },
+  {
+    id: "q0046",
+    topic: "Hazard awareness",
+    prompt: "You start to feel sleepy on a long drive. What should you do?",
+    options: [
+      "Open a window and carry on",
+      "Stop somewhere safe and rest",
+      "Turn the radio up loud",
+      "Speed up to finish sooner",
+    ],
+    answer: 1,
+    explanation:
+      "Tiredness kills. Find a safe place to stop and rest — fresh air and loud music aren't real fixes.",
+  },
+  {
+    id: "q0047",
+    topic: "Other types of vehicle",
+    prompt: "Motorcyclists are often hardest to see at which location?",
+    options: ["On motorways", "At junctions", "In car parks", "On straight roads"],
+    answer: 1,
+    explanation:
+      "Junctions are where motorcyclists are most often missed. Look carefully — 'think once, think twice, think bike'.",
+  },
+  {
+    id: "q0048",
+    topic: "Incidents and emergencies",
+    prompt:
+      "At a crash, a casualty is bleeding heavily from a wound. What should you do?",
+    options: [
+      "Give them food and drink",
+      "Apply firm pressure to the wound",
+      "Move them to a comfortable position",
+      "Leave it for the paramedics only",
+    ],
+    answer: 1,
+    explanation:
+      "Apply firm pressure to the wound (ideally over a clean pad) to help stem the bleeding while you wait for help.",
+  },
+  {
+    id: "q0049",
+    topic: "Vehicle loading",
+    prompt: "Who is responsible for making sure a vehicle is not overloaded?",
+    options: [
+      "The passengers",
+      "The driver",
+      "The vehicle manufacturer",
+      "The insurance company",
+    ],
+    answer: 1,
+    explanation:
+      "The driver is responsible for the load. Overloading affects handling, braking and tyre safety, and is illegal.",
+  },
+  {
+    id: "q0050",
+    topic: "Alertness",
+    prompt: "What should you do before reversing your car?",
+    options: [
+      "Sound your horn and reverse quickly",
+      "Check all around, including blind spots, for pedestrians and children",
+      "Rely only on your mirrors",
+      "Reverse first, then look",
+    ],
+    answer: 1,
+    explanation:
+      "Look all around before and during reversing — children are easily missed. Don't rely on mirrors alone.",
   },
 ];
 
