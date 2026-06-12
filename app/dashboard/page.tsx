@@ -201,6 +201,11 @@ export default async function DashboardPage({
               title="Messages"
               desc={`Message ${instructorName}.`}
             />
+            <NavCard
+              href="/theory"
+              title="Theory test"
+              desc="Practise by topic and sit timed mock tests."
+            />
           </div>
         ) : (
           <NavCard
