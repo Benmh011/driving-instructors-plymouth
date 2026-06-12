@@ -179,20 +179,31 @@ export const QUESTIONS: Question[] = [
   {
     id: "q0009",
     topic: "Safety margins",
-    prompt: "In good, dry conditions, what is the overall stopping distance at 30 mph?",
-    options: ["12 metres", "23 metres", "36 metres", "53 metres"],
+    prompt:
+      "In good, dry conditions, what is the smallest time gap you should keep behind the vehicle in front?",
+    options: [
+      "One second",
+      "Two seconds",
+      "Half a second",
+      "It doesn't matter at low speed",
+    ],
     answer: 1,
     explanation:
-      "At 30 mph, thinking distance is about 9 m and braking about 14 m — roughly 23 m overall.",
+      "Use the two-second rule: as the vehicle in front passes a fixed point, you shouldn't reach it for at least two seconds.",
   },
   {
     id: "q0010",
     topic: "Safety margins",
-    prompt: "In good, dry conditions, what is the overall stopping distance at 70 mph?",
-    options: ["53 metres", "73 metres", "96 metres", "120 metres"],
-    answer: 2,
+    prompt: "Which of these increases your overall stopping distance the most?",
+    options: [
+      "A dry, grippy road",
+      "Wet or icy road conditions",
+      "Being fully alert",
+      "Having good tyres",
+    ],
+    answer: 1,
     explanation:
-      "At 70 mph, thinking distance is about 21 m and braking about 75 m — roughly 96 m overall.",
+      "Wet roads roughly double your stopping distance, and ice can multiply it many times over. Leave a much bigger gap in poor conditions.",
   },
   {
     id: "q0011",
@@ -226,17 +237,16 @@ export const QUESTIONS: Question[] = [
   {
     id: "q0013",
     topic: "Vulnerable road users",
-    prompt:
-      "When overtaking a cyclist at speeds up to 30 mph, how much room should you leave?",
+    prompt: "When overtaking a cyclist, what is the minimum room you should give them?",
     options: [
       "At least 0.5 metres",
       "At least 1 metre",
       "At least 1.5 metres",
-      "As little as possible to hold your lane",
+      "Just enough to squeeze past",
     ],
     answer: 2,
     explanation:
-      "Leave at least 1.5 metres when overtaking cyclists at up to 30 mph, and more at higher speeds.",
+      "Give cyclists at least 1.5 metres as a minimum, and more at higher speeds. If you can't, wait behind until it's safe.",
   },
   {
     id: "q0014",
@@ -269,7 +279,7 @@ export const QUESTIONS: Question[] = [
     id: "q0017",
     topic: "Safety and your vehicle",
     prompt: "What is the minimum legal tyre tread depth for a car in the UK?",
-    options: ["1.0 mm", "1.6 mm", "2.0 mm", "3.0 mm"],
+    options: ["1.4 mm", "1.6 mm", "1.8 mm", "2.0 mm"],
     answer: 1,
     explanation:
       "The minimum legal tread is 1.6 mm across the central three-quarters and around the whole tyre.",
@@ -322,16 +332,16 @@ export const QUESTIONS: Question[] = [
     id: "q0021",
     topic: "Attitude",
     prompt:
-      "A driver behind is following too closely (tailgating). What is the safest response?",
+      "Another driver is following you too closely (tailgating). What is the safest thing to do?",
     options: [
-      "Brake sharply to warn them",
+      "Brake sharply to warn them off",
+      "Ease off the accelerator and leave more room to the car in front",
       "Speed up to get away from them",
-      "Gradually increase the gap to the vehicle in front",
-      "Ignore it and maintain your exact speed",
+      "Brake-test them until they back off",
     ],
-    answer: 2,
+    answer: 1,
     explanation:
-      "Easing back from the vehicle ahead gives you more room to brake gently, protecting you from the tailgater.",
+      "Leaving more space ahead means you can slow down gently instead of braking hard — so if you do need to stop, the tailgater has time to react and is less likely to hit you.",
   },
   {
     id: "q0022",
@@ -560,30 +570,30 @@ export const QUESTIONS: Question[] = [
   {
     id: "q0039",
     topic: "Safety and your vehicle",
-    prompt: "Which of these is most likely to increase your fuel consumption?",
+    prompt: "Which driving style uses the most fuel?",
     options: [
-      "Keeping tyres correctly inflated",
-      "Carrying an empty roof rack",
-      "Gentle acceleration",
-      "Removing unnecessary weight",
+      "Reading the road and holding a steady speed",
+      "Harsh acceleration and heavy braking",
+      "Changing up to a higher gear in good time",
+      "Easing off early when approaching a hazard",
     ],
     answer: 1,
     explanation:
-      "An empty roof rack adds drag and uses more fuel. Remove it when you're not using it.",
+      "Harsh acceleration and late, heavy braking waste fuel. Smooth, anticipatory driving in the right gear is far more economical.",
   },
   {
     id: "q0040",
     topic: "Vehicle handling",
-    prompt: "Driving downhill, what happens to your stopping distance?",
+    prompt: "Why should you select a lower gear before driving down a steep hill?",
     options: [
-      "It increases",
-      "It decreases",
-      "It stays the same",
-      "It only changes in the wet",
+      "To save fuel",
+      "To use engine braking and help control your speed",
+      "To make the engine quieter",
+      "To turn off the brake lights",
     ],
-    answer: 0,
+    answer: 1,
     explanation:
-      "Gravity adds to your momentum downhill, so stopping distances increase. Use a lower gear to help control speed.",
+      "A lower gear lets the engine help hold your speed (engine braking), so you're not riding the brakes the whole way down and overheating them.",
   },
   {
     id: "q0041",
@@ -716,6 +726,353 @@ export const QUESTIONS: Question[] = [
     answer: 1,
     explanation:
       "Look all around before and during reversing — children are easily missed. Don't rely on mirrors alone.",
+  },
+  {
+    id: "q0051",
+    topic: "Alertness",
+    prompt: "Using a hand-held mobile phone while driving is:",
+    options: [
+      "Allowed at low speeds",
+      "Allowed when stopped in traffic",
+      "Illegal at all times while driving",
+      "Allowed for short calls",
+    ],
+    answer: 2,
+    explanation:
+      "It's illegal to hold a phone while driving, including when stopped at lights or in queuing traffic.",
+  },
+  {
+    id: "q0052",
+    topic: "Attitude",
+    prompt: "Another driver flashes their headlights at you. What should you assume this means?",
+    options: [
+      "They are letting you know they are there",
+      "It is always an invitation to go",
+      "They are angry with you",
+      "Their lights are faulty",
+    ],
+    answer: 0,
+    explanation:
+      "Officially, flashing headlights just means 'I am here'. Don't assume it's an invitation — check for yourself before acting.",
+  },
+  {
+    id: "q0053",
+    topic: "Safety and your vehicle",
+    prompt: "What can under-inflated tyres cause?",
+    options: [
+      "Better grip and shorter stopping",
+      "Poorer handling and uneven, faster wear",
+      "Lower fuel consumption",
+      "A smoother, quieter ride",
+    ],
+    answer: 1,
+    explanation:
+      "Under-inflated tyres reduce grip, affect steering and braking, wear unevenly and use more fuel.",
+  },
+  {
+    id: "q0054",
+    topic: "Safety margins",
+    prompt:
+      "In heavy rain your tyres can ride up on a film of water and lose contact with the road. What is this called?",
+    options: ["Skidding", "Aquaplaning", "Cadence braking", "Coasting"],
+    answer: 1,
+    explanation:
+      "This is aquaplaning. The steering goes light because the tyres have lost grip on the road surface.",
+  },
+  {
+    id: "q0055",
+    topic: "Vehicle handling",
+    prompt:
+      "Driving in heavy rain, your steering suddenly feels light. What should you do?",
+    options: [
+      "Brake hard immediately",
+      "Ease off the accelerator and let your speed drop",
+      "Steer sharply to regain grip",
+      "Accelerate to push through the water",
+    ],
+    answer: 1,
+    explanation:
+      "Light steering means you're aquaplaning. Ease off gently and don't brake or steer harshly until grip returns.",
+  },
+  {
+    id: "q0056",
+    topic: "Hazard awareness",
+    prompt: "You've been prescribed medicine that can cause drowsiness. What should you do?",
+    options: [
+      "Drive only on short trips",
+      "Not drive until you know it won't affect you",
+      "Drive with the window open",
+      "Take a double dose to wear it off",
+    ],
+    answer: 1,
+    explanation:
+      "Check with your doctor or pharmacist. Don't drive if a medicine could make you drowsy or affect your driving.",
+  },
+  {
+    id: "q0057",
+    topic: "Vulnerable road users",
+    prompt:
+      "You're about to turn left and a cyclist is moving up on your left. What should you do?",
+    options: [
+      "Turn quickly before they reach you",
+      "Hold back and let the cyclist go first",
+      "Sound your horn and turn",
+      "Move left to block them",
+    ],
+    answer: 1,
+    explanation:
+      "Never turn across a cyclist on your left. Wait behind and let them clear the junction first.",
+  },
+  {
+    id: "q0058",
+    topic: "Vulnerable road users",
+    prompt: "How should you pass horses being ridden on the road?",
+    options: [
+      "Quickly, to get past sooner",
+      "Slowly and giving them plenty of room",
+      "Sounding your horn to alert them",
+      "Revving your engine to pass",
+    ],
+    answer: 1,
+    explanation:
+      "Pass horses slowly and wide (at least 2 metres), and be ready to stop. Sudden noise can frighten them.",
+  },
+  {
+    id: "q0059",
+    topic: "Rules of the road",
+    prompt: "When may you wait within a yellow box junction?",
+    options: [
+      "Whenever you like",
+      "When turning right and only oncoming traffic stops you",
+      "When going straight ahead in traffic",
+      "Never, under any circumstances",
+    ],
+    answer: 1,
+    explanation:
+      "You may only wait in a box junction when turning right and the only thing stopping you is oncoming traffic.",
+  },
+  {
+    id: "q0060",
+    topic: "Vehicle handling",
+    prompt: "In strong crosswinds, you should take extra care when overtaking:",
+    options: [
+      "Parked cars",
+      "Cyclists and motorcyclists",
+      "Bus stops",
+      "Road signs",
+    ],
+    answer: 1,
+    explanation:
+      "Wind can blow cyclists and motorcyclists off course, so give them extra room when you pass.",
+  },
+  {
+    id: "q0061",
+    topic: "Motorway rules",
+    prompt: "Which of these are you NOT allowed to do on a motorway?",
+    options: [
+      "Stop on the hard shoulder in an emergency",
+      "Reverse along the carriageway",
+      "Use the left lane for normal driving",
+      "Leave at a junction",
+    ],
+    answer: 1,
+    explanation:
+      "You must never reverse, do a U-turn, or walk on a motorway. If you miss your exit, carry on to the next one.",
+  },
+  {
+    id: "q0062",
+    topic: "Road and traffic signs",
+    prompt: "A red cross (X) is shown on a gantry above your motorway lane. What does it mean?",
+    options: [
+      "The lane is closed — move out of it",
+      "Speed up to clear the lane",
+      "The lane is for buses only",
+      "Hard shoulder ahead",
+    ],
+    answer: 0,
+    explanation:
+      "A red X means the lane is closed. Move safely into an open lane and don't drive under it.",
+  },
+  {
+    id: "q0063",
+    topic: "Rules of the road",
+    prompt: "Where must you not park?",
+    options: [
+      "In a marked parking bay",
+      "On the zig-zag lines at a pedestrian crossing",
+      "On a quiet residential street",
+      "In a car park",
+    ],
+    answer: 1,
+    explanation:
+      "Never park on the zig-zag lines of a crossing — it blocks the view between drivers and people crossing.",
+  },
+  {
+    id: "q0064",
+    topic: "Rules of the road",
+    prompt: "There are double white lines along the centre of the road with a solid line on your side. What does this mean?",
+    options: [
+      "You may overtake if it's clear",
+      "You must not cross or straddle the line",
+      "You may park along it",
+      "The road is one-way",
+    ],
+    answer: 1,
+    explanation:
+      "A solid white line on your side means you must not cross or straddle it, except in limited situations such as passing a stationary obstruction.",
+  },
+  {
+    id: "q0065",
+    topic: "Documents",
+    prompt:
+      "Police stop you but you don't have your licence and insurance with you. What can you usually do?",
+    options: [
+      "Nothing — you'll be charged on the spot",
+      "Produce them at a police station within 7 days",
+      "Email them within 24 hours",
+      "Ignore the request",
+    ],
+    answer: 1,
+    explanation:
+      "You normally have 7 days to produce your documents at a nominated police station.",
+  },
+  {
+    id: "q0066",
+    topic: "Documents",
+    prompt: "When does a new car first need an MOT test?",
+    options: [
+      "After 1 year",
+      "After 2 years",
+      "After 3 years",
+      "Only when it's sold",
+    ],
+    answer: 2,
+    explanation:
+      "A new car needs its first MOT three years after registration, then every year after that.",
+  },
+  {
+    id: "q0067",
+    topic: "Incidents and emergencies",
+    prompt: "You're first to arrive at a crash. What should you do first?",
+    options: [
+      "Move all casualties immediately",
+      "Make the scene safe and warn other traffic",
+      "Take photos for insurance",
+      "Offer casualties a hot drink",
+    ],
+    answer: 1,
+    explanation:
+      "Make the area safe first — switch on hazard lights, warn other traffic and stop any smoking — before helping casualties.",
+  },
+  {
+    id: "q0068",
+    topic: "Incidents and emergencies",
+    prompt: "A casualty is not breathing. What should you do?",
+    options: [
+      "Give them water",
+      "Start chest compressions (CPR)",
+      "Sit them upright",
+      "Wait and watch",
+    ],
+    answer: 1,
+    explanation:
+      "If someone isn't breathing, call 999 and start CPR — push firmly on the centre of the chest at a steady rhythm.",
+  },
+  {
+    id: "q0069",
+    topic: "Vehicle loading",
+    prompt: "How does a heavy load on a roof rack affect your car?",
+    options: [
+      "It lowers the centre of gravity",
+      "It raises the centre of gravity and affects handling",
+      "It improves grip in corners",
+      "It has no effect",
+    ],
+    answer: 1,
+    explanation:
+      "A roof load raises the centre of gravity, making the car less stable in corners and crosswinds. Secure it and slow down.",
+  },
+  {
+    id: "q0070",
+    topic: "Vehicle loading",
+    prompt: "A child is travelling in your car. What must they use?",
+    options: [
+      "An adult seatbelt only",
+      "The correct child restraint for their height or weight",
+      "Nothing, if it's a short trip",
+      "A cushion to sit higher",
+    ],
+    answer: 1,
+    explanation:
+      "Children must use the correct car seat or booster for their height or weight until 12 years old or 135 cm tall.",
+  },
+  {
+    id: "q0071",
+    topic: "Alertness",
+    prompt: "What should you NOT wear when driving at night?",
+    options: [
+      "A clear pair of glasses",
+      "Tinted or dark glasses",
+      "Comfortable shoes",
+      "A warm coat",
+    ],
+    answer: 1,
+    explanation:
+      "Tinted or dark glasses reduce how much you can see at night and should not be worn while driving in the dark.",
+  },
+  {
+    id: "q0072",
+    topic: "Hazard awareness",
+    prompt:
+      "Parked cars narrow the road on your side. An oncoming vehicle is approaching. What should you do?",
+    options: [
+      "Keep going — you have priority",
+      "Give way to the oncoming vehicle",
+      "Flash and drive through",
+      "Speed up to get through first",
+    ],
+    answer: 1,
+    explanation:
+      "Where the obstruction is on your side, you should give way to oncoming traffic.",
+  },
+  {
+    id: "q0073",
+    topic: "Road and traffic signs",
+    prompt: "What does this sign mean?",
+    sign: "speed-50",
+    options: [
+      "Maximum speed 50 mph",
+      "Minimum speed 50 mph",
+      "Recommended speed 50 mph",
+      "End of 50 mph zone",
+    ],
+    answer: 0,
+    explanation: "A red ring around a number sets the maximum speed limit — here, 50 mph.",
+  },
+  {
+    id: "q0074",
+    topic: "Road and traffic signs",
+    prompt: "What does this sign mean?",
+    sign: "ahead-only",
+    options: ["Ahead only", "No entry", "One-way street", "Give way ahead"],
+    answer: 0,
+    explanation:
+      "A blue circle with a white upward arrow means you must go straight ahead only.",
+  },
+  {
+    id: "q0075",
+    topic: "Road and traffic signs",
+    prompt: "What does this sign mean?",
+    sign: "warning-general",
+    options: [
+      "Other danger ahead — look for a plate",
+      "No entry",
+      "End of all restrictions",
+      "Stop and give way",
+    ],
+    answer: 0,
+    explanation:
+      "A red triangle with an exclamation mark warns of another danger ahead, usually with a plate explaining what it is.",
   },
 ];
 

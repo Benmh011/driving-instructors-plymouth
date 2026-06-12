@@ -51,6 +51,23 @@ function BlueCircle({ children }: { children: React.ReactNode }) {
   );
 }
 
+// Side-profile car silhouette (~32 wide, faces left). Used on the no-overtaking sign.
+function Car({ color }: { color: string }) {
+  return (
+    <g>
+      <path
+        d="M1,19 L1,15 C1,14 2,13 4,13 C5,10 8,7 13,7 L20,7 C24,7 26,9 28,13 C30,13 31,14 31,15 L31,19 Z"
+        fill={color}
+      />
+      <path d="M8,12.5 C9,9.5 11,9 13,9 L19,9 C22,9 23,10.5 25,12.5 Z" fill={WHITE} />
+      <circle cx="9" cy="19" r="3.6" fill={BLACK} />
+      <circle cx="9" cy="19" r="1.4" fill={WHITE} />
+      <circle cx="24" cy="19" r="3.6" fill={BLACK} />
+      <circle cx="24" cy="19" r="1.4" fill={WHITE} />
+    </g>
+  );
+}
+
 const SIGNS: Record<SignId, React.ReactNode> = {
   "speed-20": <SpeedLimit n="20" />,
   "speed-30": <SpeedLimit n="30" />,
@@ -95,12 +112,12 @@ const SIGNS: Record<SignId, React.ReactNode> = {
   "give-way": <Triangle down />,
   "no-overtaking": (
     <>
-      <circle cx="50" cy="50" r="46" fill={WHITE} stroke={RED} strokeWidth="11" />
-      <g>
-        <rect x="28" y="40" width="20" height="22" rx="3" fill={RED} />
-        <rect x="31" y="33" width="14" height="10" rx="2" fill={RED} />
-        <rect x="52" y="40" width="20" height="22" rx="3" fill={BLACK} />
-        <rect x="55" y="33" width="14" height="10" rx="2" fill={BLACK} />
+      <circle cx="50" cy="50" r="46" fill={WHITE} stroke={RED} strokeWidth="10" />
+      <g transform="translate(15,40)">
+        <Car color={RED} />
+      </g>
+      <g transform="translate(52,40)">
+        <Car color={BLACK} />
       </g>
     </>
   ),
@@ -155,9 +172,9 @@ const SIGNS: Record<SignId, React.ReactNode> = {
   ),
   "warning-crossroads": (
     <Triangle>
-      <g stroke={BLACK} strokeWidth="7" strokeLinecap="square">
-        <line x1="50" y1="36" x2="50" y2="70" />
-        <line x1="33" y1="56" x2="67" y2="56" />
+      <g stroke={BLACK} strokeWidth="8" strokeLinecap="butt">
+        <line x1="50" y1="36" x2="50" y2="74" />
+        <line x1="31" y1="51" x2="69" y2="51" />
       </g>
     </Triangle>
   ),
