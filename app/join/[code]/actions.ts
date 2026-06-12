@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { MAX_ROSTER } from "@/lib/constants";
+import { accessState, hasFullAccess } from "@/lib/subscription";
 
 // Invite-code joins are instant — the instructor shared the link, so no approval.
 export async function joinInstructor(code: string) {
@@ -23,6 +24,11 @@ export async function joinInstructor(code: string) {
     where: { inviteCode: code },
   });
   if (!instructor) redirect("/dashboard");
+
+  // A locked instructor can't take on students, even via their invite link.
+  if (!hasFullAccess(accessState(instructor))) {
+    redirect(`/join/${code}?unavailable=1`);
+  }
 
   // Already on this instructor's list — nothing to do.
   if (user.learnerProfile.activeInstructorId === instructor.id) {

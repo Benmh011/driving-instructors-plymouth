@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import { joinInstructor } from "./actions";
+import { accessState, hasFullAccess } from "@/lib/subscription";
 
 export const metadata = { title: "Join your instructor" };
 
@@ -29,10 +30,10 @@ export default async function JoinPage({
   searchParams,
 }: {
   params: Promise<{ code: string }>;
-  searchParams: Promise<{ full?: string }>;
+  searchParams: Promise<{ full?: string; unavailable?: string }>;
 }) {
   const { code } = await params;
-  const { full } = await searchParams;
+  const { full, unavailable } = await searchParams;
 
   const instructor = await prisma.instructorProfile.findUnique({
     where: { inviteCode: code },
@@ -56,6 +57,24 @@ export default async function JoinPage({
 
   const name = instructor.businessName || instructor.user.name;
   const session = await auth();
+
+  // Instructor isn't currently on an active subscription — can't take students.
+  if (unavailable || !hasFullAccess(accessState(instructor))) {
+    return (
+      <Shell>
+        <p className="font-display text-2xl font-bold">
+          {name} isn&rsquo;t taking students right now
+        </p>
+        <p className="mt-2 text-[15px] text-ink-soft">
+          This instructor isn&rsquo;t accepting new students at the moment. Check
+          back later, or ask them directly.
+        </p>
+        <Link href="/dashboard" className={`mt-6 ${ghostBtn}`}>
+          Back to dashboard
+        </Link>
+      </Shell>
+    );
+  }
 
   // List is full.
   if (full) {

@@ -6,7 +6,6 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { authorizeConversation } from "@/lib/chat";
 import { sendPushToUser } from "@/lib/push";
-import { accessState, hasFullAccess } from "@/lib/subscription";
 
 export type SendState = { error?: string } | undefined;
 
@@ -23,22 +22,10 @@ export async function sendMessage(
   const party = await authorizeConversation(session.user.id, instructorId, learnerId);
   if (!party) return { error: "You can't message here." };
 
-  // A locked instructor can't start/continue messaging; the learner still can.
-  if (party.role === "INSTRUCTOR") {
-    const inst = await prisma.instructorProfile.findUnique({
-      where: { id: instructorId },
-      select: {
-        subscriptionStatus: true,
-        trialEndsAt: true,
-        currentPeriodEnd: true,
-      },
-    });
-    if (inst && !hasFullAccess(accessState(inst))) {
-      return {
-        error: "Your subscription has ended — resubscribe to message students.",
-      };
-    }
-  }
+  // NB: we deliberately DON'T block locked instructors here. authorizeConversation
+  // is roster-only, so a locked instructor can only ever message students they
+  // already teach — keeping those existing conversations open protects the
+  // learner (same reasoning as the read-only diary). New matching stays paid.
 
   const parsed = bodySchema.safeParse(raw);
   if (!parsed.success) return { error: "Message can't be empty." };

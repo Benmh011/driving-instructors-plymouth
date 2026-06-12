@@ -7,6 +7,7 @@ import SignOutButton from "@/components/auth/SignOutButton";
 import InviteLink from "@/components/students/InviteLink";
 import { generateInviteCode } from "@/lib/inviteCode";
 import { SITE_URL, MAX_ROSTER } from "@/lib/constants";
+import { accessState, hasFullAccess } from "@/lib/subscription";
 import { toggleAccepting, acceptJoinRequest, declineJoinRequest } from "./actions";
 
 export const metadata = { title: "Your students" };
@@ -38,6 +39,7 @@ export default async function StudentsPage() {
   if (user.role !== "INSTRUCTOR" || !user.instructorProfile) redirect("/dashboard");
 
   const i = user.instructorProfile;
+  const locked = !hasFullAccess(accessState(i));
 
   // Mint an invite code the first time an instructor opens this page.
   let code = i.inviteCode;
@@ -86,41 +88,63 @@ export default async function StudentsPage() {
           appear here. Each learner can be with one instructor at a time.
         </p>
 
+        {locked && (
+          <section className="mt-9 rounded-2xl border border-signal/40 bg-signal/10 p-6">
+            <p className="font-display text-lg font-semibold text-ink">
+              Your subscription has ended
+            </p>
+            <p className="mt-2 text-[15px] text-ink-soft">
+              Your current students are still listed below, but you can&rsquo;t add
+              new students or accept requests until you resubscribe.
+            </p>
+            <Link
+              href="/dashboard/billing"
+              className="mt-4 inline-flex items-center justify-center rounded-full bg-signal px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-signal-dark"
+            >
+              Resubscribe
+            </Link>
+          </section>
+        )}
+
         {/* Invite link */}
-        <section className="mt-9 rounded-2xl border border-hairline bg-cream p-6">
-          <p className="font-display text-lg font-semibold">Your invite link</p>
-          <p className="mt-1 mb-4 text-[15px] text-ink-soft">
-            Anyone who opens this and signs up as a learner joins your list straight away.
-          </p>
-          <InviteLink url={link} />
-        </section>
+        {!locked && (
+          <section className="mt-9 rounded-2xl border border-hairline bg-cream p-6">
+            <p className="font-display text-lg font-semibold">Your invite link</p>
+            <p className="mt-1 mb-4 text-[15px] text-ink-soft">
+              Anyone who opens this and signs up as a learner joins your list straight away.
+            </p>
+            <InviteLink url={link} />
+          </section>
+        )}
 
         {/* Availability */}
-        <section className="mt-5 flex flex-col gap-4 rounded-2xl border border-hairline bg-cream p-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="font-display text-lg font-semibold">Taking new students</p>
-            <p className="mt-1 text-[15px] text-ink-soft">
-              {i.acceptingStudents
-                ? "New learners can request to join you from the marketplace."
-                : "You're hidden from new marketplace requests. Your invite link still works."}
-            </p>
-          </div>
-          <form action={toggleAccepting}>
-            <button
-              type="submit"
-              className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${
-                i.acceptingStudents
-                  ? "bg-go text-white hover:opacity-90"
-                  : "border border-ink/20 text-ink hover:border-ink"
-              }`}
-            >
-              {i.acceptingStudents ? "On" : "Off"}
-            </button>
-          </form>
-        </section>
+        {!locked && (
+          <section className="mt-5 flex flex-col gap-4 rounded-2xl border border-hairline bg-cream p-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-display text-lg font-semibold">Taking new students</p>
+              <p className="mt-1 text-[15px] text-ink-soft">
+                {i.acceptingStudents
+                  ? "New learners can request to join you from the marketplace."
+                  : "You're hidden from new marketplace requests. Your invite link still works."}
+              </p>
+            </div>
+            <form action={toggleAccepting}>
+              <button
+                type="submit"
+                className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${
+                  i.acceptingStudents
+                    ? "bg-go text-white hover:opacity-90"
+                    : "border border-ink/20 text-ink hover:border-ink"
+                }`}
+              >
+                {i.acceptingStudents ? "On" : "Off"}
+              </button>
+            </form>
+          </section>
+        )}
 
         {/* Pending requests */}
-        {requests.length > 0 && (
+        {!locked && requests.length > 0 && (
           <section className="mt-10">
             <h2 className="font-display text-2xl font-bold tracking-tight">
               Requests to join
