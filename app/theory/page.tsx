@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { isAdminEmail } from "@/lib/admin";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import BackLink from "@/components/BackLink";
@@ -64,6 +66,13 @@ export default async function TheoryPage() {
 
   const activeTopics = TOPICS.filter((t) => topicCount(t) > 0);
 
+  const me = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true, email: true },
+  });
+  const isInstructor = me?.role === "INSTRUCTOR";
+  const isAdmin = isAdminEmail(me?.email);
+
   return (
     <Shell>
       <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl">
@@ -73,6 +82,27 @@ export default async function TheoryPage() {
         Revise by topic, then sit a full mock test under timed conditions. Built
         to mirror the real car theory test.
       </p>
+
+      {(isInstructor || isAdmin) && (
+        <div className="mt-6 flex flex-wrap gap-3">
+          {isInstructor && (
+            <Link
+              href="/theory/review"
+              className="inline-flex items-center gap-1.5 rounded-full border border-ink/20 px-4 py-2 text-sm font-semibold text-ink transition-colors hover:border-ink"
+            >
+              Review questions
+            </Link>
+          )}
+          {isAdmin && (
+            <Link
+              href="/admin/theory"
+              className="inline-flex items-center gap-1.5 rounded-full border border-ink/20 px-4 py-2 text-sm font-semibold text-ink transition-colors hover:border-ink"
+            >
+              Flagged feedback
+            </Link>
+          )}
+        </div>
+      )}
 
       <Link
         href="/theory/mock"

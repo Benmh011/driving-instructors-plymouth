@@ -393,3 +393,7 @@ export function topicSlug(t: string): string {
 export function topicFromSlug(slug: string): Topic | null {
   return TOPICS.find((t) => topicSlug(t) === slug) ?? null;
 }
+
+export function questionById(id: string): Question | undefined {
+  return QUESTIONS.find((q) => q.id === id);
+}

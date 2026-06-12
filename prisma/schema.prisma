@@ -126,10 +126,11 @@ model InstructorProfile {
   roster   LearnerProfile[] @relation("Roster")
   bookings Booking[]
 
-  joinRequests JoinRequest[]
-  expenses     Expense[]
-  messages     Message[]
-  reviews      Review[]
+  joinRequests   JoinRequest[]
+  expenses       Expense[]
+  messages       Message[]
+  reviews        Review[]
+  theoryFeedback TheoryFeedback[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -220,4 +221,18 @@ model Review {
 
   @@unique([instructorId, learnerId])
   @@index([instructorId])
+}
+
+// Instructor (ADI) feedback on theory questions — used to QA the in-house bank.
+model TheoryFeedback {
+  id           String             @id @default(cuid())
+  questionId   String
+  instructorId String?
+  instructor   InstructorProfile? @relation(fields: [instructorId], references: [id], onDelete: SetNull)
+  comment      String
+  resolved     Boolean            @default(false)
+  createdAt    DateTime           @default(now())
+
+  @@index([questionId])
+  @@index([resolved])
 }
