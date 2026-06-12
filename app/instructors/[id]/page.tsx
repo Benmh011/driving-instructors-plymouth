@@ -6,6 +6,8 @@ import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import { MAX_ROSTER } from "@/lib/constants";
 import { ensureInstructorSlug } from "@/lib/slug";
+import { accessState, hasFullAccess } from "@/lib/subscription";
+import BackLink from "@/components/BackLink";
 import { Stars } from "@/components/reviews/Stars";
 import { Avatar } from "@/components/profile/Avatar";
 import { instructorPhotoSrc } from "@/lib/photo";
@@ -86,6 +88,39 @@ export default async function InstructorProfilePage({
       : 0;
 
   const session = await auth();
+
+  // Locked instructors vanish from public view entirely — no "not taking
+  // students" messaging to learners. The owner gets a private heads-up instead.
+  const profileLocked = !hasFullAccess(accessState(instructor));
+  const isOwner = !!session?.user?.id && session.user.id === instructor.userId;
+  if (profileLocked && !isOwner) notFound();
+  if (profileLocked && isOwner) {
+    return (
+      <div className="relative z-10 min-h-dvh">
+        <AppHeader home="/dashboard" right={<SignOutButton />} />
+        <main className="mx-auto max-w-2xl px-5 py-14 sm:px-8">
+          <BackLink href="/dashboard/profile" label="Profile" />
+          <section className="mt-8 rounded-2xl border border-signal/40 bg-signal/10 p-6">
+            <h1 className="font-display text-2xl font-bold text-ink">
+              Your public profile is hidden
+            </h1>
+            <p className="mt-2 text-[15px] text-ink-soft">
+              While your subscription is paused, your profile doesn&rsquo;t appear
+              in search and learners can&rsquo;t view it or request lessons. It
+              reappears automatically the moment you resubscribe.
+            </p>
+            <Link
+              href="/dashboard/billing"
+              className="mt-4 inline-flex items-center justify-center rounded-full bg-signal px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-signal-dark"
+            >
+              Resubscribe
+            </Link>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
   let viewer:
     | {
         role: string;

@@ -8,6 +8,7 @@ import ExpenseForm from "@/components/tax/ExpenseForm";
 import DeleteExpenseButton from "@/components/tax/DeleteExpenseButton";
 import TaxCalendar from "@/components/tax/TaxCalendar";
 import CollapsiblePanel from "@/components/tax/CollapsiblePanel";
+import BackLink from "@/components/BackLink";
 import { accessState, hasFullAccess } from "@/lib/subscription";
 
 export const metadata = { title: "Tax & earnings" };
@@ -60,12 +61,7 @@ export default async function TaxPage({
       <div className="relative z-10 min-h-dvh">
         <AppHeader home="/dashboard" right={<SignOutButton />} />
         <main className="mx-auto max-w-3xl px-5 py-14 sm:px-8">
-          <Link
-            href="/dashboard"
-            className="text-sm font-semibold text-ink-soft transition-colors hover:text-ink"
-          >
-            &larr; Back to dashboard
-          </Link>
+          <BackLink />
           <section className="mt-8 rounded-2xl border border-signal/40 bg-signal/10 p-6">
             <h1 className="font-display text-2xl font-bold text-ink">
               Tax &amp; earnings is locked
@@ -168,12 +164,7 @@ export default async function TaxPage({
       <AppHeader home="/dashboard" right={<SignOutButton />} />
 
       <main className="mx-auto max-w-3xl px-5 py-14 sm:px-8">
-        <Link
-          href="/dashboard"
-          className="text-sm font-semibold text-ink-soft transition-colors hover:text-ink"
-        >
-          &larr; Back to dashboard
-        </Link>
+        <BackLink />
 
         <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl">
           Tax &amp; earnings

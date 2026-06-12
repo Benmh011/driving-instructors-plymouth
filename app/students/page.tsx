@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import InviteLink from "@/components/students/InviteLink";
+import RosterList from "@/components/students/RosterList";
+import BackLink from "@/components/BackLink";
 import { generateInviteCode } from "@/lib/inviteCode";
 import { SITE_URL, MAX_ROSTER } from "@/lib/constants";
 import { accessState, hasFullAccess } from "@/lib/subscription";
@@ -73,12 +75,7 @@ export default async function StudentsPage() {
       <AppHeader home="/dashboard" right={<SignOutButton />} />
 
       <main className="mx-auto max-w-4xl px-5 py-14 sm:px-8">
-        <Link
-          href="/dashboard"
-          className="text-sm font-semibold text-ink-soft transition-colors hover:text-ink"
-        >
-          &larr; Back to dashboard
-        </Link>
+        <BackLink />
 
         <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl">
           Your students
@@ -215,17 +212,15 @@ export default async function StudentsPage() {
             </p>
           </div>
         ) : (
-          <ul className="mt-4 grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline sm:grid-cols-2">
-            {roster.map((learner) => (
-              <li key={learner.id} className="bg-cream p-5">
-                <p className="font-semibold">{learner.user.name}</p>
-                <p className="mt-1 text-sm text-ink-soft">
-                  {learner.postcode} &middot; {pretty(learner.transmission)}
-                  {learner.goal ? ` · ${learner.goal}` : ""}
-                </p>
-              </li>
-            ))}
-          </ul>
+          <RosterList
+            students={roster.map((learner) => ({
+              id: learner.id,
+              name: learner.user.name,
+              postcode: learner.postcode,
+              transmission: learner.transmission,
+              goal: learner.goal,
+            }))}
+          />
         )}
       </main>
     </div>
