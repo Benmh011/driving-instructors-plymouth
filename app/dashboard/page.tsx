@@ -188,6 +188,11 @@ export default async function DashboardPage({
               title="Messages"
               desc="Message your students."
             />
+            <NavCard
+              href="/theory/review"
+              title="Theory questions"
+              desc="View the question bank and flag anything that needs fixing."
+            />
           </div>
         ) : instructorName ? (
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
