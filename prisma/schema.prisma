@@ -250,9 +250,30 @@ model Prospect {
   status          String    @default("NEW") // NEW, CONTACTED, REPLIED, DEMO, SIGNED_UP, NOT_INTERESTED, DO_NOT_CONTACT
   rating          Float?
   notes           String?
+  unsubscribeToken String?  @unique
   lastContactedAt DateTime?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
+  emails OutreachEmail[]
+
+  @@index([status])
+}
+
+// One outreach email per prospect, drafted by the agent and sent after approval.
+model OutreachEmail {
+  id         String    @id @default(cuid())
+  prospectId String
+  prospect   Prospect  @relation(fields: [prospectId], references: [id], onDelete: Cascade)
+  subject    String
+  body       String
+  status     String    @default("DRAFT") // DRAFT, SENT, FAILED
+  resendId   String?
+  error      String?
+  sentAt     DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([prospectId])
   @@index([status])
 }

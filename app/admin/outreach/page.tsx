@@ -10,6 +10,10 @@ import {
   addProspect,
   updateProspect,
   deleteProspect,
+  generateDrafts,
+  updateDraft,
+  sendDraft,
+  discardDraft,
 } from "./actions";
 
 export const metadata = { title: "Instructor outreach" };
@@ -27,6 +31,15 @@ type Prospect = {
   lastContactedAt: Date | null;
 };
 
+type Draft = {
+  id: string;
+  subject: string;
+  body: string;
+  status: string;
+  error: string | null;
+  prospect: { name: string; email: string | null };
+};
+
 const STATUS_LABELS: Record<string, string> = {
   NEW: "New",
   CONTACTED: "Contacted",
@@ -37,19 +50,6 @@ const STATUS_LABELS: Record<string, string> = {
   DO_NOT_CONTACT: "Do not contact",
 };
 const STATUS_ORDER = Object.keys(STATUS_LABELS);
-
-function suggestedMessage(name: string) {
-  return `Hi ${name},
-
-I'm a local driving instructor and I've built Driving Instructors Plymouth — a booking and admin platform made for instructors around Plymouth and the South Hams. It handles your diary, student management, online payments and theory-test practice for your pupils, from £9.99/month on the founder rate.
-
-Thought it might save you some admin time. If you'd like, I can send over a quick demo link to take a look.
-
-If it's not for you, no worries at all — just say and I won't get in touch again.
-
-Best,
-[your name] — Driving Instructors Plymouth`;
-}
 
 export default async function OutreachPage({
   searchParams,
@@ -84,6 +84,12 @@ export default async function OutreachPage({
     },
   });
 
+  const drafts: Draft[] = await prisma.outreachEmail.findMany({
+    where: { status: { in: ["DRAFT", "FAILED"] } },
+    include: { prospect: { select: { name: true, email: true } } },
+    orderBy: { createdAt: "asc" },
+  });
+
   const grouped = await prisma.prospect.groupBy({
     by: ["status"],
     _count: { _all: true },
@@ -94,6 +100,8 @@ export default async function OutreachPage({
     counts[g.status] = g._count._all;
     total += g._count._all;
   }
+  const withEmail = await prisma.prospect.count({ where: { email: { not: null } } });
+  const sentCount = await prisma.outreachEmail.count({ where: { status: "SENT" } });
 
   const field =
     "rounded-xl border border-ink/20 bg-white px-3.5 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink";
@@ -107,10 +115,10 @@ export default async function OutreachPage({
           Instructor outreach
         </h1>
         <p className="mt-3 max-w-xl text-ink-soft">
-          Your prospect list. Send personalised 1:1 messages from your own
-          mailbox — each one identifies you and offers an easy opt-out. Mark
-          anyone who asks to stop as &ldquo;Do not contact&rdquo; and don&rsquo;t
-          message them again.
+          Your prospect pipeline. The agent drafts a personalised email for each
+          prospect with an address on file — you review and approve every send.
+          Each email identifies you and carries a one-click opt-out; anyone who
+          opts out is suppressed automatically.
         </p>
 
         {total === 0 && (
@@ -124,6 +132,89 @@ export default async function OutreachPage({
           </form>
         )}
 
+        {/* Agent panel */}
+        <div className="mt-6 rounded-2xl border border-hairline bg-cream p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="font-display text-lg font-bold text-ink">Outreach agent</p>
+              <p className="text-sm text-ink-soft">
+                {withEmail} with an email · {drafts.length} awaiting approval · {sentCount} sent
+              </p>
+            </div>
+            <form action={generateDrafts}>
+              <button
+                type="submit"
+                className="rounded-full bg-sea px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-sea-dark"
+              >
+                Generate drafts
+              </button>
+            </form>
+          </div>
+
+          {withEmail === 0 && (
+            <p className="mt-3 rounded-xl border border-line/40 bg-line/10 p-3 text-[13px] text-ink">
+              No prospects have an email yet. Add an email to a prospect below
+              (most listings only show a phone), then generate drafts.
+            </p>
+          )}
+
+          {drafts.length > 0 && (
+            <ul className="mt-4 space-y-3">
+              {drafts.map((d) => (
+                <li key={d.id} className="rounded-xl border border-hairline bg-white p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-semibold text-ink">
+                      {d.prospect.name}
+                      <span className="ml-2 font-normal text-ink-soft">
+                        {d.prospect.email ?? "no email"}
+                      </span>
+                    </p>
+                    {d.status === "FAILED" && (
+                      <span className="rounded-full bg-signal/15 px-2 py-0.5 text-xs font-semibold text-signal">
+                        Failed
+                      </span>
+                    )}
+                  </div>
+                  {d.status === "FAILED" && d.error && (
+                    <p className="mt-1 text-xs text-signal">{d.error}</p>
+                  )}
+                  <form className="mt-3 space-y-2">
+                    <input name="subject" defaultValue={d.subject} className={`${field} w-full`} />
+                    <textarea
+                      name="body"
+                      rows={9}
+                      defaultValue={d.body}
+                      className={`${field} w-full`}
+                    />
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        formAction={updateDraft.bind(null, d.id)}
+                        className="rounded-full border border-ink/20 px-4 py-2 text-sm font-semibold text-ink transition-colors hover:border-ink"
+                      >
+                        Save
+                      </button>
+                      <button
+                        formAction={sendDraft.bind(null, d.id)}
+                        disabled={!d.prospect.email}
+                        className="rounded-full bg-go px-4 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:opacity-40"
+                      >
+                        Approve &amp; send
+                      </button>
+                      <button
+                        formAction={discardDraft.bind(null, d.id)}
+                        className="rounded-full px-3 py-2 text-sm font-semibold text-ink-soft transition-colors hover:text-signal"
+                      >
+                        Discard
+                      </button>
+                    </div>
+                  </form>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Add prospect */}
         <div className="mt-6 rounded-2xl border border-hairline bg-cream p-4">
           <p className="font-display text-lg font-bold text-ink">Add a prospect</p>
           <form action={addProspect} className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -141,6 +232,7 @@ export default async function OutreachPage({
           </form>
         </div>
 
+        {/* Filters */}
         <div className="mt-6 flex flex-wrap gap-2">
           <FilterChip label={`All (${total})`} href="/admin/outreach" active={activeFilter === "all"} />
           {STATUS_ORDER.map((s) => (
@@ -153,6 +245,7 @@ export default async function OutreachPage({
           ))}
         </div>
 
+        {/* Prospect list */}
         <ul className="mt-4 space-y-3">
           {prospects.map((p) => (
             <li key={p.id} className="rounded-2xl border border-hairline bg-cream p-5">
@@ -184,22 +277,12 @@ export default async function OutreachPage({
                     Website
                   </a>
                 )}
-                {p.email && <span className="text-ink-soft">{p.email}</span>}
                 {p.lastContactedAt && (
                   <span className="text-ink-soft">
                     Last contacted {p.lastContactedAt.toLocaleDateString("en-GB")}
                   </span>
                 )}
               </div>
-
-              <details className="mt-3">
-                <summary className="cursor-pointer text-sm font-semibold text-sea">
-                  Suggested message
-                </summary>
-                <pre className="mt-2 whitespace-pre-wrap rounded-xl border border-hairline bg-white p-3 text-[13px] text-ink">
-                  {suggestedMessage(p.name)}
-                </pre>
-              </details>
 
               <form action={updateProspect.bind(null, p.id)} className="mt-3 space-y-2">
                 <div className="flex flex-wrap items-center gap-2">
@@ -210,6 +293,13 @@ export default async function OutreachPage({
                       </option>
                     ))}
                   </select>
+                  <input
+                    name="email"
+                    type="email"
+                    defaultValue={p.email ?? ""}
+                    placeholder="Email (add to enable outreach)"
+                    className={`${field} min-w-[14rem] flex-1`}
+                  />
                   <button
                     type="submit"
                     className="rounded-full bg-sea px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-sea-dark"

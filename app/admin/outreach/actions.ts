@@ -1,10 +1,14 @@
 "use server";
 
+import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { isAdminEmail } from "@/lib/admin";
+import { SITE_URL } from "@/lib/constants";
 import { SEED_PROSPECTS } from "@/lib/outreach/seed";
+import { sendOutreachEmail } from "@/lib/outreach/email";
+import { buildDraft, withUnsubscribeFooter } from "@/lib/outreach/draft";
 
 const STATUSES = [
   "NEW",
@@ -66,19 +70,122 @@ export async function updateProspect(id: string, formData: FormData) {
   const status = (formData.get("status") as string | null) ?? "NEW";
   if (!STATUSES.includes(status)) return;
   const notes = ((formData.get("notes") as string | null) ?? "").trim() || null;
-  await prisma.prospect.update({
-    where: { id },
-    data: {
-      status,
-      notes,
-      lastContactedAt: status === "CONTACTED" ? new Date() : undefined,
-    },
-  });
+
+  const data: {
+    status: string;
+    notes: string | null;
+    lastContactedAt?: Date;
+    email?: string | null;
+  } = {
+    status,
+    notes,
+    lastContactedAt: status === "CONTACTED" ? new Date() : undefined,
+  };
+  if (formData.has("email")) {
+    data.email = ((formData.get("email") as string | null) ?? "").trim() || null;
+  }
+
+  await prisma.prospect.update({ where: { id }, data });
   revalidatePath("/admin/outreach");
 }
 
 export async function deleteProspect(id: string) {
   if (!(await requireAdmin())) return;
   await prisma.prospect.delete({ where: { id } });
+  revalidatePath("/admin/outreach");
+}
+
+// --- Outreach agent: drafts, approval, sending ---
+
+// Create a draft email for every prospect that has an email, is still NEW,
+// and doesn't already have an email on file. Nothing is sent here.
+export async function generateDrafts() {
+  if (!(await requireAdmin())) return;
+  const prospects = await prisma.prospect.findMany({
+    where: { status: "NEW", email: { not: null }, emails: { none: {} } },
+    select: { id: true, name: true, area: true },
+  });
+  for (const p of prospects as { id: string; name: string; area: string | null }[]) {
+    const { subject, body } = buildDraft(p);
+    await prisma.outreachEmail.create({ data: { prospectId: p.id, subject, body } });
+  }
+  revalidatePath("/admin/outreach");
+}
+
+export async function updateDraft(id: string, formData: FormData) {
+  if (!(await requireAdmin())) return;
+  const subject = ((formData.get("subject") as string | null) ?? "").trim();
+  const body = ((formData.get("body") as string | null) ?? "").trim();
+  if (!subject || !body) return;
+  await prisma.outreachEmail.update({
+    where: { id },
+    data: { subject, body },
+  });
+  revalidatePath("/admin/outreach");
+}
+
+export async function discardDraft(id: string) {
+  if (!(await requireAdmin())) return;
+  await prisma.outreachEmail.deleteMany({ where: { id, status: "DRAFT" } });
+  revalidatePath("/admin/outreach");
+}
+
+// Approve + send a single draft. Auto-marks the prospect Contacted on success.
+// Persists any inline subject/body edits first.
+export async function sendDraft(id: string, formData?: FormData) {
+  if (!(await requireAdmin())) return;
+
+  if (formData) {
+    const subject = ((formData.get("subject") as string | null) ?? "").trim();
+    const body = ((formData.get("body") as string | null) ?? "").trim();
+    if (subject && body) {
+      await prisma.outreachEmail.updateMany({
+        where: { id, status: { not: "SENT" } },
+        data: { subject, body },
+      });
+    }
+  }
+
+  const draft = await prisma.outreachEmail.findUnique({
+    where: { id },
+    include: { prospect: true },
+  });
+  if (!draft || draft.status === "SENT") return;
+
+  const p = draft.prospect;
+  if (!p.email || p.status === "DO_NOT_CONTACT") return;
+
+  let token: string | null = p.unsubscribeToken;
+  if (!token) {
+    token = randomUUID();
+    await prisma.prospect.update({
+      where: { id: p.id },
+      data: { unsubscribeToken: token },
+    });
+  }
+  const unsubscribeUrl = `${SITE_URL}/api/outreach/unsubscribe?token=${token}`;
+  const text = withUnsubscribeFooter(draft.body, unsubscribeUrl);
+
+  try {
+    const resendId = await sendOutreachEmail({
+      to: p.email,
+      subject: draft.subject,
+      text,
+      unsubscribeUrl,
+    });
+    await prisma.outreachEmail.update({
+      where: { id },
+      data: { status: "SENT", sentAt: new Date(), resendId, error: null },
+    });
+    await prisma.prospect.update({
+      where: { id: p.id },
+      data: { status: "CONTACTED", lastContactedAt: new Date() },
+    });
+  } catch (e) {
+    await prisma.outreachEmail.update({
+      where: { id },
+      data: { status: "FAILED", error: e instanceof Error ? e.message : String(e) },
+    });
+  }
   revalidatePath("/admin/outreach");
 }
