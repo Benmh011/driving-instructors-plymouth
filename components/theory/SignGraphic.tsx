@@ -154,6 +154,29 @@ const SIGNS: Record<SignId, React.ReactNode> = {
       </g>
     </>
   ),
+  roundabout: (
+    <>
+      <circle cx="50" cy="50" r="46" fill={BLUE} />
+      <g fill="none" stroke={WHITE} strokeWidth="6" strokeLinecap="round">
+        <path d="M49,29 A21,21 0 0,1 67,40" />
+        <g transform="rotate(120 50 50)">
+          <path d="M49,29 A21,21 0 0,1 67,40" />
+        </g>
+        <g transform="rotate(240 50 50)">
+          <path d="M49,29 A21,21 0 0,1 67,40" />
+        </g>
+      </g>
+      <g fill={WHITE}>
+        <polygon points="67,46 60,38 75,38" />
+        <g transform="rotate(120 50 50)">
+          <polygon points="67,46 60,38 75,38" />
+        </g>
+        <g transform="rotate(240 50 50)">
+          <polygon points="67,46 60,38 75,38" />
+        </g>
+      </g>
+    </>
+  ),
   "warning-general": (
     <Triangle>
       <text

@@ -38,6 +38,7 @@ export type SignId =
   | "ahead-only"
   | "two-way-traffic"
   | "no-stopping"
+  | "roundabout"
   | "warning-general"
   | "warning-crossroads";
 
@@ -1073,6 +1074,412 @@ export const QUESTIONS: Question[] = [
     answer: 0,
     explanation:
       "A red triangle with an exclamation mark warns of another danger ahead, usually with a plate explaining what it is.",
+  },
+  {
+    id: "q0076",
+    topic: "Alertness",
+    prompt:
+      "Your view at a junction is blocked by parked cars. What should you do before pulling out?",
+    options: [
+      "Pull out quickly and hope it's clear",
+      "Edge forward slowly until you can see",
+      "Sound your horn and go",
+      "Rely on the car's mirrors",
+    ],
+    answer: 1,
+    explanation:
+      "Creep forward slowly until you have a clear view in both directions, then emerge when it's safe.",
+  },
+  {
+    id: "q0077",
+    topic: "Alertness",
+    prompt: "When should you set up or change your satnav?",
+    options: [
+      "While driving at low speed",
+      "Before you set off, or after stopping somewhere safe",
+      "At traffic lights",
+      "Whenever you need to",
+    ],
+    answer: 1,
+    explanation:
+      "Programme your satnav before driving. If you need to change it, find a safe place to stop first.",
+  },
+  {
+    id: "q0078",
+    topic: "Attitude",
+    prompt: "You're driving slowly and a queue of traffic builds up behind you. What should you do?",
+    options: [
+      "Speed up beyond your comfort",
+      "Pull in where it's safe to let them pass",
+      "Ignore them",
+      "Brake to make them back off",
+    ],
+    answer: 1,
+    explanation:
+      "If you're holding up a queue, pull in safely when you can and let the traffic behind go by.",
+  },
+  {
+    id: "q0079",
+    topic: "Attitude",
+    prompt: "As you approach a pedestrian crossing, what must you never do?",
+    options: [
+      "Slow down",
+      "Overtake the vehicle nearest the crossing",
+      "Stop for waiting pedestrians",
+      "Give way to people crossing",
+    ],
+    answer: 1,
+    explanation:
+      "Never overtake the leading vehicle as you approach a crossing — a pedestrian could be hidden in front of it.",
+  },
+  {
+    id: "q0080",
+    topic: "Safety and your vehicle",
+    prompt:
+      "A red warning light stays lit on your dashboard after you start the engine. What should you do?",
+    options: [
+      "Carry on — it'll go off",
+      "Don't drive until you've checked what it means",
+      "Cover it with tape",
+      "Only worry if the car stops",
+    ],
+    answer: 1,
+    explanation:
+      "A red warning light signals a potentially serious fault. Check it before driving — get help if unsure.",
+  },
+  {
+    id: "q0081",
+    topic: "Safety and your vehicle",
+    prompt: "How should you dispose of used engine oil?",
+    options: [
+      "Pour it down the drain",
+      "Take it to an oil-disposal or recycling site",
+      "Bury it in the garden",
+      "Put it in the normal bin",
+    ],
+    answer: 1,
+    explanation:
+      "Old engine oil is harmful to the environment. Take it to a proper disposal or recycling point.",
+  },
+  {
+    id: "q0082",
+    topic: "Safety and your vehicle",
+    prompt: "When is the best time to check your engine oil and coolant levels?",
+    options: [
+      "Only at the annual service",
+      "Regularly, and before a long journey",
+      "Only if a warning light shows",
+      "Never — the garage does it",
+    ],
+    answer: 1,
+    explanation:
+      "Check levels regularly and before long trips, so problems are caught before they leave you stranded.",
+  },
+  {
+    id: "q0083",
+    topic: "Safety margins",
+    prompt: "Why is 'coasting' (rolling with the clutch down or in neutral) a bad habit?",
+    options: [
+      "It saves too much fuel",
+      "It reduces your control over the car",
+      "It charges the battery too fast",
+      "It wears out the tyres",
+    ],
+    answer: 1,
+    explanation:
+      "Coasting removes engine braking and reduces your control of steering and braking, especially downhill.",
+  },
+  {
+    id: "q0084",
+    topic: "Safety margins",
+    prompt: "In fog, you should always be able to stop within:",
+    options: [
+      "Twice the normal distance",
+      "The distance you can see to be clear",
+      "Three car lengths",
+      "100 metres exactly",
+    ],
+    answer: 1,
+    explanation:
+      "Whatever the conditions, drive so you can stop well within the distance you can see to be clear.",
+  },
+  {
+    id: "q0085",
+    topic: "Hazard awareness",
+    prompt: "How does alcohol affect your driving?",
+    options: [
+      "It improves concentration",
+      "It slows reactions and impairs judgement",
+      "It has no effect in small amounts",
+      "It sharpens your reflexes",
+    ],
+    answer: 1,
+    explanation:
+      "Alcohol slows reactions, impairs judgement and gives false confidence. The safest amount before driving is none.",
+  },
+  {
+    id: "q0086",
+    topic: "Hazard awareness",
+    prompt: "A bus is stopped at a bus stop on your left. What should you watch for?",
+    options: [
+      "Nothing — buses are predictable",
+      "Pedestrians stepping out and the bus pulling away",
+      "The bus reversing",
+      "Passengers throwing litter",
+    ],
+    answer: 1,
+    explanation:
+      "People may step out in front of or behind the bus, and the bus may signal to pull away. Slow down and be ready.",
+  },
+  {
+    id: "q0087",
+    topic: "Vulnerable road users",
+    prompt:
+      "A pedestrian is carrying a white cane with a red band. What does this tell you?",
+    options: [
+      "They are a traffic warden",
+      "They are deaf as well as blind",
+      "They are a cyclist",
+      "They are lost",
+    ],
+    answer: 1,
+    explanation:
+      "A white cane with a red band shows the person is deaf as well as blind. Give them extra time and care.",
+  },
+  {
+    id: "q0088",
+    topic: "Vulnerable road users",
+    prompt: "When driving past a line of parked cars, what should you look out for?",
+    options: [
+      "Nothing in particular",
+      "Doors opening and people stepping out",
+      "Cars flashing their lights",
+      "Faster traffic behind",
+    ],
+    answer: 1,
+    explanation:
+      "Watch for doors opening, pedestrians (especially children) stepping out, and cars pulling away.",
+  },
+  {
+    id: "q0089",
+    topic: "Vulnerable road users",
+    prompt: "An older pedestrian is crossing slowly as your lights go green. What should you do?",
+    options: [
+      "Edge forward to hurry them",
+      "Wait patiently until they've finished crossing",
+      "Sound your horn",
+      "Drive around them",
+    ],
+    answer: 1,
+    explanation:
+      "Give older and less mobile pedestrians the time they need. Never rush or intimidate someone who is crossing.",
+  },
+  {
+    id: "q0090",
+    topic: "Other types of vehicle",
+    prompt: "Before overtaking a long, large vehicle, what should you do?",
+    options: [
+      "Move up close behind it",
+      "Drop back so you can see further ahead",
+      "Flash your lights",
+      "Overtake on the left",
+    ],
+    answer: 1,
+    explanation:
+      "Hanging back improves your view past the vehicle, so you can see oncoming traffic before committing to overtake.",
+  },
+  {
+    id: "q0091",
+    topic: "Other types of vehicle",
+    prompt: "A bus ahead is signalling to move off from a bus stop. What should you do?",
+    options: [
+      "Speed up to pass first",
+      "Give way to it if it's safe to do so",
+      "Sound your horn",
+      "Overtake on the left",
+    ],
+    answer: 1,
+    explanation:
+      "Where safe, give way to a bus signalling to pull out — but don't put yourself or others at risk to do so.",
+  },
+  {
+    id: "q0092",
+    topic: "Vehicle handling",
+    prompt: "When driving at night, you should dip your headlights when:",
+    options: [
+      "Driving on a motorway only",
+      "Meeting oncoming traffic or following another vehicle",
+      "Going round any bend",
+      "It starts to rain",
+    ],
+    answer: 1,
+    explanation:
+      "Dip your lights for oncoming traffic and when following another vehicle, so you don't dazzle other drivers.",
+  },
+  {
+    id: "q0093",
+    topic: "Vehicle handling",
+    prompt: "When may you use full-beam headlights?",
+    options: [
+      "In queuing traffic",
+      "On an unlit road with no oncoming or vehicle ahead",
+      "In fog",
+      "In a well-lit town centre",
+    ],
+    answer: 1,
+    explanation:
+      "Use full beam on dark, unlit roads when there's no one to dazzle, and dip them as soon as anyone appears.",
+  },
+  {
+    id: "q0094",
+    topic: "Vehicle handling",
+    prompt: "After driving slowly through deep water or a ford, what should you do?",
+    options: [
+      "Accelerate hard to dry the engine",
+      "Test your brakes gently — they may be wet and less effective",
+      "Nothing, brakes are unaffected",
+      "Turn the engine off and on",
+    ],
+    answer: 1,
+    explanation:
+      "Wet brakes work poorly. Dry them by braking gently while moving slowly until they feel normal again.",
+  },
+  {
+    id: "q0095",
+    topic: "Motorway rules",
+    prompt: "How should you join a motorway from a slip road?",
+    options: [
+      "Stop at the end and wait for a big gap",
+      "Adjust your speed on the slip road and merge into a safe gap",
+      "Force your way into the first lane",
+      "Cross straight into the middle lane",
+    ],
+    answer: 1,
+    explanation:
+      "Build up to match the speed of traffic, then merge smoothly into a gap. Give way to traffic already on the motorway.",
+  },
+  {
+    id: "q0096",
+    topic: "Motorway rules",
+    prompt: "Which lane should you normally drive in on a motorway?",
+    options: [
+      "The middle lane",
+      "The left-hand lane",
+      "The right-hand lane",
+      "Any lane you like",
+    ],
+    answer: 1,
+    explanation:
+      "Keep to the left lane for normal driving. The other lanes are for overtaking — return left once you've passed.",
+  },
+  {
+    id: "q0097",
+    topic: "Motorway rules",
+    prompt: "You start to feel tired while driving on a motorway. What should you do?",
+    options: [
+      "Open the window and carry on",
+      "Leave at the next exit or services and rest",
+      "Speed up to finish sooner",
+      "Move to the left lane and slow down",
+    ],
+    answer: 1,
+    explanation:
+      "You can't stop on a motorway to rest, so leave at the next services or exit and take a proper break.",
+  },
+  {
+    id: "q0098",
+    topic: "Rules of the road",
+    prompt:
+      "There are street lights but no speed-limit signs. What is the speed limit likely to be?",
+    options: ["20 mph", "30 mph", "40 mph", "60 mph"],
+    answer: 1,
+    explanation:
+      "Street lighting usually means a 30 mph limit unless signs show otherwise.",
+  },
+  {
+    id: "q0099",
+    topic: "Rules of the road",
+    prompt: "Where should you position your car to turn right at a junction?",
+    options: [
+      "Close to the left kerb",
+      "Just left of the centre of the road",
+      "In the middle of your lane",
+      "It doesn't matter",
+    ],
+    answer: 1,
+    explanation:
+      "Position just left of the centre line so following traffic can pass on your left where there's room.",
+  },
+  {
+    id: "q0100",
+    topic: "Rules of the road",
+    prompt:
+      "On a narrow single-track road, a car comes the other way and the passing place is on your side. What should you do?",
+    options: [
+      "Carry on and make them reverse",
+      "Pull into the passing place and let them through",
+      "Flash your lights and drive on",
+      "Stop in the middle of the road",
+    ],
+    answer: 1,
+    explanation:
+      "If the passing place is on your side, pull into it. If it's on their side, wait opposite it.",
+  },
+  {
+    id: "q0101",
+    topic: "Road and traffic signs",
+    prompt: "Most signs that warn you of a hazard are which shape?",
+    options: ["Circular", "Triangular", "Rectangular", "Octagonal"],
+    answer: 1,
+    explanation:
+      "Warning signs are triangular with a red border. Circular signs give orders; rectangular ones give information.",
+  },
+  {
+    id: "q0102",
+    topic: "Road and traffic signs",
+    prompt: "Signs that give orders — telling you what you must or must not do — are usually which shape?",
+    options: ["Triangular", "Circular", "Rectangular", "Diamond"],
+    answer: 1,
+    explanation:
+      "Order signs are circular. Red rings prohibit; blue circles give a positive instruction.",
+  },
+  {
+    id: "q0103",
+    topic: "Road and traffic signs",
+    prompt: "A red circle around a sign generally means what?",
+    options: [
+      "Something you must not do",
+      "A recommended action",
+      "Tourist information",
+      "A parking area",
+    ],
+    answer: 0,
+    explanation:
+      "Red circles tell you something is prohibited — for example a speed limit or 'no entry'.",
+  },
+  {
+    id: "q0104",
+    topic: "Road and traffic signs",
+    prompt: "What does this sign mean?",
+    sign: "roundabout",
+    options: ["Roundabout ahead", "Right turn only", "No through road", "Ring road"],
+    answer: 0,
+    explanation:
+      "A blue circle with three curved arrows means a roundabout ahead — give way to traffic from your right.",
+  },
+  {
+    id: "q0105",
+    topic: "Documents",
+    prompt: "You move house. What must you do about your driving licence?",
+    options: [
+      "Nothing",
+      "Tell DVLA and update your address",
+      "Wait until it expires",
+      "Only tell your insurer",
+    ],
+    answer: 1,
+    explanation:
+      "You must tell DVLA when you change address and update your licence — it's an offence not to.",
   },
 ];
 
