@@ -236,3 +236,23 @@ model TheoryFeedback {
   @@index([questionId])
   @@index([resolved])
 }
+
+// B2B outreach CRM — prospecting driving instructors to invite onto the platform.
+model Prospect {
+  id              String    @id @default(cuid())
+  name            String
+  area            String?
+  phone           String?
+  email           String?
+  website         String?
+  googlePlaceId   String?   @unique
+  source          String    @default("places") // places, manual, referral
+  status          String    @default("NEW") // NEW, CONTACTED, REPLIED, DEMO, SIGNED_UP, NOT_INTERESTED, DO_NOT_CONTACT
+  rating          Float?
+  notes           String?
+  lastContactedAt DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([status])
+}
