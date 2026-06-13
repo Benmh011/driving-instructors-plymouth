@@ -271,6 +271,10 @@ model OutreachEmail {
   resendId   String?
   error      String?
   sentAt     DateTime?
+  deliveredAt   DateTime?
+  openedAt      DateTime?
+  bouncedAt     DateTime?
+  complainedAt  DateTime?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 

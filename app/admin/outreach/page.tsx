@@ -40,6 +40,16 @@ type Draft = {
   prospect: { name: string; email: string | null };
 };
 
+type SentEmail = {
+  id: string;
+  sentAt: Date | null;
+  deliveredAt: Date | null;
+  openedAt: Date | null;
+  bouncedAt: Date | null;
+  complainedAt: Date | null;
+  prospect: { name: string };
+};
+
 const STATUS_LABELS: Record<string, string> = {
   NEW: "New",
   CONTACTED: "Contacted",
@@ -102,6 +112,20 @@ export default async function OutreachPage({
   }
   const withEmail = await prisma.prospect.count({ where: { email: { not: null } } });
   const sentCount = await prisma.outreachEmail.count({ where: { status: "SENT" } });
+  const sent: SentEmail[] = await prisma.outreachEmail.findMany({
+    where: { status: "SENT" },
+    orderBy: { sentAt: "desc" },
+    take: 50,
+    select: {
+      id: true,
+      sentAt: true,
+      deliveredAt: true,
+      openedAt: true,
+      bouncedAt: true,
+      complainedAt: true,
+      prospect: { select: { name: true } },
+    },
+  });
 
   const field =
     "rounded-xl border border-ink/20 bg-white px-3.5 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink";
@@ -211,6 +235,28 @@ export default async function OutreachPage({
                 </li>
               ))}
             </ul>
+          )}
+
+          {sent.length > 0 && (
+            <details className="mt-4">
+              <summary className="cursor-pointer text-sm font-semibold text-sea">
+                Sent ({sentCount})
+              </summary>
+              <ul className="mt-2 space-y-1.5">
+                {sent.map((s) => {
+                  const st = sentStatus(s);
+                  return (
+                    <li
+                      key={s.id}
+                      className="flex items-center justify-between gap-2 text-sm"
+                    >
+                      <span className="text-ink">{s.prospect.name}</span>
+                      <span className={st.cls}>{st.label}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </details>
           )}
         </div>
 
@@ -335,6 +381,15 @@ export default async function OutreachPage({
       </main>
     </div>
   );
+}
+
+function sentStatus(s: SentEmail): { label: string; cls: string } {
+  const base = "shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ";
+  if (s.complainedAt) return { label: "Spam complaint", cls: base + "bg-signal/15 text-signal" };
+  if (s.bouncedAt) return { label: "Bounced", cls: base + "bg-signal/15 text-signal" };
+  if (s.openedAt) return { label: "Opened", cls: base + "bg-go/15 text-go" };
+  if (s.deliveredAt) return { label: "Delivered", cls: base + "bg-sea/15 text-sea-dark" };
+  return { label: "Sent", cls: base + "bg-line/20 text-ink" };
 }
 
 function FilterChip({
