@@ -97,15 +97,23 @@ export async function deleteProspect(id: string) {
 
 // --- Outreach agent: drafts, approval, sending ---
 
-// Create a draft email for every prospect that has an email, is still NEW,
-// and doesn't already have an email on file. Nothing is sent here.
+// Create a draft email for every prospect that has an email, is still NEW, and
+// doesn't already have a live draft or a sent email. Stale failed attempts are
+// cleared so they don't block regeneration. Nothing is sent here.
 export async function generateDrafts() {
   if (!(await requireAdmin())) return;
   const prospects = await prisma.prospect.findMany({
-    where: { status: "NEW", email: { not: null }, emails: { none: {} } },
+    where: {
+      status: "NEW",
+      email: { not: null },
+      emails: { none: { status: { in: ["DRAFT", "SENT"] } } },
+    },
     select: { id: true, name: true, area: true },
   });
   for (const p of prospects as { id: string; name: string; area: string | null }[]) {
+    await prisma.outreachEmail.deleteMany({
+      where: { prospectId: p.id, status: "FAILED" },
+    });
     const { subject, body } = buildDraft(p);
     await prisma.outreachEmail.create({ data: { prospectId: p.id, subject, body } });
   }
@@ -126,7 +134,7 @@ export async function updateDraft(id: string, formData: FormData) {
 
 export async function discardDraft(id: string) {
   if (!(await requireAdmin())) return;
-  await prisma.outreachEmail.deleteMany({ where: { id, status: "DRAFT" } });
+  await prisma.outreachEmail.deleteMany({ where: { id, status: { not: "SENT" } } });
   revalidatePath("/admin/outreach");
 }
 
