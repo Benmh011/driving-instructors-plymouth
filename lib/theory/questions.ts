@@ -1481,6 +1481,421 @@ export const QUESTIONS: Question[] = [
     explanation:
       "You must tell DVLA when you change address and update your licence — it's an offence not to.",
   },
+  {
+    id: "q0106",
+    topic: "Vulnerable road users",
+    prompt:
+      "You're turning into a side road and pedestrians are waiting to cross it. What should you do?",
+    options: [
+      "Turn before they step out",
+      "Give way and let them cross",
+      "Sound your horn",
+      "Only stop if they've already started",
+    ],
+    answer: 1,
+    explanation:
+      "Since 2022, you should give way to pedestrians waiting to cross — as well as those already crossing — the road you're turning into or out of.",
+  },
+  {
+    id: "q0107",
+    topic: "Motorway rules",
+    prompt: "When is a learner driver allowed to drive on a motorway?",
+    options: [
+      "Never, until they pass their test",
+      "With any full licence holder over 21",
+      "Only with an approved driving instructor in a car with dual controls",
+      "Whenever they feel ready",
+    ],
+    answer: 2,
+    explanation:
+      "Since 2018, learners may take motorway lessons, but only with an approved driving instructor in a dual-control car.",
+  },
+  {
+    id: "q0108",
+    topic: "Vulnerable road users",
+    prompt:
+      "A cyclist ahead is riding well out towards the middle of the lane. What should you do?",
+    options: [
+      "Beep so they move over",
+      "Be patient — they may be making themselves visible or avoiding hazards",
+      "Squeeze past closely",
+      "Drive close behind to hurry them",
+    ],
+    answer: 1,
+    explanation:
+      "Cyclists are taught to ride away from the kerb to be seen and stay safe. Hang back and overtake only when there's room.",
+  },
+  {
+    id: "q0109",
+    topic: "Vehicle handling",
+    prompt: "You're parking facing downhill. What should you do with your front wheels?",
+    options: [
+      "Turn them away from the kerb",
+      "Turn them towards the kerb",
+      "Leave them straight",
+      "It makes no difference",
+    ],
+    answer: 1,
+    explanation:
+      "Facing downhill, turn the wheels towards the kerb and use the handbrake, so the car can't roll into the road.",
+  },
+  {
+    id: "q0110",
+    topic: "Safety margins",
+    prompt: "What most often causes a vehicle to skid?",
+    options: [
+      "The weather alone",
+      "The driver braking, steering or accelerating too harshly",
+      "Worn-out brake lights",
+      "Driving too slowly",
+    ],
+    answer: 1,
+    explanation:
+      "Skids are usually caused by the driver going too fast for the conditions and braking, steering or accelerating too sharply.",
+  },
+  {
+    id: "q0111",
+    topic: "Safety and your vehicle",
+    prompt: "When should you check your tyre pressures?",
+    options: [
+      "When the tyres are cold",
+      "Straight after a long, fast drive",
+      "Only when a tyre looks flat",
+      "Only at an MOT",
+    ],
+    answer: 0,
+    explanation:
+      "Check pressures when the tyres are cold — hot tyres read higher and give a false figure.",
+  },
+  {
+    id: "q0112",
+    topic: "Safety and your vehicle",
+    prompt: "Who is responsible for making sure a child under 14 is wearing a seat belt or using a restraint?",
+    options: ["The child", "A passenger", "The driver", "Nobody"],
+    answer: 2,
+    explanation:
+      "The driver is legally responsible for ensuring passengers under 14 are properly restrained.",
+  },
+  {
+    id: "q0113",
+    topic: "Safety and your vehicle",
+    prompt: "How should a head restraint be adjusted?",
+    options: [
+      "As low as possible",
+      "So the top is at least level with the top of your ears",
+      "Tilted fully forward",
+      "Removed for comfort",
+    ],
+    answer: 1,
+    explanation:
+      "A correctly set head restraint (top level with the top of your ears, close to your head) helps prevent neck injury in a crash.",
+  },
+  {
+    id: "q0114",
+    topic: "Rules of the road",
+    prompt: "You park at night on a road with a speed limit above 30 mph. What must you do?",
+    options: [
+      "Leave your parking (side) lights on",
+      "Leave your hazard lights flashing",
+      "Leave full-beam headlights on",
+      "Nothing extra is needed",
+    ],
+    answer: 0,
+    explanation:
+      "On roads with a limit over 30 mph you must leave parking lights on when parked at night, so others can see your car.",
+  },
+  {
+    id: "q0115",
+    topic: "Rules of the road",
+    prompt:
+      "You're crossing a railway level crossing when the amber light comes on and the alarm sounds. What should you do?",
+    options: [
+      "Stop immediately on the crossing",
+      "Reverse off the crossing",
+      "Keep going and clear the crossing",
+      "Get out of the car",
+    ],
+    answer: 2,
+    explanation:
+      "If you're already on the crossing when the warning starts, keep going and clear it — don't stop or reverse.",
+  },
+  {
+    id: "q0116",
+    topic: "Rules of the road",
+    prompt: "Where must you NOT park or stop?",
+    options: [
+      "In a marked bay",
+      "On the brow of a hill",
+      "On a wide, quiet street",
+      "In a lay-by",
+    ],
+    answer: 1,
+    explanation:
+      "Never park where you'd reduce visibility, such as on the brow of a hill or near a bend — others can't see past you.",
+  },
+  {
+    id: "q0117",
+    topic: "Rules of the road",
+    prompt: "On a one-way street, where should you position to turn right?",
+    options: [
+      "In the left-hand lane",
+      "In the right-hand lane",
+      "In the centre only",
+      "Anywhere you like",
+    ],
+    answer: 1,
+    explanation:
+      "On a one-way street you can use either side, so move into the right-hand lane in good time to turn right.",
+  },
+  {
+    id: "q0118",
+    topic: "Road and traffic signs",
+    prompt: "What do brown road signs point you towards?",
+    options: [
+      "Motorways",
+      "Tourist attractions",
+      "Roadworks",
+      "Emergency services",
+    ],
+    answer: 1,
+    explanation:
+      "Brown signs direct you to tourist and leisure attractions.",
+  },
+  {
+    id: "q0119",
+    topic: "Road and traffic signs",
+    prompt: "A road sign is octagonal (eight-sided). What does it mean?",
+    options: ["Give way", "Stop", "No entry", "Roundabout"],
+    answer: 1,
+    explanation:
+      "Only the STOP sign is octagonal — its unique shape means you can recognise it even if it's covered in snow.",
+  },
+  {
+    id: "q0120",
+    topic: "Road and traffic signs",
+    prompt: "What do double yellow lines along the edge of the road mean?",
+    options: [
+      "No waiting at any time",
+      "Waiting allowed for one hour",
+      "Loading only",
+      "Free parking",
+    ],
+    answer: 0,
+    explanation:
+      "Double yellow lines mean no waiting at any time. You may still be allowed to drop off or pick up briefly.",
+  },
+  {
+    id: "q0121",
+    topic: "Road and traffic signs",
+    prompt: "What does a single yellow line along the kerb mean?",
+    options: [
+      "No stopping ever",
+      "Waiting restrictions apply at certain times — check the sign",
+      "Free parking at all times",
+      "Bus lane",
+    ],
+    answer: 1,
+    explanation:
+      "A single yellow line means waiting is restricted at the times shown on the nearby sign.",
+  },
+  {
+    id: "q0122",
+    topic: "Motorway rules",
+    prompt: "You've finished overtaking on a three-lane motorway and the left lane is clear. What should you do?",
+    options: [
+      "Stay in the middle lane",
+      "Move back to the left lane",
+      "Stay in the right lane",
+      "Slow right down",
+    ],
+    answer: 1,
+    explanation:
+      "Always return to the left once you've overtaken. Sitting in the middle lane (lane hogging) holds up traffic and is an offence.",
+  },
+  {
+    id: "q0123",
+    topic: "Motorway rules",
+    prompt: "A speed limit is shown in a red ring on a motorway gantry sign. What does it mean?",
+    options: [
+      "It's only advisory",
+      "It's a mandatory limit you must not exceed",
+      "It applies to lorries only",
+      "It's the minimum speed",
+    ],
+    answer: 1,
+    explanation:
+      "A speed shown in a red ring on a gantry is a mandatory limit — usually to manage congestion — and you must not exceed it.",
+  },
+  {
+    id: "q0124",
+    topic: "Motorway rules",
+    prompt:
+      "Your car develops a problem on a smart motorway with no hard shoulder. What's the best thing to do?",
+    options: [
+      "Stop in the left lane straight away",
+      "Reach an emergency refuge area or the next exit if you can",
+      "Stop in the middle lane",
+      "Reverse to the last junction",
+    ],
+    answer: 1,
+    explanation:
+      "Try to reach an emergency refuge area or leave at the next exit. If you can't, get as far left as possible, put hazards on and call for help.",
+  },
+  {
+    id: "q0125",
+    topic: "Other types of vehicle",
+    prompt: "Why should you take care around trams?",
+    options: [
+      "They can speed up suddenly",
+      "They can't steer to avoid you and take longer to stop",
+      "They have no driver",
+      "They always have priority over pedestrians",
+    ],
+    answer: 1,
+    explanation:
+      "Trams run on fixed rails, so they can't swerve and need a long distance to stop. Don't drive or park on the rails.",
+  },
+  {
+    id: "q0126",
+    topic: "Other types of vehicle",
+    prompt: "A vehicle ahead has a flashing amber beacon. What does this tell you?",
+    options: [
+      "It's an ambulance",
+      "It's a slow-moving or large vehicle",
+      "It's broken down",
+      "It's a police car",
+    ],
+    answer: 1,
+    explanation:
+      "A flashing amber beacon warns that a vehicle is slow-moving or large, such as a gritter or road-maintenance vehicle.",
+  },
+  {
+    id: "q0127",
+    topic: "Hazard awareness",
+    prompt: "When should you check your mirrors?",
+    options: [
+      "Only when reversing",
+      "Before signalling, changing speed or changing direction",
+      "Only on motorways",
+      "Once at the start of a journey",
+    ],
+    answer: 1,
+    explanation:
+      "Use Mirrors–Signal–Manoeuvre: always check your mirrors in good time before you signal, change speed or change direction.",
+  },
+  {
+    id: "q0128",
+    topic: "Hazard awareness",
+    prompt:
+      "A large vehicle is parked near a junction and blocks your view as you wait to emerge. What should you do?",
+    options: [
+      "Pull out and hope it's clear",
+      "Wait, edging out only when you can see it's safe",
+      "Sound your horn and go",
+      "Follow the car in front blindly",
+    ],
+    answer: 1,
+    explanation:
+      "Don't commit until you can actually see the road is clear. Edge out slowly only as far as your view allows.",
+  },
+  {
+    id: "q0129",
+    topic: "Attitude",
+    prompt: "You're feeling angry or upset. How might this affect your driving?",
+    options: [
+      "It improves your focus",
+      "It can reduce your concentration and judgement",
+      "It has no effect",
+      "It makes you a safer driver",
+    ],
+    answer: 1,
+    explanation:
+      "Strong emotions distract you and impair judgement. Calm down before you drive, or pull over safely until you feel settled.",
+  },
+  {
+    id: "q0130",
+    topic: "Attitude",
+    prompt: "There's a bus lane on your route with operating times shown on a sign. When may you drive in it?",
+    options: [
+      "Whenever it's empty",
+      "Only outside its hours of operation, as shown on the sign",
+      "Never",
+      "Only at night",
+    ],
+    answer: 1,
+    explanation:
+      "Check the sign — you may use the bus lane only outside the times it's reserved for buses (and permitted users).",
+  },
+  {
+    id: "q0131",
+    topic: "Vehicle loading",
+    prompt: "While towing a trailer, it starts to swing from side to side (snaking). What should you do?",
+    options: [
+      "Brake hard",
+      "Ease off the accelerator and slow down gently",
+      "Accelerate to straighten it",
+      "Steer sharply against the swing",
+    ],
+    answer: 1,
+    explanation:
+      "Ease off gently and let your speed drop. Braking hard or steering sharply can make the snaking worse.",
+  },
+  {
+    id: "q0132",
+    topic: "Vehicle loading",
+    prompt: "How should a load be arranged in or on your vehicle?",
+    options: [
+      "Piled to one side",
+      "Spread evenly and secured",
+      "Loose so it can settle",
+      "As high as possible",
+    ],
+    answer: 1,
+    explanation:
+      "Distribute weight evenly and secure it so the load can't move, which keeps the vehicle stable and safe.",
+  },
+  {
+    id: "q0133",
+    topic: "Alertness",
+    prompt: "Which of these should you avoid doing?",
+    options: [
+      "Reversing into a side road from a main road",
+      "Reversing from a side road into a main road",
+      "Checking your blind spots",
+      "Using your mirrors",
+    ],
+    answer: 1,
+    explanation:
+      "Never reverse from a side road into a main road. If you need to turn around, reverse into a side road instead.",
+  },
+  {
+    id: "q0134",
+    topic: "Incidents and emergencies",
+    prompt: "You can smell petrol and see smoke from under the bonnet. What should you do?",
+    options: [
+      "Open the bonnet fully to look",
+      "Stop, get everyone out and well away, and call 999",
+      "Keep driving to a garage",
+      "Pour water over the engine",
+    ],
+    answer: 1,
+    explanation:
+      "Stop safely, get everyone out and clear of the car, and call the fire service. Don't open the bonnet fully — air can feed the fire.",
+  },
+  {
+    id: "q0135",
+    topic: "Incidents and emergencies",
+    prompt: "Someone involved in a crash appears to be in shock. How should you help?",
+    options: [
+      "Give them a hot drink",
+      "Keep them warm, comfortable and reassured",
+      "Make them walk it off",
+      "Leave them alone",
+    ],
+    answer: 1,
+    explanation:
+      "Reassure them, keep them warm and comfortable, and don't give food or drink. Get medical help.",
+  },
 ];
 
 export function topicCount(topic: Topic): number {
