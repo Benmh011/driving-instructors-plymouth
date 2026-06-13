@@ -7,7 +7,7 @@ export function buildDraft(_prospect: { name: string; area: string | null }): {
   subject: string;
   body: string;
 } {
-  const subject = "A booking tool for Plymouth driving instructors";
+  const subject = "Quick idea for your driving school";
   const body = `Hi there,
 
 I'm local and I run Driving Instructors Plymouth, a booking and admin platform I've built for instructors around Plymouth and the South Hams. It gives you your own diary (lessons, income and expenses), student management, optional online payments, and theory-test practice for your pupils, from £9.99/month on the founder rate. There's a one-month free trial to get started.
