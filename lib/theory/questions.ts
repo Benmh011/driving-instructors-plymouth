@@ -303,16 +303,16 @@ export const QUESTIONS: Question[] = [
   {
     id: "q0019",
     topic: "Alertness",
-    prompt: "What is the correct routine before moving off from a parked position?",
+    prompt: "What's the safe routine before moving off from the side of the road?",
     options: [
-      "Signal, then pull straight out",
-      "Check mirrors, signal if needed, then check blind spots",
-      "Sound the horn and move off",
-      "Move off, then check your mirrors",
+      "Pull out as soon as the road sounds clear",
+      "Check mirrors and blind spots, and signal if it would help others",
+      "Signal and pull out without looking round",
+      "Move off first, then check your mirrors",
     ],
     answer: 1,
     explanation:
-      "Use Mirrors–Signal–Manoeuvre and always check blind spots — mirrors don't show everything.",
+      "Check your mirrors and blind spots every time. The Highway Code says signal 'if necessary', so you won't always need to — but you must always check the blind spots.",
   },
   {
     id: "q0020",
@@ -745,16 +745,16 @@ export const QUESTIONS: Question[] = [
   {
     id: "q0052",
     topic: "Attitude",
-    prompt: "Another driver flashes their headlights at you. What should you assume this means?",
+    prompt: "Another driver flashes their headlights at you. What's the safest way to treat it?",
     options: [
-      "They are letting you know they are there",
-      "It is always an invitation to go",
-      "They are angry with you",
-      "Their lights are faulty",
+      "As a clear signal that it's safe to go",
+      "As them simply letting you know they're there",
+      "As a sign they are giving up their priority",
+      "As an instruction to speed up",
     ],
-    answer: 0,
+    answer: 1,
     explanation:
-      "Officially, flashing headlights just means 'I am here'. Don't assume it's an invitation — check for yourself before acting.",
+      "Officially, flashing headlights only mean 'I'm here'. Never assume it means 'go' — check for yourself that it's safe before you move.",
   },
   {
     id: "q0053",
@@ -798,16 +798,16 @@ export const QUESTIONS: Question[] = [
   {
     id: "q0056",
     topic: "Hazard awareness",
-    prompt: "You've been prescribed medicine that can cause drowsiness. What should you do?",
+    prompt: "You've been prescribed medicine that could cause drowsiness. What should you do?",
     options: [
       "Drive only on short trips",
-      "Not drive until you know it won't affect you",
-      "Drive with the window open",
-      "Take a double dose to wear it off",
+      "Ask your doctor or pharmacist, and don't drive if you're unsure",
+      "Drive with the window open to stay awake",
+      "Take a smaller dose so you can drive",
     ],
     answer: 1,
     explanation:
-      "Check with your doctor or pharmacist. Don't drive if a medicine could make you drowsy or affect your driving.",
+      "Check with your doctor or pharmacist whether it's safe to drive while taking it. If you're in any doubt, don't drive.",
   },
   {
     id: "q0057",
@@ -1010,16 +1010,16 @@ export const QUESTIONS: Question[] = [
   {
     id: "q0071",
     topic: "Alertness",
-    prompt: "What should you NOT wear when driving at night?",
+    prompt: "Which of these would reduce how well you can see when driving at night?",
     options: [
-      "A clear pair of glasses",
-      "Tinted or dark glasses",
-      "Comfortable shoes",
-      "A warm coat",
+      "Wearing tinted or dark glasses",
+      "Wearing clear prescription glasses",
+      "Keeping your windscreen clean",
+      "Using dipped headlights",
     ],
-    answer: 1,
+    answer: 0,
     explanation:
-      "Tinted or dark glasses reduce how much you can see at night and should not be worn while driving in the dark.",
+      "Tinted or dark glasses cut the light reaching your eyes, so don't wear them in the dark. The other three all help you see.",
   },
   {
     id: "q0072",
