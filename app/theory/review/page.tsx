@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
@@ -41,6 +42,36 @@ export default async function TheoryReviewPage() {
           Filter, search and sort the whole question bank however you like. Spot
           something wrong or unclear? Flag it and we&rsquo;ll fix it.
         </p>
+
+        <div className="mt-6 rounded-2xl border border-sea/30 bg-sea/10 p-5">
+          <p className="font-display text-lg font-bold text-ink">
+            See what your students get
+          </p>
+          <p className="mt-1 text-[15px] text-ink-soft">
+            Sit the real thing yourself — nothing is recorded against your account.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link
+              href="/theory/mock"
+              className="inline-flex items-center justify-center rounded-full bg-sea px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-sea-dark"
+            >
+              Preview a mock test
+            </Link>
+            <Link
+              href="/theory/study"
+              className="inline-flex items-center justify-center rounded-full border border-ink/20 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink"
+            >
+              Study mode
+            </Link>
+            <Link
+              href="/theory"
+              className="inline-flex items-center justify-center rounded-full border border-ink/20 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink"
+            >
+              Student view
+            </Link>
+          </div>
+        </div>
+
         <ReviewBrowser flagCounts={flagCounts} />
       </main>
     </div>

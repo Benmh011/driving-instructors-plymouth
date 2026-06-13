@@ -21,10 +21,10 @@ export async function theoryAccess(): Promise<TheoryGate> {
   });
   if (!user) return { ok: false, reason: "login" };
 
-  if (user.role === "INSTRUCTOR" && user.instructorProfile) {
-    return hasFullAccess(accessState(user.instructorProfile))
-      ? { ok: true }
-      : { ok: false, reason: "subscribe" };
+  if (user.role === "INSTRUCTOR") {
+    // Instructors can always preview what their students get, even if their own
+    // subscription has lapsed — previewing is harmless and nothing is recorded.
+    return { ok: true };
   }
 
   const active = user.learnerProfile?.activeInstructor;
