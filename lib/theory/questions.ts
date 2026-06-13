@@ -35,12 +35,17 @@ export type SignId =
   | "no-overtaking"
   | "turn-left"
   | "turn-right"
+  | "no-left-turn"
+  | "no-right-turn"
+  | "no-u-turn"
   | "ahead-only"
+  | "parking"
   | "two-way-traffic"
   | "no-stopping"
   | "roundabout"
   | "warning-general"
-  | "warning-crossroads";
+  | "warning-crossroads"
+  | "warning-tjunction";
 
 export type Question = {
   id: string;
@@ -2300,6 +2305,1157 @@ export const QUESTIONS: Question[] = [
     answer: 1,
     explanation:
       "You must leave your details for the owner. If you can't, report it to the police as soon as you can and within 24 hours.",
+  },
+  {
+    id: "q0166",
+    topic: "Alertness",
+    prompt: "Even a hands-free phone call while driving can:",
+    options: [
+      "Improve your concentration",
+      "Take your mind off the road",
+      "Make you drive faster safely",
+      "Have no effect at all",
+    ],
+    answer: 1,
+    explanation:
+      "Any phone conversation distracts your mind from driving, hands-free or not. It's safest to let calls wait.",
+  },
+  {
+    id: "q0167",
+    topic: "Alertness",
+    prompt: "On a frosty morning, before you drive off you should:",
+    options: [
+      "Clear a small hole to see through",
+      "Clear ice and mist from all your windows",
+      "Set off and let it clear",
+      "Only clear the windscreen",
+    ],
+    answer: 1,
+    explanation:
+      "You must be able to see properly all round, so clear every window of ice and condensation before moving.",
+  },
+  {
+    id: "q0168",
+    topic: "Alertness",
+    prompt: "When are you allowed to remove your seat belt while in control of the car?",
+    options: [
+      "On a motorway",
+      "When carrying out a manoeuvre that includes reversing",
+      "On short journeys",
+      "When you feel uncomfortable",
+    ],
+    answer: 1,
+    explanation:
+      "You may take your seat belt off while reversing, but put it back on as soon as you've finished.",
+  },
+  {
+    id: "q0169",
+    topic: "Alertness",
+    prompt: "Why can playing very loud music be dangerous when driving?",
+    options: [
+      "It drains the battery",
+      "It can mask important sounds like sirens",
+      "It improves reactions",
+      "It has no real effect",
+    ],
+    answer: 1,
+    explanation:
+      "Loud music can drown out emergency sirens and other warnings, so keep it at a sensible level.",
+  },
+  {
+    id: "q0170",
+    topic: "Alertness",
+    prompt: "Eating and drinking while driving:",
+    options: [
+      "Helps you stay alert",
+      "Is a distraction and best avoided",
+      "Is only a problem at night",
+      "Is fine in slow traffic",
+    ],
+    answer: 1,
+    explanation:
+      "Anything that takes a hand off the wheel or your attention off the road is a distraction — wait until you stop.",
+  },
+  {
+    id: "q0171",
+    topic: "Alertness",
+    prompt: "You can't be sure what's ahead — it's foggy and the road bends. What should you do?",
+    options: [
+      "Keep your speed up",
+      "Reduce your speed",
+      "Turn off your lights",
+      "Follow the car ahead closely",
+    ],
+    answer: 1,
+    explanation:
+      "When you can't see clearly, slow down so you can react safely to whatever appears.",
+  },
+  {
+    id: "q0172",
+    topic: "Attitude",
+    prompt: "A vehicle is overtaking you. What should you do?",
+    options: [
+      "Speed up so they can't pass",
+      "Hold a steady course and ease off if it helps them complete the pass",
+      "Move to the middle of the road",
+      "Brake sharply",
+    ],
+    answer: 1,
+    explanation:
+      "Never speed up when being overtaken. Keep steady and, if needed, slow slightly to let them pass safely.",
+  },
+  {
+    id: "q0173",
+    topic: "Attitude",
+    prompt: "A vehicle is showing a flashing green beacon. What does this mean?",
+    options: [
+      "A doctor answering an emergency call",
+      "A slow-moving vehicle",
+      "A breakdown truck",
+      "A council vehicle",
+    ],
+    answer: 0,
+    explanation:
+      "A flashing green beacon means a registered doctor is on an emergency call — give way when it's safe.",
+  },
+  {
+    id: "q0174",
+    topic: "Attitude",
+    prompt: "A driver flashes their lights to wave you out of a junction. What should you do?",
+    options: [
+      "Pull out immediately",
+      "Check for yourself that it's safe before moving",
+      "Wave back and wait",
+      "Sound your horn and go",
+    ],
+    answer: 1,
+    explanation:
+      "Never rely on another driver's wave. Make your own checks — they can't see everything you need to.",
+  },
+  {
+    id: "q0175",
+    topic: "Attitude",
+    prompt: "At night, how do you avoid dazzling an oncoming driver?",
+    options: [
+      "Flash your headlights",
+      "Dip your headlights",
+      "Use full beam",
+      "Turn your lights off",
+    ],
+    answer: 1,
+    explanation:
+      "Dip your headlights for oncoming traffic, and when following another vehicle, so you don't dazzle anyone.",
+  },
+  {
+    id: "q0176",
+    topic: "Attitude",
+    prompt: "Driving close behind a slower car to make them hurry is:",
+    options: [
+      "A good way to make progress",
+      "Dangerous and intimidating",
+      "Fine on a clear road",
+      "Acceptable if you're late",
+    ],
+    answer: 1,
+    explanation:
+      "Tailgating is dangerous and aggressive. Keep a safe distance and overtake only when it's safe.",
+  },
+  {
+    id: "q0177",
+    topic: "Attitude",
+    prompt: "In slow, heavy traffic a driver is waiting to join from a side road. The considerate thing to do is:",
+    options: [
+      "Close the gap so they can't pull in",
+      "Leave a gap and let them join when safe",
+      "Sound your horn",
+      "Speed up",
+    ],
+    answer: 1,
+    explanation:
+      "A little courtesy keeps traffic flowing. Where it's safe, let a waiting driver merge in.",
+  },
+  {
+    id: "q0178",
+    topic: "Safety and your vehicle",
+    prompt: "You notice a deep cut or a bulge in a tyre's sidewall. What should you do?",
+    options: [
+      "Keep driving carefully",
+      "Replace the tyre before driving",
+      "Pump it up harder",
+      "Only worry if it's flat",
+    ],
+    answer: 1,
+    explanation:
+      "Cuts and bulges can cause a blowout. Replace a damaged tyre before you drive on it.",
+  },
+  {
+    id: "q0179",
+    topic: "Safety and your vehicle",
+    prompt: "The brake-fluid warning light comes on. What should you do?",
+    options: [
+      "Ignore it on short trips",
+      "Have the brakes checked before driving",
+      "Top up with water",
+      "Drive faster to test them",
+    ],
+    answer: 1,
+    explanation:
+      "A brake warning could mean low fluid or a fault. Don't drive until it's been checked — your brakes are critical.",
+  },
+  {
+    id: "q0180",
+    topic: "Safety and your vehicle",
+    prompt: "You'll be stationary for several minutes. How can you reduce pollution?",
+    options: [
+      "Rev the engine",
+      "Switch the engine off",
+      "Leave it idling",
+      "Turn on the heater",
+    ],
+    answer: 1,
+    explanation:
+      "If you'll be parked or waiting for a while, switch the engine off to cut emissions and noise.",
+  },
+  {
+    id: "q0181",
+    topic: "Safety and your vehicle",
+    prompt: "Blue smoke is coming from your exhaust. What does this suggest?",
+    options: [
+      "The engine is too cold",
+      "The engine is burning oil and needs attention",
+      "The fuel tank is full",
+      "Everything is normal",
+    ],
+    answer: 1,
+    explanation:
+      "Blue smoke usually means the engine is burning oil — get it looked at, as it also increases emissions.",
+  },
+  {
+    id: "q0182",
+    topic: "Safety and your vehicle",
+    prompt: "Your wiper blades smear the screen and leave it hard to see through. What should you do?",
+    options: [
+      "Use them only in heavy rain",
+      "Replace the worn blades",
+      "Press harder on the stalk",
+      "Remove them",
+    ],
+    answer: 1,
+    explanation:
+      "Worn wiper blades reduce your vision in the wet. Replace them so the screen clears properly.",
+  },
+  {
+    id: "q0183",
+    topic: "Safety and your vehicle",
+    prompt: "Why is antifreeze added to the engine coolant in winter?",
+    options: [
+      "To make the engine run faster",
+      "To stop the coolant freezing and damaging the engine",
+      "To clean the windscreen",
+      "To improve fuel economy",
+    ],
+    answer: 1,
+    explanation:
+      "Antifreeze stops the coolant freezing in cold weather, which could otherwise crack the engine.",
+  },
+  {
+    id: "q0184",
+    topic: "Safety and your vehicle",
+    prompt: "When should you adjust your mirrors?",
+    options: [
+      "While driving along",
+      "Before you start your journey",
+      "Only at night",
+      "Never — leave them as they are",
+    ],
+    answer: 1,
+    explanation:
+      "Set your mirrors before setting off so you have a full view without fiddling with them on the move.",
+  },
+  {
+    id: "q0185",
+    topic: "Safety margins",
+    prompt: "On a wet road, your braking distance is at least:",
+    options: ["The same as dry", "Doubled", "Halved", "Slightly less"],
+    answer: 1,
+    explanation:
+      "Wet roads at least double your braking distance, so slow down and leave a much bigger gap.",
+  },
+  {
+    id: "q0186",
+    topic: "Safety margins",
+    prompt: "Tiredness, alcohol and distraction all increase your:",
+    options: ["Grip", "Thinking distance", "Fuel economy", "Tyre life"],
+    answer: 1,
+    explanation:
+      "They slow your reactions, lengthening the thinking distance before you even touch the brakes.",
+  },
+  {
+    id: "q0187",
+    topic: "Safety margins",
+    prompt: "Why can a road be especially slippery when it first rains after a dry spell?",
+    options: [
+      "The road gets colder",
+      "Rain lifts oil and dust into a slippery film",
+      "Tyres grip better",
+      "It never is",
+    ],
+    answer: 1,
+    explanation:
+      "Light rain after dry weather mixes with oil and dust to make a slippery film until heavier rain washes it away.",
+  },
+  {
+    id: "q0188",
+    topic: "Safety margins",
+    prompt: "You're following a large vehicle that blocks your view ahead. What should you do?",
+    options: [
+      "Drive closer to see past",
+      "Drop back to improve your view",
+      "Overtake straight away",
+      "Flash your lights",
+    ],
+    answer: 1,
+    explanation:
+      "Hanging back lets you see more of the road ahead and gives you longer to react.",
+  },
+  {
+    id: "q0189",
+    topic: "Safety margins",
+    prompt: "Your overall stopping distance is made up of:",
+    options: [
+      "Braking distance only",
+      "Thinking distance plus braking distance",
+      "Thinking distance only",
+      "The length of the car",
+    ],
+    answer: 1,
+    explanation:
+      "Stopping distance = thinking distance (while you react) + braking distance (while the car slows).",
+  },
+  {
+    id: "q0190",
+    topic: "Safety margins",
+    prompt: "Why is black ice particularly dangerous?",
+    options: [
+      "It's very thick",
+      "You often can't see it on the road",
+      "It only forms in summer",
+      "It improves grip",
+    ],
+    answer: 1,
+    explanation:
+      "Black ice is almost invisible. If the road looks wet but is silent under your tyres, suspect ice and slow right down.",
+  },
+  {
+    id: "q0191",
+    topic: "Hazard awareness",
+    prompt: "Why should you look well ahead as you drive?",
+    options: [
+      "To spot and plan for hazards early",
+      "To save fuel",
+      "To check your mirrors less",
+      "To drive faster",
+    ],
+    answer: 0,
+    explanation:
+      "Scanning far ahead gives you time to react calmly to hazards rather than being caught out.",
+  },
+  {
+    id: "q0192",
+    topic: "Hazard awareness",
+    prompt: "The traffic lights ahead have been green for a long time as you approach. What should you do?",
+    options: [
+      "Speed up to get through",
+      "Be ready for them to change to amber",
+      "Sound your horn",
+      "Assume they'll stay green",
+    ],
+    answer: 1,
+    explanation:
+      "A long-green light may change as you arrive. Be ready to stop in case it turns amber.",
+  },
+  {
+    id: "q0193",
+    topic: "Hazard awareness",
+    prompt: "You start to feel unwell or dizzy while driving. What should you do?",
+    options: [
+      "Carry on to your destination",
+      "Stop somewhere safe as soon as you can",
+      "Speed up to finish sooner",
+      "Close your eyes briefly",
+    ],
+    answer: 1,
+    explanation:
+      "If you feel unwell, find a safe place to stop. Driving while unfit puts you and others at risk.",
+  },
+  {
+    id: "q0194",
+    topic: "Hazard awareness",
+    prompt: "The morning after a heavy night of drinking, you might:",
+    options: [
+      "Be completely fine to drive",
+      "Still be over the legal limit",
+      "Drive better than usual",
+      "Only be affected if you feel drunk",
+    ],
+    answer: 1,
+    explanation:
+      "Alcohol takes hours to leave your body — you can easily still be over the limit the next morning.",
+  },
+  {
+    id: "q0195",
+    topic: "Hazard awareness",
+    prompt: "You're driving towards low, bright sun and it's dazzling you. What should you do?",
+    options: [
+      "Speed up to get out of it",
+      "Use your sun visor and slow down",
+      "Close one eye",
+      "Flash your headlights",
+    ],
+    answer: 1,
+    explanation:
+      "Use the visor, keep your screen clean and slow down — dazzle hides pedestrians and other hazards.",
+  },
+  {
+    id: "q0196",
+    topic: "Hazard awareness",
+    prompt: "A cyclist ahead puts out their right arm. What does this mean and what should you do?",
+    options: [
+      "They're stopping — overtake",
+      "They intend to turn right — give them room",
+      "They're waving you past",
+      "Nothing — ignore it",
+    ],
+    answer: 1,
+    explanation:
+      "An extended right arm means the cyclist plans to turn right. Hold back and give them space to move across.",
+  },
+  {
+    id: "q0197",
+    topic: "Vulnerable road users",
+    prompt: "How does a puffin crossing differ from a pelican crossing?",
+    options: [
+      "It has no lights",
+      "It uses sensors and has no flashing amber phase",
+      "It's only for cyclists",
+      "It's controlled by a person",
+    ],
+    answer: 1,
+    explanation:
+      "A puffin crossing detects pedestrians and holds the lights, so there's no flashing amber phase.",
+  },
+  {
+    id: "q0198",
+    topic: "Vulnerable road users",
+    prompt: "A pedestrian is using a white cane or being led by a guide dog. This means they are likely:",
+    options: [
+      "A traffic officer",
+      "Blind or partially sighted",
+      "A delivery worker",
+      "Lost",
+    ],
+    answer: 1,
+    explanation:
+      "Give blind and partially sighted pedestrians plenty of time and room — they may not be aware of you.",
+  },
+  {
+    id: "q0199",
+    topic: "Vulnerable road users",
+    prompt:
+      "At a roundabout, a cyclist stays in the left-hand lane even though they're going right round. What should you do?",
+    options: [
+      "Force past on their right",
+      "Allow for this and give them room",
+      "Sound your horn",
+      "Overtake on their left",
+    ],
+    answer: 1,
+    explanation:
+      "Cyclists often keep left on roundabouts for safety. Give them space and don't cut across them.",
+  },
+  {
+    id: "q0200",
+    topic: "Vulnerable road users",
+    prompt: "You come up behind a mobility scooter on the road. What should you do?",
+    options: [
+      "Sound your horn to move them",
+      "Be patient and pass slowly with plenty of room",
+      "Drive close behind",
+      "Flash your lights",
+    ],
+    answer: 1,
+    explanation:
+      "Mobility scooters travel slowly. Be patient and only pass when you can give them lots of space.",
+  },
+  {
+    id: "q0201",
+    topic: "Vulnerable road users",
+    prompt: "Children are getting off a bus that has stopped ahead. What should you do?",
+    options: [
+      "Drive past quickly",
+      "Slow down — they may cross the road",
+      "Sound your horn",
+      "Overtake the bus",
+    ],
+    answer: 1,
+    explanation:
+      "Children may run across without looking. Slow right down and be ready to stop near a stopped bus.",
+  },
+  {
+    id: "q0202",
+    topic: "Vulnerable road users",
+    prompt: "When passing horse riders, you should NOT:",
+    options: [
+      "Slow down",
+      "Sound your horn or rev your engine",
+      "Give them room",
+      "Be ready to stop",
+    ],
+    answer: 1,
+    explanation:
+      "Sudden noise can frighten a horse. Pass slowly and widely, and keep the engine quiet.",
+  },
+  {
+    id: "q0203",
+    topic: "Vulnerable road users",
+    prompt: "At night, pedestrians in dark clothing are:",
+    options: [
+      "Easy to see",
+      "Hard to see — look carefully",
+      "Always on the pavement",
+      "Not your concern",
+    ],
+    answer: 1,
+    explanation:
+      "Dark clothing makes pedestrians very hard to spot at night, especially on unlit roads. Stay alert.",
+  },
+  {
+    id: "q0204",
+    topic: "Other types of vehicle",
+    prompt: "You're following a bus that pulls in at a stop. What should you watch for?",
+    options: [
+      "Nothing in particular",
+      "Passengers crossing in front of or behind the bus",
+      "The bus reversing",
+      "The bus speeding up",
+    ],
+    answer: 1,
+    explanation:
+      "People often cross near a stopped bus where you can't see them. Slow down and be ready to stop.",
+  },
+  {
+    id: "q0205",
+    topic: "Other types of vehicle",
+    prompt: "You're behind a slow-moving tractor. When should you overtake?",
+    options: [
+      "As soon as possible",
+      "Only when you have a long, clear view and it's safe",
+      "On a bend",
+      "Near a junction",
+    ],
+    answer: 1,
+    explanation:
+      "Be patient. Overtake a slow vehicle only when you can see far enough ahead to do it safely.",
+  },
+  {
+    id: "q0206",
+    topic: "Other types of vehicle",
+    prompt: "You've just overtaken a long lorry. What should you avoid doing?",
+    options: [
+      "Returning to your lane",
+      "Cutting back in too soon in front of it",
+      "Checking your mirrors",
+      "Signalling",
+    ],
+    answer: 1,
+    explanation:
+      "Large vehicles need a big gap to stop. Don't pull back in until you can see the whole front of it in your mirror.",
+  },
+  {
+    id: "q0207",
+    topic: "Other types of vehicle",
+    prompt: "A lorry is displaying an orange hazard-information panel. What does this tell you?",
+    options: [
+      "It's carrying hazardous goods",
+      "It's a delivery van",
+      "It's broken down",
+      "It's a council vehicle",
+    ],
+    answer: 0,
+    explanation:
+      "Orange hazard panels show the vehicle carries dangerous goods — useful for the emergency services in an incident.",
+  },
+  {
+    id: "q0208",
+    topic: "Other types of vehicle",
+    prompt: "In town, cyclists and motorcyclists may suddenly:",
+    options: [
+      "Stop for no reason",
+      "Pull out to pass parked cars",
+      "Reverse",
+      "Drive on the pavement",
+    ],
+    answer: 1,
+    explanation:
+      "They often move out to avoid parked cars or hazards. Give them room and don't pass too closely.",
+  },
+  {
+    id: "q0209",
+    topic: "Other types of vehicle",
+    prompt: "A large vehicle ahead is reversing into a side road. What should you do?",
+    options: [
+      "Squeeze past on the inside",
+      "Wait until it has finished",
+      "Sound your horn",
+      "Overtake quickly",
+    ],
+    answer: 1,
+    explanation:
+      "Hold back and wait. The driver has limited visibility while reversing such a big vehicle.",
+  },
+  {
+    id: "q0210",
+    topic: "Vehicle handling",
+    prompt: "You're parking facing uphill next to a kerb. What should you do with your wheels?",
+    options: [
+      "Turn them towards the kerb",
+      "Turn them away from the kerb",
+      "Leave them straight",
+      "It makes no difference",
+    ],
+    answer: 1,
+    explanation:
+      "Facing uphill, turn the wheels away from the kerb so the car rolls back into it if it moves. Leave it in gear with the handbrake on.",
+  },
+  {
+    id: "q0211",
+    topic: "Vehicle handling",
+    prompt: "When driving at night you should be able to:",
+    options: [
+      "Stop within the distance you can see to be clear",
+      "Drive at the speed limit regardless",
+      "Rely only on other cars' lights",
+      "Follow closely to use their lights",
+    ],
+    answer: 0,
+    explanation:
+      "Don't 'overdrive' your headlights — keep to a speed where you can stop within the distance they light up.",
+  },
+  {
+    id: "q0212",
+    topic: "Vehicle handling",
+    prompt: "There's standing water by the kerb and pedestrians nearby. What should you do?",
+    options: [
+      "Drive through at speed",
+      "Slow down to avoid soaking them",
+      "Sound your horn",
+      "Speed up to clear it",
+    ],
+    answer: 1,
+    explanation:
+      "Splashing pedestrians is inconsiderate and can be an offence. Slow down as you pass through water.",
+  },
+  {
+    id: "q0213",
+    topic: "Vehicle handling",
+    prompt: "How should you hold and turn the steering wheel?",
+    options: [
+      "One hand, spinning it freely",
+      "Both hands, feeding the wheel and staying in control",
+      "With your knees on a straight road",
+      "By crossing your arms fully",
+    ],
+    answer: 1,
+    explanation:
+      "Keep both hands on the wheel where you can and feed it through your hands so you stay in full control.",
+  },
+  {
+    id: "q0214",
+    topic: "Vehicle handling",
+    prompt: "You've used your rear fog light in fog. When should you switch it off?",
+    options: [
+      "Never",
+      "When visibility improves",
+      "Only at the end of the journey",
+      "When it gets dark",
+    ],
+    answer: 1,
+    explanation:
+      "Turn fog lights off once you can see clearly again — they dazzle drivers behind and hide your brake lights.",
+  },
+  {
+    id: "q0215",
+    topic: "Vehicle handling",
+    prompt: "To reduce the risk of skidding in heavy rain, you should:",
+    options: [
+      "Brake hard and late",
+      "Slow down and brake gently and early",
+      "Steer sharply",
+      "Accelerate through bends",
+    ],
+    answer: 1,
+    explanation:
+      "Smooth, early, gentle inputs keep grip. Harsh braking or steering on a wet road can start a skid.",
+  },
+  {
+    id: "q0216",
+    topic: "Motorway rules",
+    prompt: "What colour are the reflective studs on the right-hand edge of a motorway?",
+    options: ["Red", "White", "Amber", "Green"],
+    answer: 2,
+    explanation:
+      "Amber studs mark the right edge, next to the central reservation.",
+  },
+  {
+    id: "q0217",
+    topic: "Motorway rules",
+    prompt: "What do white reflective studs on a motorway mark?",
+    options: [
+      "The lanes (between them)",
+      "The left edge",
+      "The right edge",
+      "Slip roads",
+    ],
+    answer: 0,
+    explanation:
+      "White studs lie between the lanes. Red mark the left edge, amber the right and green the slip roads.",
+  },
+  {
+    id: "q0218",
+    topic: "Motorway rules",
+    prompt: "How should you leave a motorway?",
+    options: [
+      "Brake hard in the running lane",
+      "Move into the slip road and check your speed",
+      "Stop and reverse if you miss it",
+      "Cut across all lanes at the last second",
+    ],
+    answer: 1,
+    explanation:
+      "Signal in good time, move onto the slip road and check your speedometer — 50 mph can feel deceptively slow.",
+  },
+  {
+    id: "q0219",
+    topic: "Motorway rules",
+    prompt: "What do the countdown markers before a motorway exit show?",
+    options: [
+      "The distance to the next services",
+      "The distance to the start of the slip road",
+      "The speed limit",
+      "The number of lanes",
+    ],
+    answer: 1,
+    explanation:
+      "Three, two and one bars count down to the start of the slip road, so you can prepare to leave.",
+  },
+  {
+    id: "q0220",
+    topic: "Motorway rules",
+    prompt: "When may you stop on a motorway?",
+    options: [
+      "To make a phone call",
+      "In an emergency, in a queue, or when signalled to",
+      "To check a map",
+      "To pick up a passenger",
+    ],
+    answer: 1,
+    explanation:
+      "You must not stop on a motorway except in an emergency, in slow/stopped traffic, or when signals tell you to.",
+  },
+  {
+    id: "q0221",
+    topic: "Motorway rules",
+    prompt: "While towing a trailer on a three-lane motorway, which lane must you NOT use?",
+    options: [
+      "The left lane",
+      "The middle lane",
+      "The right-hand lane",
+      "Any lane is fine",
+    ],
+    answer: 2,
+    explanation:
+      "Vehicles towing trailers aren't allowed in the right-hand lane of a motorway with three or more lanes.",
+  },
+  {
+    id: "q0222",
+    topic: "Motorway rules",
+    prompt: "On a smart motorway, when may you drive in the hard shoulder?",
+    options: [
+      "Whenever traffic is heavy",
+      "Only when a speed limit is shown above it (it's open as a lane)",
+      "Never",
+      "Only at night",
+    ],
+    answer: 1,
+    explanation:
+      "On a smart motorway the hard shoulder is only a running lane when a speed limit is shown above it. A red X means it's closed.",
+  },
+  {
+    id: "q0223",
+    topic: "Rules of the road",
+    prompt: "At traffic lights, red and amber show together. What does this mean?",
+    options: [
+      "Go now",
+      "Get ready to go, but don't move yet",
+      "Stop and switch off",
+      "The lights are faulty",
+    ],
+    answer: 1,
+    explanation:
+      "Red and amber together means prepare to move — but wait until the light turns green.",
+  },
+  {
+    id: "q0224",
+    topic: "Rules of the road",
+    prompt: "A green filter arrow lights up at a junction. What does it mean?",
+    options: [
+      "Stop",
+      "You may go in the direction of the arrow",
+      "Give way to all traffic",
+      "The junction is closed",
+    ],
+    answer: 1,
+    explanation:
+      "A green arrow means you may proceed in that direction, even if the main light isn't green — if it's clear.",
+  },
+  {
+    id: "q0225",
+    topic: "Rules of the road",
+    prompt: "You're leaving a roundabout. When should you signal left?",
+    options: [
+      "As you enter the roundabout",
+      "As you pass the exit before the one you want",
+      "Not at all",
+      "Only after you've left",
+    ],
+    answer: 1,
+    explanation:
+      "Signal left after passing the exit before yours, so other drivers know where you're leaving.",
+  },
+  {
+    id: "q0226",
+    topic: "Rules of the road",
+    prompt: "Going straight ahead at a roundabout, which lane should you normally approach in?",
+    options: [
+      "The right lane",
+      "The left lane (unless signs or markings say otherwise)",
+      "The centre of the road",
+      "Any lane",
+    ],
+    answer: 1,
+    explanation:
+      "Usually approach in the left lane to go straight ahead, unless road markings direct you otherwise.",
+  },
+  {
+    id: "q0227",
+    topic: "Rules of the road",
+    prompt: "A police officer in the road signals you to stop. What must you do?",
+    options: [
+      "Slow down only",
+      "Stop",
+      "Drive around them",
+      "Carry on if the road is clear",
+    ],
+    answer: 1,
+    explanation:
+      "You must stop when signalled by a police officer, traffic officer, traffic warden or school crossing patrol.",
+  },
+  {
+    id: "q0228",
+    topic: "Rules of the road",
+    prompt: "A cycle lane is marked with a solid white line. What does this mean for you?",
+    options: [
+      "You may use it freely",
+      "Don't drive or park in it during its hours of operation",
+      "It's for parking",
+      "It's optional for cyclists only",
+    ],
+    answer: 1,
+    explanation:
+      "Don't drive or park in a solid-line cycle lane while it's operating — it's reserved for cyclists.",
+  },
+  {
+    id: "q0229",
+    topic: "Rules of the road",
+    prompt: "When may you make a U-turn?",
+    options: [
+      "Anywhere you like",
+      "Where it's safe and not prohibited by a sign",
+      "On a motorway",
+      "At a level crossing",
+    ],
+    answer: 1,
+    explanation:
+      "Only make a U-turn where it's safe, you can see clearly, and there's no sign banning it.",
+  },
+  {
+    id: "q0230",
+    topic: "Road and traffic signs",
+    prompt: "What does this sign mean?",
+    sign: "no-u-turn",
+    options: ["No U-turns", "No left turn", "No through road", "Roundabout"],
+    answer: 0,
+    explanation:
+      "A red ring with a U-turn arrow crossed out means U-turns are not allowed.",
+  },
+  {
+    id: "q0231",
+    topic: "Documents",
+    prompt: "A learner driver must be supervised by someone who is:",
+    options: [
+      "Over 18 with any licence",
+      "At least 21 and has held a full licence for 3 years",
+      "Any passenger who can drive",
+      "Over 25 only",
+    ],
+    answer: 1,
+    explanation:
+      "A supervising driver must be at least 21 and have held a full licence for that category for three years.",
+  },
+  {
+    id: "q0232",
+    topic: "Documents",
+    prompt: "What is the minimum age to drive a car in the UK?",
+    options: ["16", "17", "18", "21"],
+    answer: 1,
+    explanation:
+      "You can drive a car from 17 (or 16 if you receive the higher-rate mobility component of certain benefits).",
+  },
+  {
+    id: "q0233",
+    topic: "Documents",
+    prompt: "When you sell your car, what must you do?",
+    options: [
+      "Nothing",
+      "Tell DVLA about the change",
+      "Only tell your insurer",
+      "Wait for the buyer to register it",
+    ],
+    answer: 1,
+    explanation:
+      "You must notify DVLA when you sell or transfer a vehicle, or you remain liable for it.",
+  },
+  {
+    id: "q0234",
+    topic: "Documents",
+    prompt: "You develop a medical condition that affects your driving. What must you do?",
+    options: [
+      "Nothing, unless asked",
+      "Tell DVLA",
+      "Only tell your doctor",
+      "Stop driving forever",
+    ],
+    answer: 1,
+    explanation:
+      "You must tell DVLA about a medical condition that could affect your driving — they'll decide if you can continue.",
+  },
+  {
+    id: "q0235",
+    topic: "Documents",
+    prompt: "What is Pass Plus?",
+    options: [
+      "A type of insurance",
+      "A training scheme to gain experience after passing your test",
+      "A second theory test",
+      "A speed-awareness course",
+    ],
+    answer: 1,
+    explanation:
+      "Pass Plus is a voluntary course for new drivers to build experience (motorways, night, all weathers) after passing.",
+  },
+  {
+    id: "q0236",
+    topic: "Incidents and emergencies",
+    prompt: "When giving first aid, what should you check first?",
+    options: [
+      "Whether they have any money",
+      "That their airway is clear and they're breathing",
+      "Their name",
+      "For broken bones",
+    ],
+    answer: 1,
+    explanation:
+      "Check danger, then the casualty's airway and breathing first — these keep them alive while help arrives.",
+  },
+  {
+    id: "q0237",
+    topic: "Incidents and emergencies",
+    prompt: "A motorcyclist is injured in a crash. When should you remove their helmet?",
+    options: [
+      "Straight away",
+      "Only if it's essential, such as to keep the airway open",
+      "To make them comfortable",
+      "Never, under any circumstances",
+    ],
+    answer: 1,
+    explanation:
+      "Leave the helmet on unless removing it is essential (for example, to maintain the airway), as moving the head can cause harm.",
+  },
+  {
+    id: "q0238",
+    topic: "Incidents and emergencies",
+    prompt: "On an ordinary road, how far before an obstruction should you place a warning triangle?",
+    options: ["5 metres", "At least 45 metres", "200 metres", "It doesn't matter"],
+    answer: 1,
+    explanation:
+      "Place a warning triangle at least 45 metres before the hazard, on the same side of the road.",
+  },
+  {
+    id: "q0239",
+    topic: "Incidents and emergencies",
+    prompt: "Where must you NOT use a warning triangle?",
+    options: [
+      "On a country lane",
+      "On a motorway",
+      "On a quiet street",
+      "In a car park",
+    ],
+    answer: 1,
+    explanation:
+      "Never walk on the carriageway to place a triangle on a motorway — it's too dangerous. Use the hard shoulder and emergency phone.",
+  },
+  {
+    id: "q0240",
+    topic: "Incidents and emergencies",
+    prompt: "A casualty has a suspected broken leg. What should you do?",
+    options: [
+      "Straighten the leg",
+      "Avoid moving them unless they're in danger",
+      "Help them walk it off",
+      "Move them to a car",
+    ],
+    answer: 1,
+    explanation:
+      "Don't move someone with a suspected fracture unless they're in immediate danger — wait for the experts.",
+  },
+  {
+    id: "q0241",
+    topic: "Incidents and emergencies",
+    prompt: "You call 999 to report a crash. What key information should you give?",
+    options: [
+      "Your favourite route",
+      "The exact location and details of any casualties",
+      "The weather forecast",
+      "Your insurance company",
+    ],
+    answer: 1,
+    explanation:
+      "Give the precise location and the number and condition of casualties so the right help is sent quickly.",
+  },
+  {
+    id: "q0242",
+    topic: "Vehicle loading",
+    prompt: "How many passengers may you carry?",
+    options: [
+      "As many as can squeeze in",
+      "Only as many as there are seats with seat belts",
+      "No more than two",
+      "Any number on a short trip",
+    ],
+    answer: 1,
+    explanation:
+      "You may only carry as many passengers as there are proper seats and seat belts for them.",
+  },
+  {
+    id: "q0243",
+    topic: "Vehicle loading",
+    prompt: "You're carrying a load on a roof rack. What should you do?",
+    options: [
+      "Leave it loose",
+      "Secure it well and drive more slowly",
+      "Drive faster to get there sooner",
+      "Pile it as high as possible",
+    ],
+    answer: 1,
+    explanation:
+      "Secure roof loads firmly and reduce your speed — the extra height affects handling, braking and stability.",
+  },
+  {
+    id: "q0244",
+    topic: "Vehicle loading",
+    prompt: "Overloading a vehicle mainly affects its:",
+    options: [
+      "Radio reception",
+      "Handling, braking and tyres",
+      "Paintwork",
+      "Fuel gauge accuracy",
+    ],
+    answer: 1,
+    explanation:
+      "Too much weight makes the car harder to steer and stop, and overloads the tyres — it's also illegal.",
+  },
+  {
+    id: "q0245",
+    topic: "Vehicle loading",
+    prompt: "A trailer you're towing must have:",
+    options: [
+      "Its own engine",
+      "Working lights and indicators",
+      "A spare driver",
+      "No number plate",
+    ],
+    answer: 1,
+    explanation:
+      "A trailer must have working lights, brake lights and indicators that match the car's, plus its own number plate.",
+  },
+  {
+    id: "q0246",
+    topic: "Vehicle loading",
+    prompt: "Why must a load be secured before you set off?",
+    options: [
+      "To save fuel",
+      "So it can't move or fall onto the road",
+      "To make the car quieter",
+      "To improve grip",
+    ],
+    answer: 1,
+    explanation:
+      "An unsecured load can shift and unbalance the car, or fall into the road and cause a serious hazard.",
+  },
+  {
+    id: "q0247",
+    topic: "Road and traffic signs",
+    prompt: "What does this sign mean?",
+    sign: "parking",
+    options: [
+      "Parking place",
+      "No parking",
+      "Petrol station",
+      "Police station",
+    ],
+    answer: 0,
+    explanation:
+      "A blue square with a white 'P' shows where you may park.",
+  },
+  {
+    id: "q0248",
+    topic: "Road and traffic signs",
+    prompt: "What does this sign mean?",
+    sign: "warning-tjunction",
+    options: ["T-junction ahead", "Crossroads ahead", "No through road", "Give way"],
+    answer: 0,
+    explanation:
+      "A red-bordered triangle with a 'T' shape warns that the road ahead ends at a T-junction.",
+  },
+  {
+    id: "q0249",
+    topic: "Road and traffic signs",
+    prompt: "What does this sign mean?",
+    sign: "no-left-turn",
+    options: ["No left turn", "Turn left ahead", "No entry", "One way left"],
+    answer: 0,
+    explanation:
+      "A red ring with a left-turn arrow crossed out means no left turn.",
+  },
+  {
+    id: "q0250",
+    topic: "Road and traffic signs",
+    prompt: "What does this sign mean?",
+    sign: "no-right-turn",
+    options: ["No right turn", "Turn right ahead", "No entry", "One way right"],
+    answer: 0,
+    explanation:
+      "A red ring with a right-turn arrow crossed out means no right turn.",
   },
 ];
 
