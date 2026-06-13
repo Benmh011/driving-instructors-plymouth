@@ -1896,6 +1896,411 @@ export const QUESTIONS: Question[] = [
     explanation:
       "Reassure them, keep them warm and comfortable, and don't give food or drink. Get medical help.",
   },
+  {
+    id: "q0136",
+    topic: "Alertness",
+    prompt: "What is the minimum distance you must be able to read a car number plate from?",
+    options: ["10 metres", "20 metres", "50 metres", "100 metres"],
+    answer: 1,
+    explanation:
+      "You must be able to read a modern number plate from 20 metres, with glasses or lenses if you need them.",
+  },
+  {
+    id: "q0137",
+    topic: "Alertness",
+    prompt: "On a long motorway journey, how often should you take a break?",
+    options: [
+      "Only when you feel exhausted",
+      "At least every two hours",
+      "Every six hours",
+      "Breaks aren't necessary",
+    ],
+    answer: 1,
+    explanation:
+      "Plan a rest of at least 15 minutes after every two hours of driving to stay alert.",
+  },
+  {
+    id: "q0138",
+    topic: "Attitude",
+    prompt: "You're behind a learner driver who stalls at a junction. What should you do?",
+    options: [
+      "Sound your horn repeatedly",
+      "Be patient and give them time",
+      "Drive very close to hurry them",
+      "Overtake on a blind bend",
+    ],
+    answer: 1,
+    explanation:
+      "Stay patient with learners — everyone has to start somewhere. Pressuring them makes mistakes more likely.",
+  },
+  {
+    id: "q0139",
+    topic: "Attitude",
+    prompt: "When is it appropriate to sound your horn?",
+    options: [
+      "To show anger at another driver",
+      "To let other road users know you're there",
+      "To tell someone to hurry up",
+      "To greet a friend",
+    ],
+    answer: 1,
+    explanation:
+      "The horn is only to warn others of your presence — never to vent anger. Don't use it when stationary or in a built-up area at night.",
+  },
+  {
+    id: "q0140",
+    topic: "Safety and your vehicle",
+    prompt: "Your car pulls to one side whenever you brake. What does this suggest?",
+    options: [
+      "It's completely normal",
+      "A braking fault that should be checked",
+      "The tyres are over-inflated",
+      "You're braking too gently",
+    ],
+    answer: 1,
+    explanation:
+      "Pulling to one side under braking points to a fault. Get the brakes checked before driving far.",
+  },
+  {
+    id: "q0141",
+    topic: "Safety and your vehicle",
+    prompt: "What is the purpose of a catalytic converter?",
+    options: [
+      "To increase top speed",
+      "To reduce harmful exhaust emissions",
+      "To make the engine louder",
+      "To improve the radio signal",
+    ],
+    answer: 1,
+    explanation:
+      "A catalytic converter cuts the harmful gases in your exhaust, reducing the car's impact on air quality.",
+  },
+  {
+    id: "q0142",
+    topic: "Safety and your vehicle",
+    prompt: "Your steering suddenly becomes much heavier than usual. What's the likely cause?",
+    options: [
+      "Perfectly normal in cold weather",
+      "A power-steering fault to be checked",
+      "The handbrake is on",
+      "Low screen-wash",
+    ],
+    answer: 1,
+    explanation:
+      "Unusually heavy steering can mean a power-steering fault (low fluid or a broken belt). Have it checked.",
+  },
+  {
+    id: "q0143",
+    topic: "Vehicle loading",
+    prompt: "When should you fit extended towing mirrors?",
+    options: [
+      "Never — standard mirrors are fine",
+      "When the caravan or trailer is wider than the car",
+      "Only at night",
+      "Only on motorways",
+    ],
+    answer: 1,
+    explanation:
+      "If your trailer or caravan is wider than the car, fit towing mirrors so you can see clearly behind.",
+  },
+  {
+    id: "q0144",
+    topic: "Safety margins",
+    prompt: "In icy conditions, your stopping distance can be how much greater than on a dry road?",
+    options: ["Twice as much", "Up to ten times as much", "The same", "Half as much"],
+    answer: 1,
+    explanation:
+      "On ice, stopping distances can be up to ten times longer. Slow right down and leave a huge gap.",
+  },
+  {
+    id: "q0145",
+    topic: "Safety margins",
+    prompt: "You're driving through a contraflow system. What should you do?",
+    options: [
+      "Keep your normal speed",
+      "Reduce speed and keep a safe distance from the vehicle ahead",
+      "Overtake whenever you can",
+      "Drive close to the cones",
+    ],
+    answer: 1,
+    explanation:
+      "In a contraflow, lanes are narrower and traffic is two-way. Slow down, obey the limit and keep your distance.",
+  },
+  {
+    id: "q0146",
+    topic: "Hazard awareness",
+    prompt: "What is the rule about driving after taking illegal drugs?",
+    options: [
+      "Fine if you feel okay",
+      "Never drive — they impair you and can stay in your system for a long time",
+      "Allowed after a few hours",
+      "Only a problem at night",
+    ],
+    answer: 1,
+    explanation:
+      "Never drive on illegal drugs. They impair judgement and reactions and can remain in your system for a long time.",
+  },
+  {
+    id: "q0147",
+    topic: "Hazard awareness",
+    prompt: "You're approaching a blind bend or a humpback bridge. What should you do?",
+    options: [
+      "Maintain speed and hope it's clear",
+      "Slow down and be ready to stop",
+      "Sound your horn and accelerate",
+      "Move to the right for a better view",
+    ],
+    answer: 1,
+    explanation:
+      "You can't see what's coming, so ease off and be ready to stop — there may be an oncoming vehicle or hazard.",
+  },
+  {
+    id: "q0148",
+    topic: "Vulnerable road users",
+    prompt: "A school crossing patrol steps out and shows their STOP sign. What must you do?",
+    options: [
+      "Slow down only",
+      "Stop and wait until they return to the kerb",
+      "Drive round them",
+      "Carry on if no children are visible",
+    ],
+    answer: 1,
+    explanation:
+      "You must stop for a school crossing patrol and wait until they've finished and stepped back.",
+  },
+  {
+    id: "q0149",
+    topic: "Vulnerable road users",
+    prompt: "In slow-moving traffic, a motorcyclist may filter between the lanes. Before you change lane you should:",
+    options: [
+      "Move over quickly",
+      "Check your mirrors and blind spots for motorcyclists",
+      "Open your door to signal",
+      "Sound your horn",
+    ],
+    answer: 1,
+    explanation:
+      "Motorcyclists filtering through traffic are easy to miss. Always check mirrors and blind spots before moving.",
+  },
+  {
+    id: "q0150",
+    topic: "Vulnerable road users",
+    prompt: "You see an ice cream van stopped on the other side of the road. What should you do?",
+    options: [
+      "Speed past while you can",
+      "Slow down — children may run out to or from it",
+      "Sound your horn",
+      "Ignore it",
+    ],
+    answer: 1,
+    explanation:
+      "Children can dash out around an ice cream van without looking. Slow right down and be ready to stop.",
+  },
+  {
+    id: "q0151",
+    topic: "Other types of vehicle",
+    prompt: "A long vehicle ahead is signalling left but moves out to the right first. What should you do?",
+    options: [
+      "Overtake on its left",
+      "Stay back and don't try to pass on either side",
+      "Sound your horn",
+      "Squeeze through on the inside",
+    ],
+    answer: 1,
+    explanation:
+      "Long vehicles swing wide to make tight turns. Never try to pass on the inside — hold back and wait.",
+  },
+  {
+    id: "q0152",
+    topic: "Other types of vehicle",
+    prompt: "It's very windy and there's a motorcyclist ahead. Why should you give them extra room?",
+    options: [
+      "They always ride too slowly",
+      "A gust could blow them off course",
+      "They can't see you",
+      "Their bike is louder",
+    ],
+    answer: 1,
+    explanation:
+      "Strong gusts can push a motorcyclist sideways, so leave plenty of space when following or overtaking.",
+  },
+  {
+    id: "q0153",
+    topic: "Vehicle handling",
+    prompt: "How should you move off on packed snow or ice?",
+    options: [
+      "Rev hard in first gear",
+      "Pull away gently, using a higher gear to avoid wheelspin",
+      "Brake and accelerate together",
+      "Spin the wheels to get grip",
+    ],
+    answer: 1,
+    explanation:
+      "Gentle acceleration in a higher gear (often second) reduces wheelspin and helps you get moving on snow.",
+  },
+  {
+    id: "q0154",
+    topic: "Vehicle handling",
+    prompt: "When is it appropriate to use your hazard warning lights?",
+    options: [
+      "To park on double yellow lines",
+      "When stopped and temporarily obstructing traffic, or to warn of a hazard",
+      "To drive faster in the rain",
+      "Whenever it's dark",
+    ],
+    answer: 1,
+    explanation:
+      "Use hazard lights when your stationary vehicle is causing an obstruction, or briefly to warn following traffic of a hazard ahead.",
+  },
+  {
+    id: "q0155",
+    topic: "Vehicle handling",
+    prompt: "You reach a flooded ford. How should you drive through it?",
+    options: [
+      "Quickly to avoid stalling",
+      "Slowly in a low gear, after checking the depth",
+      "In your highest gear",
+      "With the engine switched off",
+    ],
+    answer: 1,
+    explanation:
+      "Check the depth first, then drive through slowly in a low gear. Test your brakes gently once you're through.",
+  },
+  {
+    id: "q0156",
+    topic: "Motorway rules",
+    prompt: "What colour are the reflective studs along the left-hand edge of a motorway?",
+    options: ["White", "Amber", "Red", "Green"],
+    answer: 2,
+    explanation:
+      "Red studs mark the left edge. White separate the lanes, amber mark the right edge and green mark slip roads.",
+  },
+  {
+    id: "q0157",
+    topic: "Motorway rules",
+    prompt: "What is a crawler (climbing) lane on a motorway used for?",
+    options: [
+      "Overtaking at speed",
+      "Slow-moving vehicles going uphill",
+      "Emergency stops",
+      "Turning around",
+    ],
+    answer: 1,
+    explanation:
+      "A crawler lane gives slow vehicles, such as heavy lorries, a lane to use on a steep uphill section.",
+  },
+  {
+    id: "q0158",
+    topic: "Motorway rules",
+    prompt: "Your car has broken down on the hard shoulder. How do you find the nearest emergency phone?",
+    options: [
+      "Walk in any direction",
+      "Follow the arrows on the marker posts",
+      "Cross the carriageway",
+      "Wait by the car",
+    ],
+    answer: 1,
+    explanation:
+      "Marker posts along the hard shoulder have arrows pointing to the nearest emergency telephone.",
+  },
+  {
+    id: "q0159",
+    topic: "Rules of the road",
+    prompt: "Two lanes of traffic are merging into one. What's the correct approach?",
+    options: [
+      "Force your way in first",
+      "Merge in turn, taking it in turns with the other lane",
+      "Block the other lane",
+      "Speed up to get ahead",
+    ],
+    answer: 1,
+    explanation:
+      "Where lanes merge, take turns ('merge in turn'). It keeps traffic flowing and avoids conflict.",
+  },
+  {
+    id: "q0160",
+    topic: "Rules of the road",
+    prompt: "How close to a junction are you allowed to park?",
+    options: [
+      "Right up to the corner",
+      "Not within 10 metres, unless in a marked bay",
+      "Within 2 metres",
+      "Anywhere outside rush hour",
+    ],
+    answer: 1,
+    explanation:
+      "Don't park within 10 metres (32 feet) of a junction — it blocks visibility for everyone turning.",
+  },
+  {
+    id: "q0161",
+    topic: "Rules of the road",
+    prompt: "How should you turn left into a side road?",
+    options: [
+      "Swing out to the right first",
+      "Keep well to the left and don't swing wide",
+      "Cut the corner across the kerb",
+      "Straddle both lanes",
+    ],
+    answer: 1,
+    explanation:
+      "Keep to the left and turn tidily. Swinging out can mislead others and put cyclists on your left at risk.",
+  },
+  {
+    id: "q0162",
+    topic: "Documents",
+    prompt: "A car kept on a public road must be:",
+    options: [
+      "Taxed and insured",
+      "Only insured",
+      "Only taxed",
+      "Neither, if it's not driven",
+    ],
+    answer: 0,
+    explanation:
+      "A vehicle on a public road must be taxed and insured. If it's kept off-road and unused, you must declare a SORN.",
+  },
+  {
+    id: "q0163",
+    topic: "Incidents and emergencies",
+    prompt: "Your vehicle breaks down in a tunnel. What should you do?",
+    options: [
+      "Stay in the car with the engine running",
+      "Switch on hazard lights, leave the vehicle and call from an emergency point",
+      "Attempt repairs in the lane",
+      "Reverse out of the tunnel",
+    ],
+    answer: 1,
+    explanation:
+      "Put your hazard lights on, switch off the engine, leave the vehicle and use an emergency point to call for help.",
+  },
+  {
+    id: "q0164",
+    topic: "Incidents and emergencies",
+    prompt: "How should you treat someone's burn at the scene of an incident?",
+    options: [
+      "Apply butter or cream",
+      "Cool it with clean, cold water for at least ten minutes",
+      "Burst any blisters",
+      "Cover it tightly and leave it",
+    ],
+    answer: 1,
+    explanation:
+      "Cool a burn with clean cold water for at least ten minutes. Don't remove anything stuck to it.",
+  },
+  {
+    id: "q0165",
+    topic: "Incidents and emergencies",
+    prompt: "You reverse into a parked car and the owner is nowhere to be found. What must you do?",
+    options: [
+      "Drive off — it was an accident",
+      "Leave your details, or report it to the police within 24 hours",
+      "Leave a note only if there's damage you can see",
+      "Wait five minutes then go",
+    ],
+    answer: 1,
+    explanation:
+      "You must leave your details for the owner. If you can't, report it to the police as soon as you can and within 24 hours.",
+  },
 ];
 
 export function topicCount(topic: Topic): number {
