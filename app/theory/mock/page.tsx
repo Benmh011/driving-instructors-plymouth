@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import BackLink from "@/components/BackLink";
@@ -21,11 +22,20 @@ export default async function MockTestPage() {
   const gate = await theoryAccess();
   if (!gate.ok) redirect("/theory");
 
+  // Instructors preview from their review page, so send them back there.
+  const me = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true },
+  });
+  const isInstructor = me?.role === "INSTRUCTOR";
+  const backHref = isInstructor ? "/theory/review" : "/theory";
+  const backLabel = isInstructor ? "Review" : "Theory";
+
   return (
     <div className="relative z-10 min-h-dvh">
       <AppHeader home="/dashboard" right={<SignOutButton />} />
       <main className="mx-auto max-w-3xl px-5 py-14 sm:px-8">
-        <BackLink href="/theory" label="Theory" />
+        <BackLink href={backHref} label={backLabel} />
         <h1 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl">
           Mock test
         </h1>
@@ -36,7 +46,7 @@ export default async function MockTestPage() {
           passMark={MOCK_PASS_MARK}
           timeSeconds={MOCK_TIME_SECONDS}
           title="Mock test"
-          backHref="/theory"
+          backHref={backHref}
         />
       </main>
     </div>
