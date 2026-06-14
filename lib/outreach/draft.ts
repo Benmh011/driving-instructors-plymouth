@@ -10,7 +10,9 @@ export function buildDraft(_prospect: { name: string; area: string | null }): {
   const subject = "Quick idea for your driving school";
   const body = `Hi there,
 
-I'm local and I run Driving Instructors Plymouth, a booking and admin platform I've built for instructors around Plymouth and the South Hams. It gives you your own diary (lessons, income and expenses), student management, optional online payments, and theory-test practice for your pupils, from £9.99/month on the founder rate. There's a one-month free trial to get started.
+I'm local and I run Driving Instructors Plymouth, a booking and admin platform I've built for instructors around Plymouth and the South Hams. It gives you your own diary (lessons, income and expenses), student management, optional online payments, and theory-test practice for your pupils.
+
+There's a one-month free trial to get started. After that it's £9.99/month on the founder rate, and if you sign up now that price is locked in for good.
 
 Thought it might save you some admin time, as well as give your students somewhere to practise their theory. If you'd like, I can send over a quick demo link to take a look.
 
@@ -18,7 +20,8 @@ If it's not for you, no worries at all, just reply and let me know.
 
 Best,
 Gabe
-Driving Instructors Plymouth`;
+Driving Instructors Plymouth
+www.drivinginstructorsplymouth.com`;
 
   return { subject, body };
 }
