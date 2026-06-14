@@ -3,6 +3,7 @@ import { Bricolage_Grotesque } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import ServiceWorker from "@/components/ServiceWorker";
 import AppChrome from "@/components/AppChrome";
+import { RouteProgress } from "@/components/RouteProgress";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import "./globals.css";
@@ -75,6 +76,7 @@ export default async function RootLayout({
   return (
     <html lang="en-GB" className={`${GeistSans.variable} ${bricolage.variable}`}>
       <body>
+        <RouteProgress />
         <AppChrome role={role}>{children}</AppChrome>
         <ServiceWorker />
       </body>

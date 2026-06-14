@@ -252,7 +252,7 @@ function NavCard({
   return (
     <Link
       href={href}
-      className={`flex items-center justify-between rounded-2xl border border-hairline bg-cream p-6 transition-colors hover:border-ink/30 ${className}`}
+      className={`flex items-center justify-between rounded-2xl border border-hairline bg-cream p-6 hover:border-ink/30 lift press ${className}`}
     >
       <div>
         <p className="font-display text-lg font-semibold">{title}</p>

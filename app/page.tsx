@@ -7,6 +7,7 @@ import { TwoSided } from "@/components/TwoSided";
 import { Coverage } from "@/components/Coverage";
 import { Faq } from "@/components/Faq";
 import { Footer } from "@/components/Footer";
+import { Reveal } from "@/components/Reveal";
 
 export default async function Home() {
   const session = await auth();
@@ -17,10 +18,18 @@ export default async function Home() {
       <Header />
       <main>
         <Hero />
-        <HowItWorks />
-        <TwoSided />
-        <Coverage />
-        <Faq />
+        <Reveal>
+          <HowItWorks />
+        </Reveal>
+        <Reveal>
+          <TwoSided />
+        </Reveal>
+        <Reveal>
+          <Coverage />
+        </Reveal>
+        <Reveal>
+          <Faq />
+        </Reveal>
       </main>
       <Footer />
     </div>

@@ -220,6 +220,13 @@ export default function QuestionRunner({
         )}
       </div>
 
+      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-ink/10">
+        <div
+          className="h-full rounded-full bg-sea transition-[width] duration-300 ease-out motion-reduce:transition-none"
+          style={{ width: `${((index + 1) / items.length) * 100}%` }}
+        />
+      </div>
+
       <div className={`mt-3 ${card}`}>
         {q.sign && (
           <div className="mb-4 flex justify-center rounded-xl bg-white py-5">

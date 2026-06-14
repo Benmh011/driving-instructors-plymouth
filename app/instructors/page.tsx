@@ -166,7 +166,7 @@ export default async function InstructorsPage({
                 <li key={i.id}>
                   <Link
                     href={`/instructors/${slugById.get(i.id) ?? i.id}`}
-                    className="flex h-full flex-col rounded-2xl border border-hairline bg-cream p-6 transition-colors hover:border-ink/30"
+                    className="flex h-full flex-col rounded-2xl border border-hairline bg-cream p-6 hover:border-ink/30 lift press"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex min-w-0 items-center gap-3">
