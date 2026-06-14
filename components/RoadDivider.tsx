@@ -1,6 +1,4 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 
 function Car() {
   return (
@@ -86,31 +84,13 @@ export function RoadDivider({
   finish?: boolean;
   dark?: boolean;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [driven, setDriven] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          requestAnimationFrame(() => setDriven(true));
-          obs.disconnect();
-        }
-      },
-      { threshold: 0.2 },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  // Car faces left and travels right -> left.
-  const left = driven ? `calc(${100 - progress}% - 56px)` : "calc(100% + 24px)";
+  // Resting position (car faces left, travels right -> left into place).
+  // The drive-in animation (pure CSS) runs on render — no JS/observer needed,
+  // so the motion is identical in every browser and the installed app.
+  const rest = `calc(${100 - progress}% - 56px)`;
 
   return (
     <div
-      ref={ref}
       aria-hidden
       className={`relative h-20 w-full overflow-hidden ${dark ? "bg-tarmac" : "bg-paper"}`}
     >
@@ -135,8 +115,8 @@ export function RoadDivider({
       )}
 
       <div
-        className="absolute bottom-0.5 w-[112px] transition-[left] duration-[2200ms] ease-out motion-reduce:transition-none"
-        style={{ left }}
+        className="drive-in absolute bottom-0.5 w-[112px]"
+        style={{ "--rest": rest } as CSSProperties}
       >
         <div className="car-bob">
           <Car />

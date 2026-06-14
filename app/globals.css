@@ -163,8 +163,19 @@ body::before {
 
 /* RoadDivider motion */
 @keyframes road-scroll {
+  from {
+    background-position: 0 0;
+  }
   to {
-    background-position-x: 46px;
+    background-position: 46px 0;
+  }
+}
+@keyframes drive-in {
+  from {
+    left: calc(100% + 24px);
+  }
+  to {
+    left: var(--rest);
   }
 }
 @keyframes car-bob {
@@ -188,6 +199,10 @@ body::before {
 .road-scroll {
   animation: road-scroll 0.7s linear infinite;
 }
+.drive-in {
+  left: var(--rest);
+  animation: drive-in 2.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 .car-bob {
   animation: car-bob 1.7s ease-in-out infinite;
 }
@@ -199,7 +214,8 @@ body::before {
 @media (prefers-reduced-motion: reduce) {
   .road-scroll,
   .car-bob,
-  .flag-wave {
+  .flag-wave,
+  .drive-in {
     animation: none;
   }
 }
