@@ -211,24 +211,12 @@ const SIGNS: Record<SignId, React.ReactNode> = {
   roundabout: (
     <>
       <circle cx="50" cy="50" r="46" fill={BLUE} />
-      <g fill="none" stroke={WHITE} strokeWidth="6" strokeLinecap="round">
-        <path d="M49,29 A21,21 0 0,1 67,40" />
-        <g transform="rotate(120 50 50)">
-          <path d="M49,29 A21,21 0 0,1 67,40" />
+      {[0, 120, 240].map((deg) => (
+        <g key={deg} transform={`rotate(${deg} 50 50)`}>
+          <path d="M56.2,31 A20,20 0 0,1 69,56.2" fill="none" stroke={WHITE} strokeWidth="7" />
+          <polygon points="65.9,65.7 62.4,54 75.7,58.3" fill={WHITE} />
         </g>
-        <g transform="rotate(240 50 50)">
-          <path d="M49,29 A21,21 0 0,1 67,40" />
-        </g>
-      </g>
-      <g fill={WHITE}>
-        <polygon points="67,46 60,38 75,38" />
-        <g transform="rotate(120 50 50)">
-          <polygon points="67,46 60,38 75,38" />
-        </g>
-        <g transform="rotate(240 50 50)">
-          <polygon points="67,46 60,38 75,38" />
-        </g>
-      </g>
+      ))}
     </>
   ),
   "warning-general": (
