@@ -1,18 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
-// A slim top bar that appears the moment you click an internal link and clears
-// once the new page is on screen — so a slow navigation never feels like a
-// dead press. No-ops for users with reduced motion (handled in CSS).
+// A slim top bar that appears the moment you click an internal link and sweeps
+// to full as the new page lands — so a slow navigation never feels like a dead
+// press. Disabled for reduced-motion users (handled in CSS).
 export function RouteProgress() {
   const pathname = usePathname();
-  const [active, setActive] = useState(false);
+  const [phase, setPhase] = useState<"idle" | "loading" | "done">("idle");
+  const loadingRef = useRef(false);
 
-  // Navigation finished (pathname changed) → clear.
+  // Path changed → if we were mid-navigation, finish the bar.
   useEffect(() => {
-    setActive(false);
+    if (!loadingRef.current) return;
+    loadingRef.current = false;
+    setPhase("done");
+    const t = setTimeout(() => setPhase("idle"), 400);
+    return () => clearTimeout(t);
   }, [pathname]);
 
   useEffect(() => {
@@ -35,13 +40,13 @@ export function RouteProgress() {
       )
         return;
       if (anchor.origin !== window.location.origin) return;
-      // Same page (just a hash / identical path) → no navigation.
       if (
         anchor.pathname === window.location.pathname &&
         anchor.search === window.location.search
       )
         return;
-      setActive(true);
+      loadingRef.current = true;
+      setPhase("loading");
     }
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
@@ -49,12 +54,20 @@ export function RouteProgress() {
 
   // Safety net: never let the bar hang indefinitely.
   useEffect(() => {
-    if (!active) return;
-    const t = setTimeout(() => setActive(false), 12000);
+    if (phase !== "loading") return;
+    const t = setTimeout(() => {
+      loadingRef.current = false;
+      setPhase("idle");
+    }, 12000);
     return () => clearTimeout(t);
-  }, [active]);
+  }, [phase]);
 
-  return (
-    <div aria-hidden className={`route-progress ${active ? "route-progress--on" : ""}`} />
-  );
+  const cls =
+    phase === "loading"
+      ? "route-progress--on"
+      : phase === "done"
+        ? "route-progress--done"
+        : "";
+
+  return <div aria-hidden className={`route-progress ${cls}`} />;
 }

@@ -4,44 +4,49 @@ import { useEffect, useRef, useState } from "react";
 
 function Car() {
   return (
-    <svg width="112" height="56" viewBox="0 0 120 60" fill="none" aria-hidden>
-      <ellipse cx="62" cy="54" rx="50" ry="4.5" fill="#000000" opacity="0.1" />
+    <svg width="108" height="54" viewBox="0 0 112 56" fill="none" aria-hidden>
+      <ellipse cx="58" cy="51" rx="48" ry="4.5" fill="#000000" opacity="0.1" />
       {/* body */}
       <path
-        d="M12,47 Q7,47 7,41 L7,37 Q7,32 13,31 L22,30 Q27,14 46,13 L72,13 Q90,14 95,30 L103,31 Q109,32 109,37 L109,41 Q109,47 103,47 Z"
+        d="M12,46 Q7,46 7,40 L7,36 Q7,31 13,30 L22,29 Q27,14 45,13 L66,13 Q83,14 88,29 L96,30 Q101,31 101,36 L101,40 Q101,46 96,46 Z"
         fill="#2c8aa0"
       />
       {/* lower shade */}
-      <path d="M12,47 Q7,47 7,41 L7,39 L109,39 L109,41 Q109,47 103,47 Z" fill="#1f6f82" />
+      <path d="M12,46 Q7,46 7,40 L7,38 L101,38 L101,40 Q101,46 96,46 Z" fill="#1f6f82" />
       {/* windows */}
-      <path d="M28,29 L33,17 L52,17 L52,29 Z" fill="#cfe7f0" />
-      <path d="M57,29 L57,17 L70,17 Q84,18 86,29 Z" fill="#cfe7f0" />
+      <path d="M28,28 L33,16.5 L50,16.5 L50,28 Z" fill="#cfe7f0" />
+      <path d="M55,28 L55,16.5 L66,16.5 Q80,17.5 82,28 Z" fill="#cfe7f0" />
+      {/* headlight (front, so direction reads clearly) */}
+      <ellipse cx="9.5" cy="36.5" rx="2.4" ry="3" fill="#ffe79a" />
+      <ellipse cx="9.5" cy="36.5" rx="1" ry="1.6" fill="#ffffff" />
+      {/* tail light (rear) */}
+      <rect x="98.2" y="34.5" width="2.6" height="4.5" rx="1" fill="#c8362f" />
       {/* wing mirror + handle */}
-      <path d="M22,28 L15,29 L15,33 L22,31 Z" fill="#14202e" />
-      <rect x="66" y="32" width="9" height="2.4" rx="1.2" fill="#14202e" />
+      <path d="M22,27 L15,28 L15,31.5 L22,30 Z" fill="#14202e" />
+      <rect x="64" y="31" width="9" height="2.3" rx="1.1" fill="#14202e" />
       {/* L-plate */}
-      <rect x="46" y="31" width="15" height="13" rx="2" fill="#c8362f" />
+      <rect x="45" y="30" width="15" height="12.5" rx="2" fill="#c8362f" />
       <text
-        x="53.5"
-        y="41.5"
+        x="52.5"
+        y="40"
         textAnchor="middle"
         fontFamily="Arial, sans-serif"
-        fontSize="12"
+        fontSize="11.5"
         fontWeight="700"
         fill="#ffffff"
       >
         L
       </text>
       {/* wheels */}
-      {[32, 90].map((cx) => (
+      {[30, 84].map((cx) => (
         <g key={cx}>
-          <circle cx={cx} cy="46" r="10" fill="#14202e" />
-          <circle cx={cx} cy="46" r="5.4" fill="#f2efe9" />
-          <g stroke="#14202e" strokeWidth="1.6">
-            <line x1={cx - 5} y1="46" x2={cx + 5} y2="46" />
-            <line x1={cx} y1="41" x2={cx} y2="51" />
+          <circle cx={cx} cy="45" r="9.5" fill="#14202e" />
+          <circle cx={cx} cy="45" r="5.1" fill="#f2efe9" />
+          <g stroke="#14202e" strokeWidth="1.5">
+            <line x1={cx - 4.7} y1="45" x2={cx + 4.7} y2="45" />
+            <line x1={cx} y1="40.3" x2={cx} y2="49.7" />
           </g>
-          <circle cx={cx} cy="46" r="2.2" fill="#14202e" />
+          <circle cx={cx} cy="45" r="2.1" fill="#14202e" />
         </g>
       ))}
     </svg>
@@ -90,8 +95,6 @@ export function RoadDivider({
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          // rAF guarantees the off-screen start frame paints first, so the
-          // drive-in always animates (even if already in view on load).
           requestAnimationFrame(() => setDriven(true));
           obs.disconnect();
         }
@@ -102,7 +105,7 @@ export function RoadDivider({
     return () => obs.disconnect();
   }, []);
 
-  // We drive on the left: car faces left, travels right -> left.
+  // Car faces left and travels right -> left.
   const left = driven ? `calc(${100 - progress}% - 56px)` : "calc(100% + 24px)";
 
   return (
@@ -115,7 +118,7 @@ export function RoadDivider({
       <div className="absolute inset-x-0 bottom-0 h-7 bg-[#5c626a]">
         {/* kerb highlight */}
         <div className="absolute inset-x-0 top-0 h-[2px] bg-white/15" />
-        {/* scrolling centre line */}
+        {/* scrolling centre line (moves right, matching a left-bound car) */}
         <div
           className="road-scroll absolute inset-x-0 top-1/2 h-[4px] -translate-y-1/2"
           style={{

@@ -68,7 +68,7 @@ export default async function EditProfilePage() {
           href={`/instructors/${slug}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 inline-flex rounded-full border border-ink/20 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink"
+          className="press mt-4 inline-flex rounded-full border border-ink/20 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink"
         >
           View public profile &#8599;
         </a>

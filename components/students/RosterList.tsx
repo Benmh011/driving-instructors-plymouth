@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 
 type Student = {
   id: string;
@@ -100,20 +101,32 @@ export default function RosterList({ students }: { students: Student[] }) {
       ) : (
         <ul className="mt-4 grid gap-3 sm:grid-cols-2">
           {view.map((s) => (
-            <li
-              key={s.id}
-              className="flex items-center gap-3 rounded-2xl border border-hairline bg-cream p-4 transition-colors hover:border-ink/20"
-            >
-              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-tarmac/10 text-sm font-bold text-tarmac">
-                {initials(s.name)}
-              </div>
-              <div className="min-w-0">
-                <p className="truncate font-semibold text-ink">{s.name}</p>
-                <p className="truncate text-sm text-ink-soft">
-                  {s.postcode} &middot; {pretty(s.transmission)}
-                  {s.goal ? ` · ${s.goal}` : ""}
-                </p>
-              </div>
+            <li key={s.id}>
+              <Link
+                href={`/students/${s.id}`}
+                className="lift press flex items-center gap-3 rounded-2xl border border-hairline bg-cream p-4 hover:border-ink/20"
+              >
+                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-tarmac/10 text-sm font-bold text-tarmac">
+                  {initials(s.name)}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-semibold text-ink">{s.name}</p>
+                  <p className="truncate text-sm text-ink-soft">
+                    {s.postcode} &middot; {pretty(s.transmission)}
+                    {s.goal ? ` · ${s.goal}` : ""}
+                  </p>
+                </div>
+                <svg
+                  className="h-4 w-4 shrink-0 text-ink-soft"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden
+                >
+                  <path d="m9 18 6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </Link>
             </li>
           ))}
         </ul>

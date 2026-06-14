@@ -1,6 +1,6 @@
 // Clutch service worker — minimal offline shell for the first push.
 // As the PWA grows, expand the precache list and add runtime strategies.
-const CACHE = "clutch-v4";
+const CACHE = "clutch-v5";
 const SHELL = ["/", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
@@ -45,15 +45,43 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Other assets: network-first, cache as we go.
+  // Immutable, content-hashed build assets (and icons/fonts) → cache-first.
+  // These never change for a given URL, so serving from cache is instant and
+  // always correct; a new build simply requests new hashed filenames.
+  const url = new URL(request.url);
+  const immutable =
+    url.origin === self.location.origin &&
+    (url.pathname.startsWith("/_next/static/") ||
+      url.pathname.startsWith("/icons/") ||
+      url.pathname.startsWith("/fonts/"));
+  if (immutable) {
+    event.respondWith(
+      caches.match(request).then(
+        (hit) =>
+          hit ||
+          fetch(request).then((res) => {
+            const copy = res.clone();
+            caches.open(CACHE).then((cache) => cache.put(request, copy));
+            return res;
+          }),
+      ),
+    );
+    return;
+  }
+
+  // Everything else → stale-while-revalidate: serve the cached copy instantly
+  // (fast), then refresh it in the background for next time.
   event.respondWith(
-    fetch(request)
-      .then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE).then((cache) => cache.put(request, copy));
-        return res;
-      })
-      .catch(() => caches.match(request).then((r) => r || caches.match("/"))),
+    caches.match(request).then((hit) => {
+      const fetched = fetch(request)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE).then((cache) => cache.put(request, copy));
+          return res;
+        })
+        .catch(() => hit || caches.match("/"));
+      return hit || fetched;
+    }),
   );
 });
 
