@@ -160,3 +160,46 @@ body::before {
 .legal-prose strong {
   color: var(--color-ink);
 }
+
+/* RoadDivider motion */
+@keyframes road-scroll {
+  to {
+    background-position-x: -46px;
+  }
+}
+@keyframes car-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.5px);
+  }
+}
+@keyframes flag-wave {
+  0%,
+  100% {
+    transform: skewY(-2.5deg) scaleY(0.97);
+  }
+  50% {
+    transform: skewY(2.5deg) scaleY(1);
+  }
+}
+.road-scroll {
+  animation: road-scroll 0.7s linear infinite;
+}
+.car-bob {
+  animation: car-bob 1.7s ease-in-out infinite;
+}
+.flag-wave {
+  transform-box: fill-box;
+  transform-origin: 0% 50%;
+  animation: flag-wave 1.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .road-scroll,
+  .car-bob,
+  .flag-wave {
+    animation: none;
+  }
+}

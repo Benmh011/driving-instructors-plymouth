@@ -51,19 +51,17 @@ function BlueCircle({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Side-profile car silhouette (~32 wide, faces left). Used on the no-overtaking sign.
+// Front-facing car silhouette (~30 wide) for the no-overtaking sign.
 function Car({ color }: { color: string }) {
   return (
     <g>
       <path
-        d="M1,19 L1,15 C1,14 2,13 4,13 C5,10 8,7 13,7 L20,7 C24,7 26,9 28,13 C30,13 31,14 31,15 L31,19 Z"
+        d="M2,27 L2,18 C2,15 4,14 6,13 C7,5 12,4 16,4 C20,4 25,5 26,13 C28,14 30,15 30,18 L30,27 Z"
         fill={color}
       />
-      <path d="M8,12.5 C9,9.5 11,9 13,9 L19,9 C22,9 23,10.5 25,12.5 Z" fill={WHITE} />
-      <circle cx="9" cy="19" r="3.6" fill={BLACK} />
-      <circle cx="9" cy="19" r="1.4" fill={WHITE} />
-      <circle cx="24" cy="19" r="3.6" fill={BLACK} />
-      <circle cx="24" cy="19" r="1.4" fill={WHITE} />
+      <path d="M9,13 C10,7.5 13,7 16,7 C19,7 22,7.5 23,13 Z" fill={WHITE} />
+      <rect x="4" y="26.5" width="7" height="4" rx="1.6" fill={color} />
+      <rect x="21" y="26.5" width="7" height="4" rx="1.6" fill={color} />
     </g>
   );
 }
@@ -113,11 +111,11 @@ const SIGNS: Record<SignId, React.ReactNode> = {
   "no-overtaking": (
     <>
       <circle cx="50" cy="50" r="46" fill={WHITE} stroke={RED} strokeWidth="10" />
-      <g transform="translate(15,40)">
-        <Car color={RED} />
-      </g>
-      <g transform="translate(52,40)">
+      <g transform="translate(19,31)">
         <Car color={BLACK} />
+      </g>
+      <g transform="translate(51,31)">
+        <Car color={RED} />
       </g>
     </>
   ),
@@ -134,16 +132,16 @@ const SIGNS: Record<SignId, React.ReactNode> = {
   "no-left-turn": (
     <>
       <circle cx="50" cy="50" r="46" fill={WHITE} stroke={RED} strokeWidth="10" />
-      <path d="M56,72 L56,50 L40,50" fill="none" stroke={BLACK} strokeWidth="6" />
-      <polygon points="28,50 41,43 41,57" fill={BLACK} />
+      <path d="M58,70 L58,46 L42,46" fill="none" stroke={BLACK} strokeWidth="7.5" />
+      <polygon points="28,46 43,37 43,55" fill={BLACK} />
       <line x1="22" y1="22" x2="78" y2="78" stroke={RED} strokeWidth="8" strokeLinecap="round" />
     </>
   ),
   "no-right-turn": (
     <>
       <circle cx="50" cy="50" r="46" fill={WHITE} stroke={RED} strokeWidth="10" />
-      <path d="M44,72 L44,50 L60,50" fill="none" stroke={BLACK} strokeWidth="6" />
-      <polygon points="72,50 59,43 59,57" fill={BLACK} />
+      <path d="M42,70 L42,46 L58,46" fill="none" stroke={BLACK} strokeWidth="7.5" />
+      <polygon points="72,46 57,37 57,55" fill={BLACK} />
       <line x1="22" y1="22" x2="78" y2="78" stroke={RED} strokeWidth="8" strokeLinecap="round" />
     </>
   ),
@@ -184,9 +182,9 @@ const SIGNS: Record<SignId, React.ReactNode> = {
   ),
   "warning-tjunction": (
     <Triangle>
-      <g stroke={BLACK} strokeWidth="8">
-        <line x1="32" y1="46" x2="68" y2="46" />
-        <line x1="50" y1="46" x2="50" y2="74" />
+      <g stroke={BLACK} strokeWidth="7">
+        <line x1="35" y1="52" x2="65" y2="52" />
+        <line x1="50" y1="52" x2="50" y2="76" />
       </g>
     </Triangle>
   ),
@@ -237,9 +235,9 @@ const SIGNS: Record<SignId, React.ReactNode> = {
   ),
   "warning-crossroads": (
     <Triangle>
-      <g stroke={BLACK} strokeWidth="8" strokeLinecap="butt">
-        <line x1="50" y1="36" x2="50" y2="74" />
-        <line x1="31" y1="51" x2="69" y2="51" />
+      <g stroke={BLACK} strokeWidth="7" strokeLinecap="butt">
+        <line x1="50" y1="44" x2="50" y2="72" />
+        <line x1="36" y1="58" x2="64" y2="58" />
       </g>
     </Triangle>
   ),
