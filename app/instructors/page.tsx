@@ -59,7 +59,7 @@ export default async function InstructorsPage({
   const areaTrim = area.trim();
   const listed: DirItem[] = await prisma.instructorProfile.findMany({
     where: {
-      user: { onboardingComplete: true },
+      user: { onboardingComplete: true, deletionScheduledFor: null },
       adiStatus: "VERIFIED",
       postcodes: areaTrim ? { contains: areaTrim, mode: "insensitive" } : undefined,
       transmission:

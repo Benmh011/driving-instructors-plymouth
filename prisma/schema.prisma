@@ -52,6 +52,11 @@ model User {
   twoFactorPendingSecret String?
   twoFactorBackupCodes   String[] @default([])
 
+  // When set, the account is scheduled for permanent deletion at this time
+  // (30-day grace period). The account is locked and hidden until then; the
+  // user can restore it by signing in before the date.
+  deletionScheduledFor DateTime?
+
   learnerProfile    LearnerProfile?
   instructorProfile InstructorProfile?
   pushSubscriptions PushSubscription[]

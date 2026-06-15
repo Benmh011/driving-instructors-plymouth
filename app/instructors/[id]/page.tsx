@@ -76,6 +76,9 @@ export default async function InstructorProfilePage({
   });
   if (!instructor) notFound();
 
+  // An account scheduled for deletion disappears from public view immediately.
+  if (instructor.user.deletionScheduledFor) notFound();
+
   // Canonicalise to the slug URL (older /instructors/<id> links 308 to the slug).
   const slug = await ensureInstructorSlug(instructor);
   if (param !== slug) redirect(`/instructors/${slug}`);

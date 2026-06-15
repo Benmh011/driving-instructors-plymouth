@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import { TwoFactorManager } from "@/components/security/TwoFactorManager";
+import { CloseAccountSection } from "@/components/security/CloseAccountSection";
 
 export const metadata = { title: "Security" };
 
@@ -50,6 +51,8 @@ export default async function SecurityPage({
             continueHref={continueHref}
           />
         </div>
+
+        <CloseAccountSection />
       </main>
     </div>
   );

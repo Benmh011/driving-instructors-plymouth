@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendPushToUser, formatLessonWhen } from "@/lib/push";
+import { hardDeleteUser } from "@/lib/account";
 
 export const dynamic = "force-dynamic";
 
@@ -42,5 +43,16 @@ export async function GET(req: Request) {
     sent += 1;
   }
 
-  return NextResponse.json({ ok: true, sent });
+  // Sweep accounts whose 30-day grace period has elapsed.
+  const toDelete = await prisma.user.findMany({
+    where: { deletionScheduledFor: { lte: now } },
+    select: { id: true },
+  });
+  let deleted = 0;
+  for (const u of toDelete) {
+    await hardDeleteUser(u.id).catch(() => {});
+    deleted += 1;
+  }
+
+  return NextResponse.json({ ok: true, sent, deleted });
 }
