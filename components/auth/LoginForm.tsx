@@ -9,6 +9,7 @@ const label = "mb-1.5 block text-sm font-semibold";
 
 export default function LoginForm() {
   const [state, action, pending] = useActionState(authenticate, undefined);
+  const needs2fa = state?.needs2fa ?? false;
 
   return (
     <form action={action} className="space-y-4">
@@ -31,13 +32,41 @@ export default function LoginForm() {
           className={field}
         />
       </div>
+
+      {needs2fa && (
+        <div>
+          <label className={label} htmlFor="code">
+            Authentication code
+          </label>
+          <input
+            id="code"
+            name="code"
+            type="text"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            autoFocus
+            placeholder="6-digit code"
+            className={field}
+          />
+          <p className="mt-1 text-xs text-ink-soft">
+            Enter the code from your authenticator app, or one of your backup codes.
+          </p>
+        </div>
+      )}
+
       {state?.error && <p className="text-sm font-medium text-ink">{state.error}</p>}
       <button
         type="submit"
         disabled={pending}
         className="w-full rounded-full bg-sea px-6 py-3 font-semibold text-white transition-transform hover:-translate-y-0.5 hover:bg-sea-dark disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {pending ? "Signing in…" : "Sign in"}
+        {pending
+          ? needs2fa
+            ? "Verifying…"
+            : "Signing in…"
+          : needs2fa
+            ? "Verify"
+            : "Sign in"}
       </button>
     </form>
   );

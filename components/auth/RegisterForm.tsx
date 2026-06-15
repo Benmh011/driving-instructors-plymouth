@@ -67,6 +67,17 @@ export default function RegisterForm({ defaultRole = "LEARNER" }: { defaultRole?
 
       {state?.error && <p className="text-sm font-medium text-ink">{state.error}</p>}
 
+      <label className="flex items-start gap-2.5 rounded-xl border border-ink/15 bg-white/60 p-3 text-sm">
+        <input type="checkbox" name="setup2fa" className="mt-0.5 h-4 w-4 accent-sea" />
+        <span>
+          <span className="font-semibold">Set up two-factor authentication now</span>
+          <span className="mt-0.5 block text-ink-soft">
+            Recommended — adds a one-time code at sign-in. You can always do this
+            later from your dashboard.
+          </span>
+        </span>
+      </label>
+
       <button
         type="submit"
         disabled={pending}

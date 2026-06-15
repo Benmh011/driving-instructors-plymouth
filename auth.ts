@@ -4,17 +4,19 @@ import bcrypt from "bcryptjs";
 import { authConfig } from "./auth.config";
 import { prisma } from "./lib/prisma";
 import { loginSchema } from "./lib/validators";
+import { verifyTwoFactorLogin } from "./lib/twofactor";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   session: { strategy: "jwt" },
   providers: [
     Credentials({
-      credentials: { email: {}, password: {} },
+      credentials: { email: {}, password: {}, code: {} },
       authorize: async (raw) => {
         const parsed = loginSchema.safeParse(raw);
         if (!parsed.success) return null;
         const { email, password } = parsed.data;
+        const code = typeof raw?.code === "string" ? raw.code : "";
 
         const user = await prisma.user.findFirst({
           where: { email: { equals: email, mode: "insensitive" } },
@@ -23,6 +25,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const valid = await bcrypt.compare(password, user.passwordHash);
         if (!valid) return null;
+
+        // 2FA is the real enforcement point: even if someone hits the auth
+        // endpoint directly, a 2FA account can't sign in without a valid code.
+        if (user.twoFactorEnabled) {
+          const ok = await verifyTwoFactorLogin(
+            {
+              id: user.id,
+              twoFactorSecret: user.twoFactorSecret,
+              twoFactorBackupCodes: user.twoFactorBackupCodes,
+            },
+            code,
+          );
+          if (!ok) return null;
+        }
 
         return {
           id: user.id,

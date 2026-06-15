@@ -7,6 +7,7 @@ import { registerSchema } from "@/lib/validators";
 import { signIn } from "@/auth";
 
 export type ActionState = { error?: string } | undefined;
+export type LoginState = { error?: string; needs2fa?: boolean } | undefined;
 
 export async function registerUser(
   _prev: ActionState,
@@ -24,6 +25,7 @@ export async function registerUser(
   }
 
   const { name, email, password, role } = parsed.data;
+  const wants2fa = formData.get("setup2fa") === "on";
 
   const existing = await prisma.user.findFirst({
     where: { email: { equals: email, mode: "insensitive" } },
@@ -35,25 +37,56 @@ export async function registerUser(
   const passwordHash = await bcrypt.hash(password, 10);
   await prisma.user.create({ data: { name, email, passwordHash, role } });
 
-  // Sign in and head straight into onboarding. signIn throws a redirect,
-  // which is expected and must propagate.
-  await signIn("credentials", { email, password, redirectTo: "/onboarding" });
+  // signIn throws a redirect, which is expected and must propagate. New users
+  // who opted into 2FA go straight to setup; everyone else into onboarding.
+  await signIn("credentials", {
+    email,
+    password,
+    redirectTo: wants2fa ? "/dashboard/security?setup=1" : "/onboarding",
+  });
 }
 
 export async function authenticate(
-  _prev: ActionState,
+  _prev: LoginState,
   formData: FormData,
-): Promise<ActionState> {
+): Promise<LoginState> {
+  const email = String(formData.get("email") ?? "");
+  const password = String(formData.get("password") ?? "");
+  const code = String(formData.get("code") ?? "").trim();
+
+  // Work out whether to prompt for a 2FA code. The auth provider re-verifies
+  // everything (password + code) as the real security boundary.
+  const user = await prisma.user.findFirst({
+    where: { email: { equals: email, mode: "insensitive" } },
+    select: { passwordHash: true, twoFactorEnabled: true },
+  });
+  const passwordOk = user
+    ? await bcrypt.compare(password, user.passwordHash)
+    : false;
+  if (!user || !passwordOk) {
+    return { error: "Incorrect email or password." };
+  }
+
+  if (user.twoFactorEnabled && !code) {
+    return { needs2fa: true };
+  }
+
   try {
     await signIn("credentials", {
-      email: formData.get("email"),
-      password: formData.get("password"),
+      email,
+      password,
+      code,
       redirectTo: "/dashboard",
     });
   } catch (error) {
     if (error instanceof AuthError) {
+      // Password was already confirmed above, so for a 2FA account the only way
+      // to land here is a wrong or expired code.
+      if (user.twoFactorEnabled) {
+        return { needs2fa: true, error: "That code didn't work — try again." };
+      }
       return { error: "Incorrect email or password." };
     }
-    throw error; // re-throw the redirect on success
+    throw error; // re-throw the success redirect
   }
 }

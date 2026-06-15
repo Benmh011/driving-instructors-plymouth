@@ -47,6 +47,11 @@ model User {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
+  twoFactorEnabled       Boolean  @default(false)
+  twoFactorSecret        String?
+  twoFactorPendingSecret String?
+  twoFactorBackupCodes   String[] @default([])
+
   learnerProfile    LearnerProfile?
   instructorProfile InstructorProfile?
   pushSubscriptions PushSubscription[]

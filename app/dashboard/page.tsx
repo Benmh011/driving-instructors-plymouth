@@ -69,6 +69,47 @@ export default async function DashboardPage({
 
         <PushPrompt />
 
+        <Link
+          href="/dashboard/security"
+          className={`lift press mb-8 flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 ${
+            user.twoFactorEnabled
+              ? "border-hairline bg-cream"
+              : "border-line/40 bg-line/10"
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <svg
+              className="h-5 w-5 shrink-0 text-sea"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden
+            >
+              <path
+                d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7l7-4z"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <div>
+              <p className="text-[15px] font-semibold text-ink">
+                {user.twoFactorEnabled
+                  ? "Account security"
+                  : "Add two-factor authentication"}
+              </p>
+              <p className="text-sm text-ink-soft">
+                {user.twoFactorEnabled
+                  ? "Two-factor is on. Manage it or turn it off here."
+                  : "A one-time code at sign-in keeps your account safe even if your password leaks."}
+              </p>
+            </div>
+          </div>
+          <span className="shrink-0 text-sm font-semibold text-sea">
+            {user.twoFactorEnabled ? "Manage \u2192" : "Set up \u2192"}
+          </span>
+        </Link>
+
         {joined && instructorName && (
           <div className="mb-8 rounded-2xl border border-sea/30 bg-sea/10 px-5 py-4">
             <p className="text-[15px] font-medium text-ink">
