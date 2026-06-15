@@ -7,7 +7,9 @@ import { registerSchema } from "@/lib/validators";
 import { signIn } from "@/auth";
 
 export type ActionState = { error?: string } | undefined;
-export type LoginState = { error?: string; needs2fa?: boolean } | undefined;
+export type LoginState =
+  | { error?: string; needs2fa?: boolean; email?: string }
+  | undefined;
 
 export async function registerUser(
   _prev: ActionState,
@@ -68,7 +70,7 @@ export async function authenticate(
   }
 
   if (user.twoFactorEnabled && !code) {
-    return { needs2fa: true };
+    return { needs2fa: true, email };
   }
 
   try {
@@ -83,7 +85,11 @@ export async function authenticate(
       // Password was already confirmed above, so for a 2FA account the only way
       // to land here is a wrong or expired code.
       if (user.twoFactorEnabled) {
-        return { needs2fa: true, error: "That code didn't work — try again." };
+        return {
+          needs2fa: true,
+          email,
+          error: "That code didn't work — try again.",
+        };
       }
       return { error: "Incorrect email or password." };
     }

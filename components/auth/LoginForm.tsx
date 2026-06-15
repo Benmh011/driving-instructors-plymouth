@@ -13,48 +13,60 @@ export default function LoginForm() {
 
   return (
     <form action={action} className="space-y-4">
-      <div>
-        <label className={label} htmlFor="email">
-          Email
-        </label>
-        <input id="email" name="email" type="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} inputMode="email" required className={field} />
-      </div>
-      <div>
-        <label className={label} htmlFor="password">
-          Password
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          className={field}
-        />
+      {/* Email + password stay mounted (so they still submit) but are hidden on
+          the second step — the user only needs to enter the code there. */}
+      <div className={needs2fa ? "hidden" : "space-y-4"}>
+        <div>
+          <label className={label} htmlFor="email">
+            Email
+          </label>
+          <input id="email" name="email" type="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} inputMode="email" required className={field} />
+        </div>
+        <div>
+          <label className={label} htmlFor="password">
+            Password
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            required
+            className={field}
+          />
+        </div>
       </div>
 
       {needs2fa && (
-        <div>
-          <label className={label} htmlFor="code">
-            Authentication code
-          </label>
-          <input
-            id="code"
-            name="code"
-            type="text"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            autoFocus
-            placeholder="6-digit code"
-            className={field}
-          />
-          <p className="mt-1 text-xs text-ink-soft">
-            Enter the code from your authenticator app, or one of your backup codes.
-          </p>
-        </div>
+        <>
+          {state?.email && (
+            <div className="rounded-xl border border-hairline bg-cream/70 px-4 py-3 text-sm text-ink-soft">
+              Signing in as <span className="font-semibold text-ink">{state.email}</span>
+            </div>
+          )}
+          <div>
+            <label className={label} htmlFor="code">
+              Authentication code
+            </label>
+            <input
+              id="code"
+              name="code"
+              type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              autoFocus
+              placeholder="6-digit code"
+              className={field}
+            />
+            <p className="mt-1 text-xs text-ink-soft">
+              From your authenticator app — or use one of your backup codes.
+            </p>
+          </div>
+        </>
       )}
 
       {state?.error && <p className="text-sm font-medium text-ink">{state.error}</p>}
+
       <button
         type="submit"
         disabled={pending}
@@ -65,9 +77,19 @@ export default function LoginForm() {
             ? "Verifying…"
             : "Signing in…"
           : needs2fa
-            ? "Verify"
+            ? "Verify code"
             : "Sign in"}
       </button>
+
+      {needs2fa && (
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="block w-full text-center text-xs font-semibold text-ink-soft transition-colors hover:text-ink"
+        >
+          Use a different account
+        </button>
+      )}
     </form>
   );
 }

@@ -198,6 +198,44 @@ export function TwoFactorManager({
         <code className="mt-1 block break-all rounded-lg bg-white px-3 py-2 font-mono text-xs">
           {secret}
         </code>
+
+        <div className="mt-4 rounded-xl border border-hairline bg-paper-dim/40 p-4 text-sm">
+          <p className="font-semibold text-ink">
+            Don&apos;t have an authenticator app?
+          </p>
+          <p className="mt-1 text-ink-soft">
+            It&apos;s a free phone app that shows a 6-digit code which changes
+            every 30 seconds. Install one, scan the code above, and you&apos;re
+            set. Any of these work:
+          </p>
+          <div className="mt-2 flex flex-col gap-1.5">
+            <a
+              href="https://apps.apple.com/app/google-authenticator/id388497605"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-sea hover:underline"
+            >
+              Google Authenticator — iPhone &rarr;
+            </a>
+            <a
+              href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-sea hover:underline"
+            >
+              Google Authenticator — Android &rarr;
+            </a>
+            <a
+              href="https://support.microsoft.com/en-us/authenticator/download-microsoft-authenticator"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-sea hover:underline"
+            >
+              Microsoft Authenticator — iPhone &amp; Android &rarr;
+            </a>
+          </div>
+        </div>
+
         <div className="mt-4 space-y-3">
           <input
             value={code}
