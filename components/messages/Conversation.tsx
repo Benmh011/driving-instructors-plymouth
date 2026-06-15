@@ -128,6 +128,8 @@ export default function Conversation({
 
       <div className="mt-4 flex items-end gap-2">
         <textarea
+          name="message"
+          aria-label={`Message ${otherName}`}
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => {

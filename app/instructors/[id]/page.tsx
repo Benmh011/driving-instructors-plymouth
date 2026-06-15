@@ -313,14 +313,14 @@ export default async function InstructorProfilePage({
 
   return (
     <div className="relative z-10 min-h-dvh">
-      <AppHeader home="/" right={right} />
+      <AppHeader home={isOwner ? "/dashboard" : "/"} right={right} />
 
       <main className="mx-auto max-w-3xl px-5 py-14 sm:px-8">
         <Link
-          href="/instructors"
+          href={isOwner ? "/dashboard/profile" : "/instructors"}
           className="text-sm font-semibold text-ink-soft transition-colors hover:text-ink"
         >
-          &larr; All instructors
+          &larr; {isOwner ? "Back to your profile" : "All instructors"}
         </Link>
 
         <section className="mt-4 overflow-hidden rounded-3xl bg-tarmac text-cream">
