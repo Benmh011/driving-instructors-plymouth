@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { del } from "@vercel/blob";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { isAdminEmail } from "@/lib/admin";
@@ -26,9 +27,25 @@ export async function verifyInstructor(profileId: string) {
 
 export async function rejectInstructor(profileId: string) {
   if (!(await requireAdmin())) return;
+
+  // Pull the badge photo so we can remove it from blob storage. A rejected
+  // badge is an ID document we no longer need — deleting it frees storage and
+  // is the right call for data minimisation.
+  const profile = await prisma.instructorProfile.findUnique({
+    where: { id: profileId },
+    select: { adiBadgeUrl: true },
+  });
+  if (profile?.adiBadgeUrl) {
+    await del(profile.adiBadgeUrl).catch(() => {});
+  }
+
   await prisma.instructorProfile.update({
     where: { id: profileId },
-    data: { adiStatus: "REJECTED", adiReviewedAt: new Date() },
+    data: {
+      adiStatus: "REJECTED",
+      adiReviewedAt: new Date(),
+      adiBadgeUrl: null,
+    },
   });
   revalidatePath("/admin/verification");
 }

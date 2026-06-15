@@ -145,9 +145,47 @@ export default async function VerificationPage() {
         <h1 className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">
           ADI verification
         </h1>
-        <p className="mt-3 max-w-lg text-ink-soft">
-          Check each instructor&rsquo;s ADI number against the DVSA register (or contact
-          DVSA), then verify. Only verified instructors appear in the public directory.
+        <p className="mt-3 max-w-xl text-ink-soft">
+          Only verified instructors appear in the public directory. Here&rsquo;s
+          how to check a submission:
+        </p>
+        <ol className="mt-4 max-w-xl space-y-2 text-sm text-ink">
+          <li>
+            <span className="font-semibold">1. Check the badge photo.</span> A
+            full ADI holds a green octagonal badge showing their photo, name, ADI
+            number and an expiry date. Make sure the name and number match what
+            they entered, and that it hasn&rsquo;t expired. (A pink triangular
+            badge means they&rsquo;re a trainee, not yet fully qualified.)
+          </li>
+          <li>
+            <span className="font-semibold">2. Search the public register.</span>{" "}
+            Use the GOV.UK &ldquo;find driving schools, lessons and
+            instructors&rdquo; service to search by their name or area. Note this
+            is voluntary, so a genuine ADI may simply have chosen not to be
+            listed &mdash; not appearing isn&rsquo;t proof of anything.
+          </li>
+          <li>
+            <span className="font-semibold">3. If in doubt, ask DVSA.</span> They
+            can confirm an ADI&rsquo;s status from their full name and ADI number:{" "}
+            <a
+              href="mailto:adireg@dvsa.gov.uk"
+              className="font-semibold text-sea hover:underline"
+            >
+              adireg@dvsa.gov.uk
+            </a>{" "}
+            or 0300 200 1122 (Mon&ndash;Fri, 8am&ndash;4pm).{" "}
+            <a
+              href="https://www.gov.uk/contact-dvsa"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-sea hover:underline"
+            >
+              Contact DVSA &rarr;
+            </a>
+          </li>
+        </ol>
+        <p className="mt-3 max-w-xl text-xs text-ink-soft">
+          Rejecting a submission deletes its uploaded badge photo automatically.
         </p>
 
         <h2 className="mt-10 font-display text-2xl font-bold tracking-tight">
