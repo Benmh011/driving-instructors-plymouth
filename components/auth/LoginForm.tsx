@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { authenticate } from "@/app/(auth)/actions";
 
 const field =
@@ -9,41 +9,24 @@ const label = "mb-1.5 block text-sm font-semibold";
 
 export default function LoginForm() {
   const [state, action, pending] = useActionState(authenticate, undefined);
+  // Held in state so React 19's automatic form reset (after the first submit)
+  // can't wipe them before the 2FA step.
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const needs2fa = state?.needs2fa ?? false;
 
   return (
     <form action={action} className="space-y-4">
-      {/* Email + password stay mounted (so they still submit) but are hidden on
-          the second step — the user only needs to enter the code there. */}
-      <div className={needs2fa ? "hidden" : "space-y-4"}>
-        <div>
-          <label className={label} htmlFor="email">
-            Email
-          </label>
-          <input id="email" name="email" type="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} inputMode="email" required className={field} />
-        </div>
-        <div>
-          <label className={label} htmlFor="password">
-            Password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            className={field}
-          />
-        </div>
-      </div>
-
-      {needs2fa && (
+      {needs2fa ? (
         <>
-          {state?.email && (
-            <div className="rounded-xl border border-hairline bg-cream/70 px-4 py-3 text-sm text-ink-soft">
-              Signing in as <span className="font-semibold text-ink">{state.email}</span>
-            </div>
-          )}
+          <input type="hidden" name="email" value={email} />
+          <input type="hidden" name="password" value={password} />
+
+          <div className="rounded-xl border border-hairline bg-cream/70 px-4 py-3 text-sm text-ink-soft">
+            Signing in as{" "}
+            <span className="font-semibold text-ink">{state?.email ?? email}</span>
+          </div>
+
           <div>
             <label className={label} htmlFor="code">
               Authentication code
@@ -55,12 +38,50 @@ export default function LoginForm() {
               inputMode="numeric"
               autoComplete="one-time-code"
               autoFocus
+              required
               placeholder="6-digit code"
               className={field}
             />
             <p className="mt-1 text-xs text-ink-soft">
               From your authenticator app — or use one of your backup codes.
             </p>
+          </div>
+        </>
+      ) : (
+        <>
+          <div>
+            <label className={label} htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              inputMode="email"
+              required
+              className={field}
+            />
+          </div>
+          <div>
+            <label className={label} htmlFor="password">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+              required
+              className={field}
+            />
           </div>
         </>
       )}
