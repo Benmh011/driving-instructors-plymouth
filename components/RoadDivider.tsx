@@ -1,5 +1,3 @@
-import type { CSSProperties } from "react";
-
 function Car() {
   return (
     <svg width="108" height="54" viewBox="0 0 112 56" fill="none" aria-hidden>
@@ -76,7 +74,6 @@ function Flag() {
 }
 
 export function RoadDivider({
-  progress = 60,
   finish = false,
   dark = false,
 }: {
@@ -84,11 +81,9 @@ export function RoadDivider({
   finish?: boolean;
   dark?: boolean;
 }) {
-  // Resting position (car faces left, travels right -> left into place).
-  // The drive-in animation (pure CSS) runs on render — no JS/observer needed,
-  // so the motion is identical in every browser and the installed app.
-  const rest = `calc(${100 - progress}% - 56px)`;
-
+  // The car continuously cruises right -> left over a static road. The motion
+  // is a plain CSS keyframe with concrete values (no JS, no CSS variables), so
+  // it animates identically in every browser and the installed app.
   return (
     <div
       aria-hidden
@@ -98,9 +93,9 @@ export function RoadDivider({
       <div className="absolute inset-x-0 bottom-0 h-7 bg-[#5c626a]">
         {/* kerb highlight */}
         <div className="absolute inset-x-0 top-0 h-[2px] bg-white/15" />
-        {/* scrolling centre line (moves right, matching a left-bound car) */}
+        {/* dashed centre line */}
         <div
-          className="road-scroll absolute inset-x-0 top-1/2 h-[4px] -translate-y-1/2"
+          className="absolute inset-x-0 top-1/2 h-[4px] -translate-y-1/2"
           style={{
             backgroundImage:
               "repeating-linear-gradient(to right, #f1f2f0 0, #f1f2f0 26px, transparent 26px, transparent 46px)",
@@ -114,10 +109,7 @@ export function RoadDivider({
         </div>
       )}
 
-      <div
-        className="drive-in absolute bottom-0.5 w-[112px]"
-        style={{ "--rest": rest } as CSSProperties}
-      >
+      <div className="car-cruise absolute bottom-0.5 w-[112px]">
         <div className="car-bob">
           <Car />
         </div>

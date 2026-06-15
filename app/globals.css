@@ -170,12 +170,12 @@ body::before {
     background-position: 46px 0;
   }
 }
-@keyframes drive-in {
+@keyframes car-cruise {
   from {
-    left: calc(100% + 24px);
+    left: 100%;
   }
   to {
-    left: var(--rest);
+    left: -120px;
   }
 }
 @keyframes car-bob {
@@ -199,9 +199,8 @@ body::before {
 .road-scroll {
   animation: road-scroll 0.7s linear infinite;
 }
-.drive-in {
-  left: var(--rest);
-  animation: drive-in 2.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+.car-cruise {
+  animation: car-cruise 7s linear infinite;
 }
 .car-bob {
   animation: car-bob 1.7s ease-in-out infinite;
@@ -214,9 +213,13 @@ body::before {
 @media (prefers-reduced-motion: reduce) {
   .road-scroll,
   .car-bob,
-  .flag-wave,
-  .drive-in {
+  .flag-wave {
     animation: none;
+  }
+  .car-cruise {
+    animation: none;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 
