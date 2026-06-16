@@ -5,6 +5,12 @@ import { AuthError } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { registerSchema } from "@/lib/validators";
 import { signIn } from "@/auth";
+import {
+  getClientIp,
+  loginThrottleKeys,
+  checkLoginThrottle,
+  recordLoginFailure,
+} from "@/lib/rate-limit";
 
 export type ActionState = { error?: string } | undefined;
 export type LoginState =
@@ -56,6 +62,19 @@ export async function authenticate(
   const password = String(formData.get("password") ?? "");
   const code = String(formData.get("code") ?? "").trim();
 
+  const ip = await getClientIp();
+  const keys = loginThrottleKeys(email, ip);
+
+  // Reject early if this email or IP is currently locked out — before doing any
+  // expensive password hashing.
+  const throttle = await checkLoginThrottle(keys);
+  if (throttle.locked) {
+    const mins = throttle.retryAfterMins ?? 15;
+    return {
+      error: `Too many sign-in attempts. Please try again in ${mins} minute${mins === 1 ? "" : "s"}.`,
+    };
+  }
+
   // Work out whether to prompt for a 2FA code. The auth provider re-verifies
   // everything (password + code) as the real security boundary.
   const user = await prisma.user.findFirst({
@@ -66,10 +85,12 @@ export async function authenticate(
     ? await bcrypt.compare(password, user.passwordHash)
     : false;
   if (!user || !passwordOk) {
+    await recordLoginFailure(keys);
     return { error: "Incorrect email or password." };
   }
 
   if (user.twoFactorEnabled && !code) {
+    // Correct password — not a failed attempt, just the first of two steps.
     return { needs2fa: true, email };
   }
 
@@ -84,6 +105,7 @@ export async function authenticate(
     if (error instanceof AuthError) {
       // Password was already confirmed above, so for a 2FA account the only way
       // to land here is a wrong or expired code.
+      await recordLoginFailure(keys);
       if (user.twoFactorEnabled) {
         return {
           needs2fa: true,

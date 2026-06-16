@@ -5,6 +5,7 @@ import { authConfig } from "./auth.config";
 import { prisma } from "./lib/prisma";
 import { loginSchema } from "./lib/validators";
 import { verifyTwoFactorLogin } from "./lib/twofactor";
+import { clearLoginThrottle, loginEmailKey } from "./lib/rate-limit";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -39,6 +40,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           );
           if (!ok) return null;
         }
+
+        // Full success — clear any accumulated failures for this email.
+        await clearLoginThrottle(loginEmailKey(user.email));
 
         return {
           id: user.id,

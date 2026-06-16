@@ -291,3 +291,15 @@ model OutreachEmail {
   @@index([prospectId])
   @@index([status])
 }
+
+// Login rate limiting. One row per throttle key ("email:..." or "ip:...").
+// Failed sign-ins accumulate within a window; too many trips a temporary lock.
+// Rows are swept by the daily cron, so this table stays tiny.
+model LoginThrottle {
+  id            String    @id @default(cuid())
+  key           String    @unique
+  failedCount   Int       @default(0)
+  firstFailedAt DateTime  @default(now())
+  lockedUntil   DateTime?
+  updatedAt     DateTime  @updatedAt
+}

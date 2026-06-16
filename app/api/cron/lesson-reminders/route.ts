@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendPushToUser, formatLessonWhen } from "@/lib/push";
 import { hardDeleteUser } from "@/lib/account";
+import { cleanupLoginThrottle } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -54,5 +55,8 @@ export async function GET(req: Request) {
     deleted += 1;
   }
 
-  return NextResponse.json({ ok: true, sent, deleted });
+  // Drop stale login-throttle rows so the table stays small.
+  const throttlesCleared = await cleanupLoginThrottle().catch(() => 0);
+
+  return NextResponse.json({ ok: true, sent, deleted, throttlesCleared });
 }
