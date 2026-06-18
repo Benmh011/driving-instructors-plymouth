@@ -220,6 +220,15 @@ export default async function DashboardPage({
               desc="Book and manage your lessons."
             />
             <NavCard
+              href="/dashboard/payments"
+              title="Payments"
+              desc={
+                i.connectChargesEnabled
+                  ? "Manage card payments and payouts."
+                  : "Set up card payments from learners."
+              }
+            />
+            <NavCard
               href="/dashboard/tax"
               title="Tax & earnings"
               desc="Income and expenses for Self Assessment."

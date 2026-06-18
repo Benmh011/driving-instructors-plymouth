@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import type Stripe from "stripe";
 import { stripe, stripeConfigured } from "@/lib/stripe";
 import { syncSubscriptionToDb } from "@/lib/stripe-sync";
+import { prisma } from "@/lib/prisma";
 
 // Stripe needs the raw body for signature verification, and the SDK needs Node.
 export const runtime = "nodejs";
@@ -49,6 +50,20 @@ export async function POST(req: Request) {
       case "customer.subscription.updated":
       case "customer.subscription.deleted": {
         await syncSubscriptionToDb(event.data.object as Stripe.Subscription);
+        break;
+      }
+      case "account.updated": {
+        // A connected (instructor) account's onboarding/verification status
+        // changed — refresh our cached Connect flags.
+        const acct = event.data.object as Stripe.Account;
+        await prisma.instructorProfile.updateMany({
+          where: { stripeConnectAccountId: acct.id },
+          data: {
+            connectDetailsSubmitted: Boolean(acct.details_submitted),
+            connectChargesEnabled: Boolean(acct.charges_enabled),
+            connectPayoutsEnabled: Boolean(acct.payouts_enabled),
+          },
+        });
         break;
       }
       default:

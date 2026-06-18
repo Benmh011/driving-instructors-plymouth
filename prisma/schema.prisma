@@ -133,6 +133,14 @@ model InstructorProfile {
   currentPeriodEnd     DateTime? // end of current paid period / trial — drives grace + renewal display
   cancelAtPeriodEnd    Boolean   @default(false)
 
+  // Stripe Connect (Express) — for taking lesson payments from learners.
+  // The three booleans mirror Stripe's own account flags, kept in sync by the
+  // account.updated webhook. connectChargesEnabled is the "can take payments" gate.
+  stripeConnectAccountId  String?  @unique
+  connectChargesEnabled   Boolean  @default(false)
+  connectPayoutsEnabled   Boolean  @default(false)
+  connectDetailsSubmitted Boolean  @default(false)
+
   roster   LearnerProfile[] @relation("Roster")
   bookings Booking[]
 
