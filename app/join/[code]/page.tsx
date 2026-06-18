@@ -107,10 +107,16 @@ export default async function JoinPage({
           Create a free learner account (or log in), then re-open this link to join.
         </p>
         <div className="mt-6 space-y-2.5">
-          <Link href="/register" className={primaryBtn}>
+          <Link
+            href={`/register?next=${encodeURIComponent(`/join/${code}`)}`}
+            className={primaryBtn}
+          >
             Create a learner account
           </Link>
-          <Link href="/login" className={ghostBtn}>
+          <Link
+            href={`/login?next=${encodeURIComponent(`/join/${code}`)}`}
+            className={ghostBtn}
+          >
             I already have an account
           </Link>
         </div>

@@ -132,7 +132,50 @@ export default async function DiaryPage({
         trialEndsAt: b.instructor.trialEndsAt,
         currentPeriodEnd: b.instructor.currentPeriodEnd,
       }),
+    kind: "lesson",
+    canClaim: false,
   }));
+
+  // Open (unclaimed) slots: an instructor sees their own; a learner sees their
+  // active instructor's, which they can claim.
+  type OpenRow = {
+    id: string;
+    start: string | Date;
+    durationMins: number;
+    pricePence: number | null;
+    notes: string | null;
+  };
+  let openRows: OpenRow[] = [];
+  if (isInstructor && user.instructorProfile) {
+    openRows = await prisma.openLesson.findMany({
+      where: { instructorId: user.instructorProfile.id },
+      orderBy: { start: "asc" },
+    });
+  } else if (user.learnerProfile?.activeInstructorId) {
+    openRows = await prisma.openLesson.findMany({
+      where: { instructorId: user.learnerProfile.activeInstructorId },
+      orderBy: { start: "asc" },
+    });
+  }
+
+  const openLessons: CalLesson[] = openRows.map((o) => ({
+    id: o.id,
+    start: new Date(o.start).toISOString(),
+    durationMins: o.durationMins,
+    status: "OPEN",
+    other: "Open slot",
+    notes: o.notes ?? null,
+    noticeHours: 48,
+    paid: false,
+    pricePence: o.pricePence ?? null,
+    canPay: false,
+    kind: "open",
+    canClaim: !isInstructor,
+  }));
+
+  const allLessons: CalLesson[] = [...lessons, ...openLessons].sort((a, b) =>
+    a.start.localeCompare(b.start),
+  );
 
   const rosterRaw: { id: string; user: { name: string } }[] =
     user.instructorProfile?.roster ?? [];
@@ -195,11 +238,11 @@ export default async function DiaryPage({
         )}
 
         {isInstructor && !instructorLocked ? (
-          <InstructorDiary lessons={lessons} roster={roster} />
+          <InstructorDiary lessons={allLessons} roster={roster} />
         ) : (
           <div className="mt-9">
             <LessonCalendar
-              lessons={lessons}
+              lessons={allLessons}
               isInstructor={isInstructor}
               readOnly={instructorLocked}
             />

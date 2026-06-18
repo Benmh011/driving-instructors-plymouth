@@ -61,6 +61,11 @@ export async function authenticate(
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
   const code = String(formData.get("code") ?? "").trim();
+  // Where to go after login — honour an internal ?next (e.g. an invite link),
+  // but never an external/protocol-relative URL.
+  const nextRaw = String(formData.get("next") ?? "");
+  const next =
+    nextRaw.startsWith("/") && !nextRaw.startsWith("//") ? nextRaw : "/dashboard";
 
   const ip = await getClientIp();
   const keys = loginThrottleKeys(email, ip);
@@ -99,7 +104,7 @@ export async function authenticate(
       email,
       password,
       code,
-      redirectTo: "/dashboard",
+      redirectTo: next,
     });
   } catch (error) {
     if (error instanceof AuthError) {

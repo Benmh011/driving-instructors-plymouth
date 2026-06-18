@@ -6,6 +6,8 @@ import CancelButton from "./CancelButton";
 import CompleteButton from "./CompleteButton";
 import PaidButton from "./PaidButton";
 import PayButton from "./PayButton";
+import ClaimButton from "./ClaimButton";
+import RemoveOpenButton from "./RemoveOpenButton";
 
 export type CalLesson = {
   id: string;
@@ -18,6 +20,8 @@ export type CalLesson = {
   paid: boolean;
   pricePence: number | null;
   canPay: boolean;
+  kind: "lesson" | "open";
+  canClaim: boolean;
 };
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -45,6 +49,28 @@ function fmtTime(iso: string) {
 function fmtLen(m: number) {
   return m % 60 === 0 ? `${m / 60} hr${m === 60 ? "" : "s"}` : `${m} min`;
 }
+
+type Tone = "open" | "paid" | "unpaid" | "cancelled";
+
+function toneOf(l: CalLesson): Tone {
+  if (l.kind === "open") return "open";
+  if (l.status === "CANCELLED") return "cancelled";
+  return l.paid ? "paid" : "unpaid";
+}
+
+const TONE_BORDER: Record<Tone, string> = {
+  open: "border-l-line",
+  paid: "border-l-go",
+  unpaid: "border-l-sea",
+  cancelled: "border-l-ink/20",
+};
+
+const TONE_DOT: Record<Tone, string> = {
+  open: "bg-line",
+  paid: "bg-go",
+  unpaid: "bg-sea",
+  cancelled: "bg-ink/30",
+};
 
 export default function LessonCalendar({
   lessons,
@@ -144,7 +170,10 @@ export default function LessonCalendar({
           {cells.map((d, idx) => {
             if (d === null) return <div key={idx} />;
             const k = key(viewY, viewM, d);
-            const has = (byDay[k]?.length ?? 0) > 0;
+            const dayLessons = byDay[k] ?? [];
+            const dayTones = (["open", "unpaid", "paid"] as Tone[]).filter((t) =>
+              dayLessons.some((l) => toneOf(l) === t),
+            );
             const isSel = k === selKey;
             const isToday = k === todayKey;
             return (
@@ -161,18 +190,35 @@ export default function LessonCalendar({
                 }`}
               >
                 {d}
-                {has && (
-                  <span
-                    className={`absolute bottom-1 h-1.5 w-1.5 rounded-full ${
-                      isSel ? "bg-white" : "bg-sea"
-                    }`}
-                  />
+                {dayTones.length > 0 && (
+                  <span className="absolute bottom-1 flex gap-0.5">
+                    {dayTones.map((t) => (
+                      <span
+                        key={t}
+                        className={`h-1.5 w-1.5 rounded-full ${TONE_DOT[t]} ${
+                          isSel ? "ring-1 ring-white" : ""
+                        }`}
+                      />
+                    ))}
+                  </span>
                 )}
               </button>
             );
           })}
         </div>
         </div>
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-ink-soft">
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-line" /> Available to claim
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-sea" /> Booked / unpaid
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-go" /> Paid
+        </span>
       </div>
 
       <div className="mt-5">
@@ -195,12 +241,11 @@ export default function LessonCalendar({
               const confirmText = late
                 ? `This lesson is inside the ${l.noticeHours}-hour notice window. Cancel it anyway?`
                 : "Cancel this lesson?";
+              const isOpen = l.kind === "open";
               return (
                 <li
                   key={l.id}
-                  className={`rounded-2xl border border-hairline border-l-4 bg-cream p-5 shadow-sm ${
-                    completed ? "border-l-go" : "border-l-sea"
-                  }`}
+                  className={`rounded-2xl border border-hairline border-l-4 bg-cream p-5 shadow-sm ${TONE_BORDER[toneOf(l)]}`}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
@@ -214,41 +259,60 @@ export default function LessonCalendar({
                         )}
                       </p>
                       <p className="mt-0.5 text-sm text-ink-soft">
-                        {l.other}
-                        {l.status === "CANCELLED" && " · cancelled"}
-                        {completed && " · completed"}
+                        {isOpen ? (
+                          <span className="font-semibold text-ink">
+                            Available to claim
+                          </span>
+                        ) : (
+                          <>
+                            {l.other}
+                            {l.status === "CANCELLED" && " · cancelled"}
+                            {completed && " · completed"}
+                          </>
+                        )}
                       </p>
                       {l.notes && (
                         <p className="mt-2 text-sm text-ink">{l.notes}</p>
                       )}
                     </div>
                     <div className="flex shrink-0 flex-wrap justify-end gap-2">
-                      {editable && (
-                        <Link
-                          href={`/diary/${l.id}/edit`}
-                          className="rounded-full border border-ink/20 px-3.5 py-1.5 text-sm font-semibold text-ink-soft transition-colors hover:border-ink hover:text-ink"
-                        >
-                          Edit
-                        </Link>
-                      )}
-                      {completable && <CompleteButton id={l.id} mode="complete" />}
-                      {completed && isInstructor && !readOnly && (
-                        <CompleteButton id={l.id} mode="reopen" />
-                      )}
-                      {isInstructor && l.status !== "CANCELLED" && !readOnly && (
-                        <PaidButton id={l.id} paid={l.paid} />
-                      )}
-                      {!isInstructor &&
-                        l.status !== "CANCELLED" &&
-                        (l.paid ? (
-                          <span className="shrink-0 rounded-full bg-go/15 px-3.5 py-1.5 text-sm font-semibold text-go">
-                            Paid ✓
-                          </span>
-                        ) : l.canPay && l.pricePence != null ? (
-                          <PayButton id={l.id} pricePence={l.pricePence} />
-                        ) : null)}
-                      {cancellable && !readOnly && (
-                        <CancelButton id={l.id} confirmText={confirmText} />
+                      {isOpen ? (
+                        <>
+                          {l.canClaim && <ClaimButton id={l.id} />}
+                          {isInstructor && !readOnly && (
+                            <RemoveOpenButton id={l.id} />
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          {editable && (
+                            <Link
+                              href={`/diary/${l.id}/edit`}
+                              className="rounded-full border border-ink/20 px-3.5 py-1.5 text-sm font-semibold text-ink-soft transition-colors hover:border-ink hover:text-ink"
+                            >
+                              Edit
+                            </Link>
+                          )}
+                          {completable && <CompleteButton id={l.id} mode="complete" />}
+                          {completed && isInstructor && !readOnly && (
+                            <CompleteButton id={l.id} mode="reopen" />
+                          )}
+                          {isInstructor && l.status !== "CANCELLED" && !readOnly && (
+                            <PaidButton id={l.id} paid={l.paid} />
+                          )}
+                          {!isInstructor &&
+                            l.status !== "CANCELLED" &&
+                            (l.paid ? (
+                              <span className="shrink-0 rounded-full bg-go/15 px-3.5 py-1.5 text-sm font-semibold text-go">
+                                Paid ✓
+                              </span>
+                            ) : l.canPay && l.pricePence != null ? (
+                              <PayButton id={l.id} pricePence={l.pricePence} />
+                            ) : null)}
+                          {cancellable && !readOnly && (
+                            <CancelButton id={l.id} confirmText={confirmText} />
+                          )}
+                        </>
                       )}
                     </div>
                   </div>

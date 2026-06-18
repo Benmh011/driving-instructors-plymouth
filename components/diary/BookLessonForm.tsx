@@ -22,6 +22,22 @@ function dayKeyToDate(dayKey?: string): string {
   ).padStart(2, "0")}`;
 }
 
+// Round a datetime-local value's minutes to the nearest 5 — the native step=
+// only governs the spinner, so a typed value like 12:03 still needs snapping.
+function snapTo5(value: string): string {
+  const [date, time] = value.split("T");
+  if (!time) return value;
+  const [h, m] = time.split(":").map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return value;
+  let mm = Math.round(m / 5) * 5;
+  let hh = h;
+  if (mm === 60) {
+    mm = 0;
+    hh = (hh + 1) % 24;
+  }
+  return `${date}T${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+}
+
 export default function BookLessonForm({
   roster,
   selectedDayKey,
@@ -31,6 +47,7 @@ export default function BookLessonForm({
 }) {
   const [state, action, pending] = useActionState(createLesson, undefined);
   const [start, setStart] = useState(() => `${dayKeyToDate(selectedDayKey)}T09:00`);
+  const [leaveOpen, setLeaveOpen] = useState(false);
 
   // Follow whichever day the instructor selects in the calendar, keeping any
   // time they've already set.
@@ -47,7 +64,13 @@ export default function BookLessonForm({
         <label className={label} htmlFor="learnerId">
           Student
         </label>
-        <select id="learnerId" name="learnerId" className={field} defaultValue="">
+        <select
+          id="learnerId"
+          name="learnerId"
+          className={`${field} disabled:opacity-50`}
+          defaultValue=""
+          disabled={leaveOpen}
+        >
           <option value="" disabled>
             Choose a student…
           </option>
@@ -57,6 +80,16 @@ export default function BookLessonForm({
             </option>
           ))}
         </select>
+        <label className="mt-2.5 flex items-center gap-2.5 text-sm text-ink">
+          <input
+            type="checkbox"
+            name="leaveOpen"
+            checked={leaveOpen}
+            onChange={(e) => setLeaveOpen(e.target.checked)}
+            className="h-4 w-4 accent-sea"
+          />
+          Leave open for any of your students to claim
+        </label>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -71,7 +104,7 @@ export default function BookLessonForm({
             step={300}
             required
             value={start}
-            onChange={(e) => setStart(e.target.value)}
+            onChange={(e) => setStart(snapTo5(e.target.value))}
             className={field}
           />
         </div>
@@ -123,7 +156,13 @@ export default function BookLessonForm({
         disabled={pending}
         className="w-full rounded-full bg-sea px-6 py-3 font-semibold text-white transition-transform hover:-translate-y-0.5 hover:bg-sea-dark disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {pending ? "Booking…" : "Book lesson"}
+        {pending
+          ? leaveOpen
+            ? "Posting…"
+            : "Booking…"
+          : leaveOpen
+            ? "Post open lesson"
+            : "Book lesson"}
       </button>
     </form>
   );

@@ -29,6 +29,14 @@ const editSchema = z.object({
   notes: z.string().max(500).optional(),
 });
 
+// Open (unclaimed) lesson slot — same as a booking minus the learner.
+const openLessonSchema = z.object({
+  start: z.string().min(1, "Pick a date and time."),
+  durationMins: z.coerce.number().int().min(30).max(240),
+  price: z.coerce.number().min(0).max(10000).optional(),
+  notes: z.string().max(500).optional(),
+});
+
 // Instructor books a lesson for one of their roster learners.
 export async function createLesson(
   _prev: ActionState,
@@ -43,6 +51,44 @@ export async function createLesson(
   });
   if (!instructor) redirect("/dashboard");
   if (!hasFullAccess(accessState(instructor))) return { error: LOCKED_MESSAGE };
+
+  // "Leave open" — post an unclaimed slot any of the instructor's students can
+  // pick up, rather than booking it for a specific learner.
+  const leaveOpen = formData.get("leaveOpen") === "on";
+  if (leaveOpen) {
+    const parsedOpen = openLessonSchema.safeParse({
+      start: formData.get("start"),
+      durationMins: formData.get("durationMins"),
+      price: formData.get("price") || undefined,
+      notes: formData.get("notes") || undefined,
+    });
+    if (!parsedOpen.success) {
+      return {
+        error: parsedOpen.error.issues[0]?.message ?? "Please check the lesson details.",
+      };
+    }
+    const startDate = new Date(parsedOpen.data.start);
+    if (Number.isNaN(startDate.getTime())) {
+      return { error: "That date and time didn't look right." };
+    }
+    const pricePence =
+      parsedOpen.data.price != null
+        ? Math.round(parsedOpen.data.price * 100)
+        : Math.round(
+            instructor.hourlyRate * 100 * (parsedOpen.data.durationMins / 60),
+          );
+    await prisma.openLesson.create({
+      data: {
+        instructorId: instructor.id,
+        start: startDate,
+        durationMins: parsedOpen.data.durationMins,
+        pricePence,
+        notes: parsedOpen.data.notes ?? null,
+      },
+    });
+    revalidatePath("/diary");
+    redirect("/diary");
+  }
 
   const parsed = lessonSchema.safeParse({
     learnerId: formData.get("learnerId"),
@@ -388,4 +434,78 @@ export async function payForLesson(
   } catch {
     return { error: "Couldn't start checkout. Please try again." };
   }
+}
+
+// ── Open lessons ──────────────────────────────────────────────────────────
+
+// A learner claims one of their instructor's open slots. Atomic: we delete the
+// open slot and create the booking together, so a slot can't be claimed twice.
+export async function claimOpenLesson(
+  openLessonId: string,
+): Promise<{ error?: string }> {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Please sign in." };
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    include: { learnerProfile: true },
+  });
+  if (!user || user.role !== "LEARNER" || !user.learnerProfile) {
+    return { error: "Only students can claim lessons." };
+  }
+  const learner = user.learnerProfile;
+
+  const open = await prisma.openLesson.findUnique({
+    where: { id: openLessonId },
+    include: { instructor: { include: { user: true } } },
+  });
+  if (!open) return { error: "That lesson has already been taken." };
+  if (learner.activeInstructorId !== open.instructorId) {
+    return { error: "That lesson isn't from your instructor." };
+  }
+
+  try {
+    await prisma.$transaction(async (tx: any) => {
+      const del = await tx.openLesson.deleteMany({ where: { id: openLessonId } });
+      if (del.count === 0) throw new Error("ALREADY_CLAIMED");
+      await tx.booking.create({
+        data: {
+          instructorId: open.instructorId,
+          learnerId: learner.id,
+          start: open.start,
+          durationMins: open.durationMins,
+          pricePence: open.pricePence,
+          notes: open.notes,
+        },
+      });
+    });
+  } catch {
+    return { error: "That lesson has already been taken." };
+  }
+
+  await sendPushToUser(open.instructor.userId, {
+    title: "Open lesson claimed",
+    body: `${user.name ?? "A student"} claimed your open lesson — ${formatLessonWhen(open.start)}.`,
+    url: "/diary",
+    tag: `claimed-${openLessonId}`,
+  });
+
+  revalidatePath("/diary");
+  return {};
+}
+
+// Instructor removes one of their own unclaimed open slots.
+export async function removeOpenLesson(openLessonId: string): Promise<void> {
+  const session = await auth();
+  if (!session?.user?.id) return;
+
+  const instructor = await prisma.instructorProfile.findUnique({
+    where: { userId: session.user.id },
+  });
+  if (!instructor) return;
+
+  await prisma.openLesson.deleteMany({
+    where: { id: openLessonId, instructorId: instructor.id },
+  });
+  revalidatePath("/diary");
 }

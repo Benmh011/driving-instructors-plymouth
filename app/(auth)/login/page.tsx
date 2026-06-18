@@ -4,7 +4,12 @@ import LoginForm from "@/components/auth/LoginForm";
 
 export const metadata = { title: "Sign in" };
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const { next } = await searchParams;
   return (
     <AuthShell
       title="Welcome back"
@@ -12,13 +17,16 @@ export default function LoginPage() {
       footer={
         <>
           New here?{" "}
-          <Link href="/register" className="font-semibold text-paper link-grow">
+          <Link
+            href={next ? `/register?next=${encodeURIComponent(next)}` : "/register"}
+            className="font-semibold text-paper link-grow"
+          >
             Create an account
           </Link>
         </>
       }
     >
-      <LoginForm />
+      <LoginForm next={next} />
     </AuthShell>
   );
 }
