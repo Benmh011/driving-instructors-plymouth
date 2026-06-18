@@ -22,21 +22,10 @@ function dayKeyToDate(dayKey?: string): string {
   ).padStart(2, "0")}`;
 }
 
-// Round a datetime-local value's minutes to the nearest 5 — the native step=
-// only governs the spinner, so a typed value like 12:03 still needs snapping.
-function snapTo5(value: string): string {
-  const [date, time] = value.split("T");
-  if (!time) return value;
-  const [h, m] = time.split(":").map(Number);
-  if (Number.isNaN(h) || Number.isNaN(m)) return value;
-  let mm = Math.round(m / 5) * 5;
-  let hh = h;
-  if (mm === 60) {
-    mm = 0;
-    hh = (hh + 1) % 24;
-  }
-  return `${date}T${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
-}
+// Hours 00–23 and minutes in clean 5-minute steps. A native datetime picker
+// won't reliably restrict the selection to 5s, so we offer explicit dropdowns.
+const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
+const MINUTES = Array.from({ length: 12 }, (_, i) => String(i * 5).padStart(2, "0"));
 
 export default function BookLessonForm({
   roster,
@@ -46,17 +35,17 @@ export default function BookLessonForm({
   selectedDayKey?: string;
 }) {
   const [state, action, pending] = useActionState(createLesson, undefined);
-  const [start, setStart] = useState(() => `${dayKeyToDate(selectedDayKey)}T09:00`);
+  const [dateStr, setDateStr] = useState(() => dayKeyToDate(selectedDayKey));
+  const [hour, setHour] = useState("09");
+  const [minute, setMinute] = useState("00");
   const [leaveOpen, setLeaveOpen] = useState(false);
 
-  // Follow whichever day the instructor selects in the calendar, keeping any
-  // time they've already set.
+  // Follow whichever day the instructor selects in the calendar.
   useEffect(() => {
-    setStart((prev) => {
-      const time = prev.split("T")[1] || "09:00";
-      return `${dayKeyToDate(selectedDayKey)}T${time}`;
-    });
+    setDateStr(dayKeyToDate(selectedDayKey));
   }, [selectedDayKey]);
+
+  const start = `${dateStr}T${hour}:${minute}`;
 
   return (
     <form action={action} className="space-y-4">
@@ -94,17 +83,15 @@ export default function BookLessonForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className={label} htmlFor="start">
-            Date &amp; time
+          <label className={label} htmlFor="date">
+            Date
           </label>
           <input
-            id="start"
-            name="start"
-            type="datetime-local"
-            step={300}
+            id="date"
+            type="date"
             required
-            value={start}
-            onChange={(e) => setStart(snapTo5(e.target.value))}
+            value={dateStr}
+            onChange={(e) => setDateStr(e.target.value)}
             className={field}
           />
         </div>
@@ -120,6 +107,42 @@ export default function BookLessonForm({
           </select>
         </div>
       </div>
+
+      <div>
+        <label className={label} htmlFor="hour">
+          Time
+        </label>
+        <div className="flex items-center gap-2">
+          <select
+            id="hour"
+            aria-label="Hour"
+            value={hour}
+            onChange={(e) => setHour(e.target.value)}
+            className={field}
+          >
+            {HOURS.map((h) => (
+              <option key={h} value={h}>
+                {h}
+              </option>
+            ))}
+          </select>
+          <span className="text-lg font-semibold text-ink-soft">:</span>
+          <select
+            aria-label="Minute"
+            value={minute}
+            onChange={(e) => setMinute(e.target.value)}
+            className={field}
+          >
+            {MINUTES.map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <input type="hidden" name="start" value={start} />
 
       <div>
         <label className={label} htmlFor="price">

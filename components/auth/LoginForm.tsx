@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { authenticate } from "@/app/(auth)/actions";
 
 const field =
@@ -14,6 +14,15 @@ export default function LoginForm({ next }: { next?: string }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const needs2fa = state?.needs2fa ?? false;
+  const success = state?.ok ?? false;
+
+  // On success, do a full-page navigation rather than a client-side one, so the
+  // previous account's cached pages don't survive the switch.
+  useEffect(() => {
+    if (state?.ok) {
+      window.location.href = state.next ?? "/dashboard";
+    }
+  }, [state]);
 
   return (
     <form action={action} className="space-y-4">
@@ -91,10 +100,10 @@ export default function LoginForm({ next }: { next?: string }) {
 
       <button
         type="submit"
-        disabled={pending}
+        disabled={pending || success}
         className="w-full rounded-full bg-sea px-6 py-3 font-semibold text-white transition-transform hover:-translate-y-0.5 hover:bg-sea-dark disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {pending
+        {pending || success
           ? needs2fa
             ? "Verifying…"
             : "Signing in…"

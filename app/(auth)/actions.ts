@@ -14,7 +14,7 @@ import {
 
 export type ActionState = { error?: string } | undefined;
 export type LoginState =
-  | { error?: string; needs2fa?: boolean; email?: string }
+  | { error?: string; needs2fa?: boolean; email?: string; ok?: boolean; next?: string }
   | undefined;
 
 export async function registerUser(
@@ -104,7 +104,7 @@ export async function authenticate(
       email,
       password,
       code,
-      redirectTo: next,
+      redirect: false,
     });
   } catch (error) {
     if (error instanceof AuthError) {
@@ -120,6 +120,11 @@ export async function authenticate(
       }
       return { error: "Incorrect email or password." };
     }
-    throw error; // re-throw the success redirect
+    throw error;
   }
+
+  // Success. Hand the destination back to the client so it can do a full-page
+  // navigation — this clears the in-tab route cache, so a previous account's
+  // pages can't linger after switching users.
+  return { ok: true, next };
 }
