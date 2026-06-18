@@ -223,7 +223,7 @@ export default async function DashboardPage({
               href="/dashboard/payments"
               title="Payments"
               desc={
-                i.connectChargesEnabled
+                i?.connectChargesEnabled
                   ? "Manage card payments and payouts."
                   : "Set up card payments from learners."
               }
