@@ -5,6 +5,7 @@ import Link from "next/link";
 import CancelButton from "./CancelButton";
 import CompleteButton from "./CompleteButton";
 import PaidButton from "./PaidButton";
+import PayButton from "./PayButton";
 
 export type CalLesson = {
   id: string;
@@ -16,6 +17,7 @@ export type CalLesson = {
   noticeHours: number;
   paid: boolean;
   pricePence: number | null;
+  canPay: boolean;
 };
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -225,6 +227,15 @@ export default function LessonCalendar({
                       {isInstructor && l.status !== "CANCELLED" && !readOnly && (
                         <PaidButton id={l.id} paid={l.paid} />
                       )}
+                      {!isInstructor &&
+                        l.status !== "CANCELLED" &&
+                        (l.paid ? (
+                          <span className="shrink-0 rounded-full bg-go/15 px-3.5 py-1.5 text-sm font-semibold text-go">
+                            Paid ✓
+                          </span>
+                        ) : l.canPay && l.pricePence != null ? (
+                          <PayButton id={l.id} pricePence={l.pricePence} />
+                        ) : null)}
                       {cancellable && !readOnly && (
                         <CancelButton id={l.id} confirmText={confirmText} />
                       )}

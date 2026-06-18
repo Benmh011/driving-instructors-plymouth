@@ -7,6 +7,9 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { sendPushToUser, formatLessonWhen } from "@/lib/push";
 import { accessState, hasFullAccess, LOCKED_MESSAGE } from "@/lib/subscription";
+import { stripe, stripeConfigured } from "@/lib/stripe";
+import { canAcceptPayments } from "@/lib/connect";
+import { SITE_URL } from "@/lib/constants";
 
 export type ActionState = { error?: string } | undefined;
 
@@ -260,4 +263,93 @@ async function setLessonCompletion(bookingId: string, complete: boolean) {
 
   revalidatePath("/diary");
   revalidatePath("/dashboard/tax");
+}
+
+// ── Learner pays for a single lesson by card ──────────────────────────────
+// Direct charge on the instructor's connected account: the learner pays the
+// instructor, the platform never holds the funds. Money lands with the
+// instructor; we take no cut (Option A). The webhook flips the lesson to paid.
+export async function payForLesson(
+  bookingId: string,
+): Promise<{ url?: string; error?: string }> {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Please sign in to pay." };
+  if (!stripeConfigured) return { error: "Card payments aren't available right now." };
+
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    select: {
+      id: true,
+      paid: true,
+      status: true,
+      pricePence: true,
+      learner: { select: { userId: true } },
+      instructor: {
+        select: {
+          stripeConnectAccountId: true,
+          connectChargesEnabled: true,
+          subscriptionStatus: true,
+          trialEndsAt: true,
+          currentPeriodEnd: true,
+          businessName: true,
+          user: { select: { name: true } },
+        },
+      },
+    },
+  });
+
+  if (!booking) return { error: "Lesson not found." };
+  if (booking.learner.userId !== session.user.id) {
+    return { error: "That isn't your lesson." };
+  }
+  if (booking.paid) return { error: "This lesson is already paid." };
+  if (booking.status === "CANCELLED") return { error: "This lesson was cancelled." };
+  if (booking.pricePence == null || booking.pricePence < 30) {
+    return { error: "No price has been set for this lesson yet — ask your instructor." };
+  }
+
+  const inst = booking.instructor;
+  if (
+    !inst.stripeConnectAccountId ||
+    !canAcceptPayments({
+      connectChargesEnabled: inst.connectChargesEnabled,
+      subscriptionStatus: inst.subscriptionStatus,
+      trialEndsAt: inst.trialEndsAt,
+      currentPeriodEnd: inst.currentPeriodEnd,
+    })
+  ) {
+    return { error: "Your instructor isn't set up to take card payments yet." };
+  }
+
+  const instructorName = inst.businessName || inst.user.name || "your instructor";
+
+  try {
+    const checkout = await stripe.checkout.sessions.create(
+      {
+        mode: "payment",
+        line_items: [
+          {
+            quantity: 1,
+            price_data: {
+              currency: "gbp",
+              unit_amount: booking.pricePence,
+              product_data: { name: `Driving lesson with ${instructorName}` },
+            },
+          },
+        ],
+        success_url: `${SITE_URL}/diary?paid=1`,
+        cancel_url: `${SITE_URL}/diary?pay=cancelled`,
+        metadata: { bookingId: booking.id },
+        payment_intent_data: { metadata: { bookingId: booking.id } },
+      },
+      // The {stripeAccount} request option makes this a DIRECT charge created
+      // on the instructor's connected account.
+      { stripeAccount: inst.stripeConnectAccountId },
+    );
+
+    if (!checkout.url) return { error: "Couldn't start checkout. Please try again." };
+    return { url: checkout.url };
+  } catch {
+    return { error: "Couldn't start checkout. Please try again." };
+  }
 }

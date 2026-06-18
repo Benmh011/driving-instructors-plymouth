@@ -36,6 +36,24 @@ export async function POST(req: Request) {
     switch (event.type) {
       case "checkout.session.completed": {
         const s = event.data.object as Stripe.Checkout.Session;
+
+        // Single-lesson payment (direct charge on a connected account).
+        if (s.metadata?.bookingId) {
+          const paymentIntentId =
+            typeof s.payment_intent === "string"
+              ? s.payment_intent
+              : (s.payment_intent?.id ?? null);
+          await prisma.booking.updateMany({
+            where: { id: s.metadata.bookingId },
+            data: {
+              paid: true,
+              paidAt: new Date(),
+              stripePaymentIntentId: paymentIntentId,
+            },
+          });
+          break;
+        }
+
         const subId =
           typeof s.subscription === "string"
             ? s.subscription

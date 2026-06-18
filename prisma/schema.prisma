@@ -166,6 +166,8 @@ model Booking {
   status       BookingStatus @default(BOOKED)
   pricePence   Int? // snapshot of the agreed price; optional until payments land
   paid         Boolean       @default(false)
+  paidAt       DateTime? // set when paid online via Stripe
+  stripePaymentIntentId String? // the Stripe PaymentIntent, for receipts/refunds
   notes        String?
   cancelledAt  DateTime?
   reminderSentAt DateTime?

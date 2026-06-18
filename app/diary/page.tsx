@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { ensureInstructorSlug } from "@/lib/slug";
 import { accessState, hasFullAccess } from "@/lib/subscription";
+import { canAcceptPayments } from "@/lib/connect";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import BackLink from "@/components/BackLink";
@@ -27,6 +28,10 @@ type Row = {
     user: { name: string };
     businessName: string | null;
     cancellationNoticeHours: number;
+    connectChargesEnabled: boolean;
+    subscriptionStatus: string | null;
+    trialEndsAt: Date | null;
+    currentPeriodEnd: Date | null;
   };
 };
 
@@ -43,7 +48,12 @@ function fmtPast(iso: string) {
   });
 }
 
-export default async function DiaryPage() {
+export default async function DiaryPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ paid?: string; pay?: string }>;
+}) {
+  const sp = await searchParams;
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
@@ -96,6 +106,19 @@ export default async function DiaryPage() {
       : (b.instructor?.cancellationNoticeHours ?? 48),
     paid: b.paid,
     pricePence: b.pricePence ?? null,
+    canPay:
+      !isInstructor &&
+      !b.paid &&
+      b.status !== "CANCELLED" &&
+      b.pricePence != null &&
+      b.pricePence > 0 &&
+      b.instructor != null &&
+      canAcceptPayments({
+        connectChargesEnabled: b.instructor.connectChargesEnabled,
+        subscriptionStatus: b.instructor.subscriptionStatus,
+        trialEndsAt: b.instructor.trialEndsAt,
+        currentPeriodEnd: b.instructor.currentPeriodEnd,
+      }),
   }));
 
   const rosterRaw: { id: string; user: { name: string } }[] =
@@ -142,6 +165,22 @@ export default async function DiaryPage() {
         <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl">
           {isInstructor ? "Your diary" : "Your lessons"}
         </h1>
+
+        {!isInstructor && sp.paid === "1" && (
+          <div className="mt-6 rounded-2xl border border-go/40 bg-go/10 p-4">
+            <p className="text-sm font-semibold text-go">
+              Payment received — thank you! Your lesson will show as paid in a
+              moment.
+            </p>
+          </div>
+        )}
+        {!isInstructor && sp.pay === "cancelled" && (
+          <div className="mt-6 rounded-2xl border border-line/50 bg-paper-dim/40 p-4">
+            <p className="text-sm font-medium text-ink-soft">
+              Payment cancelled — no charge was made. You can pay any time.
+            </p>
+          </div>
+        )}
 
         <div className="mt-9">
           <LessonCalendar
