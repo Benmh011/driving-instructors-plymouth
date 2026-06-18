@@ -11,6 +11,7 @@ import {
   checkLoginThrottle,
   recordLoginFailure,
 } from "@/lib/rate-limit";
+import { isTrustedDevice, rememberDevice } from "@/lib/trusted-device";
 
 export type ActionState = { error?: string } | undefined;
 export type LoginState =
@@ -84,7 +85,7 @@ export async function authenticate(
   // everything (password + code) as the real security boundary.
   const user = await prisma.user.findFirst({
     where: { email: { equals: email, mode: "insensitive" } },
-    select: { passwordHash: true, twoFactorEnabled: true },
+    select: { id: true, passwordHash: true, twoFactorEnabled: true },
   });
   const passwordOk = user
     ? await bcrypt.compare(password, user.passwordHash)
@@ -95,8 +96,12 @@ export async function authenticate(
   }
 
   if (user.twoFactorEnabled && !code) {
-    // Correct password — not a failed attempt, just the first of two steps.
-    return { needs2fa: true, email };
+    // A previously-trusted device skips the second factor entirely.
+    const trusted = await isTrustedDevice(user.id);
+    if (!trusted) {
+      // Correct password — not a failed attempt, just the first of two steps.
+      return { needs2fa: true, email };
+    }
   }
 
   try {
@@ -123,7 +128,13 @@ export async function authenticate(
     throw error;
   }
 
-  // Success. Hand the destination back to the client so it can do a full-page
+  // Success. If the user asked to trust this device, set the cookie now so the
+  // next sign-in on it can skip the 2FA code.
+  if (user.twoFactorEnabled && formData.get("remember") === "on") {
+    await rememberDevice(user.id);
+  }
+
+  // Hand the destination back to the client so it can do a full-page
   // navigation — this clears the in-tab route cache, so a previous account's
   // pages can't linger after switching users.
   return { ok: true, next };

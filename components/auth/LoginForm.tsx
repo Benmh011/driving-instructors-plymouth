@@ -56,6 +56,16 @@ export default function LoginForm({ next }: { next?: string }) {
               From your authenticator app — or use one of your backup codes.
             </p>
           </div>
+
+          <label className="flex items-center gap-2.5 text-sm text-ink">
+            <input
+              type="checkbox"
+              name="remember"
+              defaultChecked
+              className="h-4 w-4 accent-sea"
+            />
+            Remember this device for 30 days
+          </label>
         </>
       ) : (
         <>

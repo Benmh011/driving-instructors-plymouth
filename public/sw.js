@@ -1,6 +1,6 @@
 // Clutch service worker — minimal offline shell for the first push.
 // As the PWA grows, expand the precache list and add runtime strategies.
-const CACHE = "clutch-v5";
+const CACHE = "clutch-v6";
 const SHELL = ["/", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
@@ -26,21 +26,24 @@ self.addEventListener("fetch", (event) => {
   // Only handle GET navigations/assets; let the API hit the network.
   if (request.method !== "GET" || request.url.includes("/api/")) return;
 
-  // Page navigations: always fetch fresh HTML, bypassing the browser's HTTP
-  // cache. iOS PWAs can otherwise serve a stale page that survives reinstalls,
-  // which strands the app on an old build. Fall back to the cached shell only
-  // when genuinely offline.
+  const url = new URL(request.url);
+
+  // RSC payloads (the fetches behind client-side <Link> navigations) are
+  // per-user and dynamic. Always go straight to the network and never serve a
+  // cached copy — otherwise, after switching accounts in the same tab, a
+  // previous account's page can be handed back from cache.
+  if (request.headers.get("RSC") === "1" || url.searchParams.has("_rsc")) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
+  // Full-page navigations: always fetch fresh HTML (bypassing the HTTP cache so
+  // an old build can't strand the PWA). When genuinely offline, fall back to
+  // the precached shell — never to a cached per-URL page, which could belong to
+  // a different signed-in user.
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request, { cache: "no-store" })
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((cache) => cache.put(request, copy));
-          return res;
-        })
-        .catch(() =>
-          caches.match(request).then((r) => r || caches.match("/")),
-        ),
+      fetch(request, { cache: "no-store" }).catch(() => caches.match("/")),
     );
     return;
   }
@@ -48,7 +51,6 @@ self.addEventListener("fetch", (event) => {
   // Immutable, content-hashed build assets (and icons/fonts) → cache-first.
   // These never change for a given URL, so serving from cache is instant and
   // always correct; a new build simply requests new hashed filenames.
-  const url = new URL(request.url);
   const immutable =
     url.origin === self.location.origin &&
     (url.pathname.startsWith("/_next/static/") ||

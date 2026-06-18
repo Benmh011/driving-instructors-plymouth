@@ -46,8 +46,18 @@ function fmtTime(iso: string) {
   });
 }
 
-function fmtLen(m: number) {
-  return m % 60 === 0 ? `${m / 60} hr${m === 60 ? "" : "s"}` : `${m} min`;
+function fmtLenWords(m: number) {
+  if (m < 60) return `${m} mins`;
+  if (m % 60 === 0) {
+    const h = m / 60;
+    return `${h} hour${h === 1 ? "" : "s"}`;
+  }
+  return `${(m / 60).toFixed(1)} hours`;
+}
+
+// Formatted end time, given a start ISO and a duration in minutes.
+function endTime(iso: string, m: number) {
+  return fmtTime(new Date(new Date(iso).getTime() + m * 60000).toISOString());
 }
 
 type Tone = "open" | "paid" | "unpaid" | "cancelled";
@@ -250,7 +260,10 @@ export default function LessonCalendar({
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <p className="font-semibold">
-                        {fmtTime(l.start)} &middot; {fmtLen(l.durationMins)}
+                        {fmtTime(l.start)} – {endTime(l.start, l.durationMins)}{" "}
+                        <span className="font-normal text-ink-soft">
+                          ({fmtLenWords(l.durationMins)})
+                        </span>
                         {l.pricePence != null && (
                           <span className="text-ink-soft">
                             {" "}
