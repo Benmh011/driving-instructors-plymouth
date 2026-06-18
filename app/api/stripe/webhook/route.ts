@@ -11,6 +11,9 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+// Connected-account events (e.g. direct-charge lesson payments) arrive from a
+// separate Connect-scoped endpoint with its own signing secret.
+const connectWebhookSecret = process.env.STRIPE_CONNECT_WEBHOOK_SECRET;
 
 export async function POST(req: Request) {
   if (!stripeConfigured || !webhookSecret) {
@@ -26,10 +29,21 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing signature" }, { status: 400 });
   }
 
-  let event: Stripe.Event;
-  try {
-    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-  } catch {
+  let event: Stripe.Event | null = null;
+  // The same URL backs two Stripe endpoints — one scoped to your account, one
+  // to connected accounts — each with its own signing secret. Try both.
+  const secrets = [webhookSecret, connectWebhookSecret].filter(
+    (s): s is string => Boolean(s),
+  );
+  for (const secret of secrets) {
+    try {
+      event = stripe.webhooks.constructEvent(body, signature, secret);
+      break;
+    } catch {
+      // wrong secret for this event — try the next one
+    }
+  }
+  if (!event) {
     return NextResponse.json({ error: "Bad signature" }, { status: 400 });
   }
 
