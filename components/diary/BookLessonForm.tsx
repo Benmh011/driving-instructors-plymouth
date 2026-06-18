@@ -1,18 +1,45 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { createLesson } from "@/app/diary/actions";
 
 const field =
   "w-full rounded-xl border border-ink/20 bg-white px-4 py-3 text-base outline-none transition-colors focus:border-ink";
 const label = "mb-1.5 block text-sm font-semibold";
 
+// dayKey is "YYYY-M-D" with a 0-indexed month (as the calendar produces it).
+// Convert to the "YYYY-MM-DD" a datetime-local input expects.
+function dayKeyToDate(dayKey?: string): string {
+  if (dayKey) {
+    const [y, m, d] = dayKey.split("-").map(Number);
+    if (![y, m, d].some(Number.isNaN)) {
+      return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    }
+  }
+  const t = new Date();
+  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(
+    t.getDate(),
+  ).padStart(2, "0")}`;
+}
+
 export default function BookLessonForm({
   roster,
+  selectedDayKey,
 }: {
   roster: { id: string; name: string }[];
+  selectedDayKey?: string;
 }) {
   const [state, action, pending] = useActionState(createLesson, undefined);
+  const [start, setStart] = useState(() => `${dayKeyToDate(selectedDayKey)}T09:00`);
+
+  // Follow whichever day the instructor selects in the calendar, keeping any
+  // time they've already set.
+  useEffect(() => {
+    setStart((prev) => {
+      const time = prev.split("T")[1] || "09:00";
+      return `${dayKeyToDate(selectedDayKey)}T${time}`;
+    });
+  }, [selectedDayKey]);
 
   return (
     <form action={action} className="space-y-4">
@@ -37,7 +64,16 @@ export default function BookLessonForm({
           <label className={label} htmlFor="start">
             Date &amp; time
           </label>
-          <input id="start" name="start" type="datetime-local" required className={field} />
+          <input
+            id="start"
+            name="start"
+            type="datetime-local"
+            step={300}
+            required
+            value={start}
+            onChange={(e) => setStart(e.target.value)}
+            className={field}
+          />
         </div>
         <div>
           <label className={label} htmlFor="durationMins">

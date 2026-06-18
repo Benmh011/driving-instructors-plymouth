@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import { joinInstructor } from "./actions";
+import SwitchInstructorConfirm from "@/components/join/SwitchInstructorConfirm";
 import { accessState, hasFullAccess } from "@/lib/subscription";
 
 export const metadata = { title: "Join your instructor" };
@@ -188,20 +189,23 @@ export default async function JoinPage({
         Join {name}&rsquo;s student list
       </p>
       {currentName ? (
-        <p className="mt-2 text-[15px] text-ink-soft">
-          You&rsquo;re currently registered with <strong>{currentName}</strong>. Joining{" "}
-          {name} will move you to their list.
-        </p>
+        <SwitchInstructorConfirm
+          code={code}
+          currentName={currentName}
+          newName={name}
+        />
       ) : (
-        <p className="mt-2 text-[15px] text-ink-soft">
-          You&rsquo;ll be added to their list and they&rsquo;ll be able to book your lessons.
-        </p>
+        <>
+          <p className="mt-2 text-[15px] text-ink-soft">
+            You&rsquo;ll be added to their list and they&rsquo;ll be able to book your lessons.
+          </p>
+          <form action={joinInstructor.bind(null, code)} className="mt-6">
+            <button type="submit" className={primaryBtn}>
+              Join {name}
+            </button>
+          </form>
+        </>
       )}
-      <form action={joinInstructor.bind(null, code)} className="mt-6">
-        <button type="submit" className={primaryBtn}>
-          {currentName ? `Move to ${name}` : `Join ${name}`}
-        </button>
-      </form>
     </Shell>
   );
 }

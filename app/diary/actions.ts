@@ -92,6 +92,7 @@ export async function createLesson(
     tag: `booked-${learnerId}`,
   });
 
+  revalidatePath("/diary");
   redirect("/diary");
 }
 
@@ -139,6 +140,7 @@ export async function updateLesson(
     },
   });
 
+  revalidatePath("/diary");
   redirect("/diary");
 }
 

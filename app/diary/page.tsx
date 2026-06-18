@@ -9,10 +9,15 @@ import { reconcileCheckoutSession } from "@/lib/lesson-pay";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import BackLink from "@/components/BackLink";
-import BookLessonForm from "@/components/diary/BookLessonForm";
+import InstructorDiary from "@/components/diary/InstructorDiary";
 import LessonCalendar, { type CalLesson } from "@/components/diary/LessonCalendar";
 
 export const metadata = { title: "Diary" };
+
+// Always render fresh per-request: the diary is per-user and changes often, so
+// it must never be served from a stale route/client cache (e.g. after booking
+// a lesson or switching accounts in the same tab).
+export const dynamic = "force-dynamic";
 
 type Row = {
   id: string;
@@ -189,13 +194,17 @@ export default async function DiaryPage({
           </div>
         )}
 
-        <div className="mt-9">
-          <LessonCalendar
-            lessons={lessons}
-            isInstructor={isInstructor}
-            readOnly={instructorLocked}
-          />
-        </div>
+        {isInstructor && !instructorLocked ? (
+          <InstructorDiary lessons={lessons} roster={roster} />
+        ) : (
+          <div className="mt-9">
+            <LessonCalendar
+              lessons={lessons}
+              isInstructor={isInstructor}
+              readOnly={instructorLocked}
+            />
+          </div>
+        )}
 
         {isInstructor && instructorLocked && (
           <section className="mt-9 rounded-2xl border border-signal/40 bg-signal/10 p-6">
@@ -213,25 +222,6 @@ export default async function DiaryPage({
             >
               Resubscribe
             </Link>
-          </section>
-        )}
-
-        {isInstructor && !instructorLocked && (
-          <section className="mt-9 rounded-2xl border border-hairline bg-cream p-6">
-            <p className="font-display text-lg font-semibold">Book a lesson</p>
-            {roster.length === 0 ? (
-              <p className="mt-2 text-[15px] text-ink-soft">
-                You&rsquo;ll be able to book lessons once you have students.{" "}
-                <Link href="/students" className="font-semibold text-sea link-grow">
-                  Add students
-                </Link>{" "}
-                with your invite link first.
-              </p>
-            ) : (
-              <div className="mt-4">
-                <BookLessonForm roster={roster} />
-              </div>
-            )}
           </section>
         )}
 

@@ -50,17 +50,28 @@ export default function LessonCalendar({
   lessons,
   isInstructor,
   readOnly = false,
+  selectedKey,
+  onSelectDay,
 }: {
   lessons: CalLesson[];
   isInstructor: boolean;
   readOnly?: boolean;
+  selectedKey?: string;
+  onSelectDay?: (k: string) => void;
 }) {
   const today = new Date();
   const [viewY, setViewY] = useState(today.getUTCFullYear());
   const [viewM, setViewM] = useState(today.getUTCMonth());
-  const [selKey, setSelKey] = useState(
+  // The selected day can be controlled by a parent (so the booking form can
+  // default its date to it) or managed internally when used standalone.
+  const [internalSel, setInternalSel] = useState(
     key(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()),
   );
+  const selKey = selectedKey ?? internalSel;
+  const setSelKey = (k: string) => {
+    if (onSelectDay) onSelectDay(k);
+    else setInternalSel(k);
+  };
 
   const byDay: Record<string, CalLesson[]> = {};
   for (const l of lessons) {
