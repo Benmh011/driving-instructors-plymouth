@@ -4,6 +4,7 @@ import type Stripe from "stripe";
 import { stripe, stripeConfigured } from "@/lib/stripe";
 import { syncSubscriptionToDb } from "@/lib/stripe-sync";
 import { prisma } from "@/lib/prisma";
+import { markBookingPaidFromSession } from "@/lib/lesson-pay";
 
 // Stripe needs the raw body for signature verification, and the SDK needs Node.
 export const runtime = "nodejs";
@@ -39,18 +40,7 @@ export async function POST(req: Request) {
 
         // Single-lesson payment (direct charge on a connected account).
         if (s.metadata?.bookingId) {
-          const paymentIntentId =
-            typeof s.payment_intent === "string"
-              ? s.payment_intent
-              : (s.payment_intent?.id ?? null);
-          await prisma.booking.updateMany({
-            where: { id: s.metadata.bookingId },
-            data: {
-              paid: true,
-              paidAt: new Date(),
-              stripePaymentIntentId: paymentIntentId,
-            },
-          });
+          await markBookingPaidFromSession(s.metadata.bookingId, s);
           break;
         }
 

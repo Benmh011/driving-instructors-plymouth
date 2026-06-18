@@ -168,6 +168,7 @@ model Booking {
   paid         Boolean       @default(false)
   paidAt       DateTime? // set when paid online via Stripe
   stripePaymentIntentId String? // the Stripe PaymentIntent, for receipts/refunds
+  stripeCheckoutSessionId String? // in-flight/last checkout session, for reconcile + anti-double-pay
   notes        String?
   cancelledAt  DateTime?
   reminderSentAt DateTime?

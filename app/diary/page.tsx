@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { ensureInstructorSlug } from "@/lib/slug";
 import { accessState, hasFullAccess } from "@/lib/subscription";
 import { canAcceptPayments } from "@/lib/connect";
+import { reconcileCheckoutSession } from "@/lib/lesson-pay";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import BackLink from "@/components/BackLink";
@@ -74,6 +75,13 @@ export default async function DiaryPage({
     isInstructor && user.instructorProfile
       ? !hasFullAccess(accessState(user.instructorProfile))
       : false;
+
+  // Returning from Stripe Checkout: verify the payment now so the lesson shows
+  // as paid immediately, without waiting on the webhook. sp.paid is the
+  // checkout session id (older links may send "1", which we simply skip).
+  if (!isInstructor && sp.paid && sp.paid !== "1") {
+    await reconcileCheckoutSession(sp.paid, session.user.id);
+  }
 
   let bookings: Row[] = [];
   if (isInstructor && user.instructorProfile) {
@@ -166,11 +174,10 @@ export default async function DiaryPage({
           {isInstructor ? "Your diary" : "Your lessons"}
         </h1>
 
-        {!isInstructor && sp.paid === "1" && (
+        {!isInstructor && sp.paid && (
           <div className="mt-6 rounded-2xl border border-go/40 bg-go/10 p-4">
             <p className="text-sm font-semibold text-go">
-              Payment received — thank you! Your lesson will show as paid in a
-              moment.
+              Payment received — thank you! Your lesson is marked as paid.
             </p>
           </div>
         )}

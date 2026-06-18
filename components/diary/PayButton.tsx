@@ -21,6 +21,10 @@ export default function PayButton({
       window.location.href = res.url; // off to Stripe Checkout
       return; // keep the spinner up while the browser navigates
     }
+    if (res.paid) {
+      window.location.reload(); // already paid — refresh to show the paid state
+      return;
+    }
     setError(res.error ?? "Something went wrong. Please try again.");
     setPending(false);
   }

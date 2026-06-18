@@ -9,6 +9,7 @@ import { sendPushToUser, formatLessonWhen } from "@/lib/push";
 import { accessState, hasFullAccess, LOCKED_MESSAGE } from "@/lib/subscription";
 import { stripe, stripeConfigured } from "@/lib/stripe";
 import { canAcceptPayments } from "@/lib/connect";
+import { markBookingPaidFromSession } from "@/lib/lesson-pay";
 import { SITE_URL } from "@/lib/constants";
 
 export type ActionState = { error?: string } | undefined;
@@ -268,10 +269,12 @@ async function setLessonCompletion(bookingId: string, complete: boolean) {
 // ── Learner pays for a single lesson by card ──────────────────────────────
 // Direct charge on the instructor's connected account: the learner pays the
 // instructor, the platform never holds the funds. Money lands with the
-// instructor; we take no cut (Option A). The webhook flips the lesson to paid.
+// instructor; we take no cut (Option A). Payment is confirmed two ways — the
+// success-return verification (immediate) and the webhook (backup) — so it
+// never depends on webhook timing, and a lesson can't be paid for twice.
 export async function payForLesson(
   bookingId: string,
-): Promise<{ url?: string; error?: string }> {
+): Promise<{ url?: string; error?: string; paid?: boolean }> {
   const session = await auth();
   if (!session?.user?.id) return { error: "Please sign in to pay." };
   if (!stripeConfigured) return { error: "Card payments aren't available right now." };
@@ -283,6 +286,7 @@ export async function payForLesson(
       paid: true,
       status: true,
       pricePence: true,
+      stripeCheckoutSessionId: true,
       learner: { select: { userId: true } },
       instructor: {
         select: {
@@ -302,15 +306,16 @@ export async function payForLesson(
   if (booking.learner.userId !== session.user.id) {
     return { error: "That isn't your lesson." };
   }
-  if (booking.paid) return { error: "This lesson is already paid." };
+  if (booking.paid) return { error: "This lesson is already paid.", paid: true };
   if (booking.status === "CANCELLED") return { error: "This lesson was cancelled." };
   if (booking.pricePence == null || booking.pricePence < 30) {
     return { error: "No price has been set for this lesson yet — ask your instructor." };
   }
 
   const inst = booking.instructor;
+  const acct = inst.stripeConnectAccountId;
   if (
-    !inst.stripeConnectAccountId ||
+    !acct ||
     !canAcceptPayments({
       connectChargesEnabled: inst.connectChargesEnabled,
       subscriptionStatus: inst.subscriptionStatus,
@@ -319,6 +324,28 @@ export async function payForLesson(
     })
   ) {
     return { error: "Your instructor isn't set up to take card payments yet." };
+  }
+
+  // Anti-double-pay: if a checkout is already in flight for this lesson, reuse
+  // it rather than spin up a second one — or reconcile if it was already paid.
+  if (booking.stripeCheckoutSessionId) {
+    try {
+      const existing = await stripe.checkout.sessions.retrieve(
+        booking.stripeCheckoutSessionId,
+        undefined,
+        { stripeAccount: acct },
+      );
+      if (existing.payment_status === "paid") {
+        await markBookingPaidFromSession(booking.id, existing);
+        return { error: "This lesson is already paid.", paid: true };
+      }
+      if (existing.status === "open" && existing.url) {
+        return { url: existing.url };
+      }
+      // expired / unusable → fall through and create a fresh session
+    } catch {
+      // couldn't fetch it → fall through and create a fresh session
+    }
   }
 
   const instructorName = inst.businessName || inst.user.name || "your instructor";
@@ -337,17 +364,24 @@ export async function payForLesson(
             },
           },
         ],
-        success_url: `${SITE_URL}/diary?paid=1`,
+        success_url: `${SITE_URL}/diary?paid={CHECKOUT_SESSION_ID}`,
         cancel_url: `${SITE_URL}/diary?pay=cancelled`,
         metadata: { bookingId: booking.id },
         payment_intent_data: { metadata: { bookingId: booking.id } },
       },
       // The {stripeAccount} request option makes this a DIRECT charge created
       // on the instructor's connected account.
-      { stripeAccount: inst.stripeConnectAccountId },
+      { stripeAccount: acct },
     );
 
     if (!checkout.url) return { error: "Couldn't start checkout. Please try again." };
+
+    // Remember the session so we can verify it on return and block double-pay.
+    await prisma.booking.update({
+      where: { id: booking.id },
+      data: { stripeCheckoutSessionId: checkout.id },
+    });
+
     return { url: checkout.url };
   } catch {
     return { error: "Couldn't start checkout. Please try again." };
