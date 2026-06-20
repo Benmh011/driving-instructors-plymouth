@@ -25,3 +25,26 @@ export function formatHours(minutes: number): string {
   }
   return `${(minutes / 60).toFixed(1)} hours`;
 }
+
+// If a lesson was covered by prepaid credit, return the still-outstanding hours
+// to the learner's balance. Idempotent: once the lesson's entries net to zero,
+// repeat calls do nothing, and it's a no-op for lessons never paid by credit.
+export async function refundLessonCredit(bookingId: string): Promise<void> {
+  const entries: { deltaMinutes: number; instructorId: string; learnerId: string }[] =
+    await prisma.creditEntry.findMany({
+      where: { bookingId, reason: { in: ["LESSON", "REFUND"] } },
+      select: { deltaMinutes: true, instructorId: true, learnerId: true },
+    });
+  if (entries.length === 0) return;
+  const net = entries.reduce((sum, e) => sum + e.deltaMinutes, 0);
+  if (net >= 0) return; // nothing still drawn down
+  await prisma.creditEntry.create({
+    data: {
+      instructorId: entries[0].instructorId,
+      learnerId: entries[0].learnerId,
+      deltaMinutes: -net,
+      reason: "REFUND",
+      bookingId,
+    },
+  });
+}

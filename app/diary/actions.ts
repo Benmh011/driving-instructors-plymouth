@@ -10,6 +10,8 @@ import { accessState, hasFullAccess, LOCKED_MESSAGE } from "@/lib/subscription";
 import { stripe, stripeConfigured } from "@/lib/stripe";
 import { canAcceptPayments } from "@/lib/connect";
 import { markBookingPaidFromSession } from "@/lib/lesson-pay";
+import { blockBookingsEnabled } from "@/lib/flags";
+import { creditBalanceMinutes, refundLessonCredit } from "@/lib/credit";
 import { SITE_URL } from "@/lib/constants";
 
 export type ActionState = { error?: string } | undefined;
@@ -250,6 +252,9 @@ export async function cancelLesson(bookingId: string) {
       tag: `cancel-${bookingId}`,
     });
   }
+
+  // If this lesson was covered by prepaid credit, give the hours back.
+  await refundLessonCredit(bookingId);
 
   revalidatePath("/diary");
 }
@@ -508,4 +513,67 @@ export async function removeOpenLesson(openLessonId: string): Promise<void> {
     where: { id: openLessonId, instructorId: instructor.id },
   });
   revalidatePath("/diary");
+}
+
+// A learner covers one of their unpaid lessons from their prepaid credit. Atomic
+// and balance-checked so a lesson can't be double-covered or overdrawn.
+export async function coverLessonWithCredit(
+  bookingId: string,
+): Promise<{ error?: string }> {
+  if (!blockBookingsEnabled()) return { error: "Lesson credit isn't available." };
+
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Please sign in." };
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { learnerProfile: { select: { id: true } } },
+  });
+  const learnerId = user?.learnerProfile?.id;
+  if (!learnerId) return { error: "Only students can use lesson credit." };
+
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    select: {
+      id: true,
+      paid: true,
+      status: true,
+      durationMins: true,
+      learnerId: true,
+      instructorId: true,
+    },
+  });
+  if (!booking) return { error: "Lesson not found." };
+  if (booking.learnerId !== learnerId) return { error: "That isn't your lesson." };
+  if (booking.paid) return { error: "This lesson is already covered." };
+  if (booking.status === "CANCELLED") return { error: "This lesson was cancelled." };
+
+  const balance = await creditBalanceMinutes(booking.instructorId, learnerId);
+  if (balance < booking.durationMins) {
+    return { error: "You don't have enough credit for this lesson." };
+  }
+
+  try {
+    await prisma.$transaction(async (tx: any) => {
+      const flipped = await tx.booking.updateMany({
+        where: { id: bookingId, paid: false, status: { not: "CANCELLED" } },
+        data: { paid: true, paidAt: new Date() },
+      });
+      if (flipped.count === 0) throw new Error("ALREADY");
+      await tx.creditEntry.create({
+        data: {
+          instructorId: booking.instructorId,
+          learnerId,
+          deltaMinutes: -booking.durationMins,
+          reason: "LESSON",
+          bookingId,
+        },
+      });
+    });
+  } catch {
+    return { error: "Couldn't use your credit just now — please try again." };
+  }
+
+  revalidatePath("/diary");
+  return {};
 }

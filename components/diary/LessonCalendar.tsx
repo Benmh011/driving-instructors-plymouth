@@ -8,6 +8,7 @@ import PaidButton from "./PaidButton";
 import PayButton from "./PayButton";
 import ClaimButton from "./ClaimButton";
 import RemoveOpenButton from "./RemoveOpenButton";
+import UseCreditButton from "./UseCreditButton";
 
 export type CalLesson = {
   id: string;
@@ -88,12 +89,14 @@ export default function LessonCalendar({
   readOnly = false,
   selectedKey,
   onSelectDay,
+  creditMinutes = 0,
 }: {
   lessons: CalLesson[];
   isInstructor: boolean;
   readOnly?: boolean;
   selectedKey?: string;
   onSelectDay?: (k: string) => void;
+  creditMinutes?: number;
 }) {
   const today = new Date();
   const [viewY, setViewY] = useState(today.getUTCFullYear());
@@ -319,9 +322,19 @@ export default function LessonCalendar({
                               <span className="shrink-0 rounded-full bg-go/15 px-3.5 py-1.5 text-sm font-semibold text-go">
                                 Paid ✓
                               </span>
-                            ) : l.canPay && l.pricePence != null ? (
-                              <PayButton id={l.id} pricePence={l.pricePence} />
-                            ) : null)}
+                            ) : (
+                              <>
+                                {creditMinutes >= l.durationMins && (
+                                  <UseCreditButton
+                                    id={l.id}
+                                    label={`Use ${fmtLenWords(l.durationMins)} credit`}
+                                  />
+                                )}
+                                {l.canPay && l.pricePence != null && (
+                                  <PayButton id={l.id} pricePence={l.pricePence} />
+                                )}
+                              </>
+                            ))}
                           {cancellable && !readOnly && (
                             <CancelButton id={l.id} confirmText={confirmText} />
                           )}

@@ -6,6 +6,8 @@ import { ensureInstructorSlug } from "@/lib/slug";
 import { accessState, hasFullAccess } from "@/lib/subscription";
 import { canAcceptPayments } from "@/lib/connect";
 import { reconcileCheckoutSession } from "@/lib/lesson-pay";
+import { blockBookingsEnabled } from "@/lib/flags";
+import { creditBalanceMinutes, formatHours } from "@/lib/credit";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import BackLink from "@/components/BackLink";
@@ -177,6 +179,13 @@ export default async function DiaryPage({
     a.start.localeCompare(b.start),
   );
 
+  // Learner's prepaid-credit balance with their active instructor (minutes).
+  let creditMinutes = 0;
+  const lp = user.learnerProfile;
+  if (!isInstructor && blockBookingsEnabled() && lp?.activeInstructorId) {
+    creditMinutes = await creditBalanceMinutes(lp.activeInstructorId, lp.id);
+  }
+
   const rosterRaw: { id: string; user: { name: string } }[] =
     user.instructorProfile?.roster ?? [];
   const roster = rosterRaw.map((r) => ({ id: r.id, name: r.user.name }));
@@ -237,6 +246,21 @@ export default async function DiaryPage({
           </div>
         )}
 
+        {!isInstructor && blockBookingsEnabled() && lp?.activeInstructorId && (
+          <div className="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-hairline bg-cream p-4">
+            <p className="text-sm">
+              <span className="font-semibold">{formatHours(creditMinutes)}</span>
+              <span className="text-ink-soft"> of lesson credit</span>
+            </p>
+            <Link
+              href="/credit"
+              className="shrink-0 text-sm font-semibold text-sea link-grow"
+            >
+              Buy hours &rarr;
+            </Link>
+          </div>
+        )}
+
         {isInstructor && !instructorLocked ? (
           <InstructorDiary lessons={allLessons} roster={roster} />
         ) : (
@@ -245,6 +269,7 @@ export default async function DiaryPage({
               lessons={allLessons}
               isInstructor={isInstructor}
               readOnly={instructorLocked}
+              creditMinutes={creditMinutes}
             />
           </div>
         )}
