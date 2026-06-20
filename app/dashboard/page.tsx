@@ -9,6 +9,7 @@ import PushPrompt from "@/components/push/PushPrompt";
 import CollapsiblePanel from "@/components/tax/CollapsiblePanel";
 import { ensureInstructorSlug } from "@/lib/slug";
 import { isAdminEmail } from "@/lib/admin";
+import { blockBookingsEnabled } from "@/lib/flags";
 import { accessState } from "@/lib/subscription";
 import SubscriptionBanner from "@/components/billing/SubscriptionBanner";
 
@@ -233,6 +234,13 @@ export default async function DashboardPage({
               title="Tax & earnings"
               desc="Income and expenses for Self Assessment."
             />
+            {blockBookingsEnabled() && (
+              <NavCard
+                href="/dashboard/blocks"
+                title="Block packages"
+                desc="Sell blocks of hours your students can buy up front."
+              />
+            )}
             <NavCard
               href="/messages"
               title="Messages"

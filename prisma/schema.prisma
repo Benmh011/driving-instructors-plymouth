@@ -91,6 +91,7 @@ model LearnerProfile {
   joinRequests JoinRequest[]
   messages     Message[]
   reviews      Review[]
+  creditEntries CreditEntry[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -144,6 +145,8 @@ model InstructorProfile {
   roster   LearnerProfile[] @relation("Roster")
   bookings Booking[]
   openLessons OpenLesson[]
+  blockPackages BlockPackage[]
+  creditEntries CreditEntry[]
 
   joinRequests   JoinRequest[]
   expenses       Expense[]
@@ -198,6 +201,48 @@ model OpenLesson {
 
   @@index([instructorId])
   @@index([start])
+}
+
+// An instructor-defined block offering, e.g. "10 hours — £280".
+model BlockPackage {
+  id           String            @id @default(cuid())
+  instructorId String
+  instructor   InstructorProfile @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  name       String
+  minutes    Int
+  pricePence Int
+  active     Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  @@index([instructorId])
+}
+
+// One line of a learner's prepaid-hours ledger with an instructor. The balance
+// is the sum of deltaMinutes for an (instructor, learner) pair — purchases are
+// positive, lesson drawdowns negative. Never updated in place; corrections are
+// new entries, so the history stays auditable.
+model CreditEntry {
+  id           String            @id @default(cuid())
+  instructorId String
+  instructor   InstructorProfile @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  learnerId    String
+  learner      LearnerProfile    @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  deltaMinutes Int
+  reason       String // PURCHASE | LESSON | REFUND | ADJUSTMENT
+  pricePence   Int? // amount paid (purchases) — kept for refund valuation
+  bookingId    String? // the lesson drawn down, when reason = LESSON
+
+  stripeCheckoutSessionId String?
+  stripePaymentIntentId   String?
+  note                    String?
+
+  createdAt DateTime @default(now())
+
+  @@index([instructorId, learnerId])
+  @@index([stripeCheckoutSessionId])
 }
 
 model JoinRequest {
