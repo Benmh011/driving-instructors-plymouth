@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useTransition } from "react";
 import {
   setBlockPackageActive,
   deleteBlockPackage,
@@ -13,19 +13,21 @@ export default function BlockRowActions({
   id: string;
   active: boolean;
 }) {
-  const [pending, setPending] = useState(false);
+  const [pending, startTransition] = useTransition();
 
   function toggle() {
-    setPending(true);
-    void setBlockPackageActive(id, !active);
+    startTransition(async () => {
+      await setBlockPackageActive(id, !active);
+    });
   }
 
   function remove() {
     if (!window.confirm("Delete this block? Past purchases stay on the ledger.")) {
       return;
     }
-    setPending(true);
-    void deleteBlockPackage(id);
+    startTransition(async () => {
+      await deleteBlockPackage(id);
+    });
   }
 
   return (
