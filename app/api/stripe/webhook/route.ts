@@ -5,6 +5,7 @@ import { stripe, stripeConfigured } from "@/lib/stripe";
 import { syncSubscriptionToDb } from "@/lib/stripe-sync";
 import { prisma } from "@/lib/prisma";
 import { markBookingPaidFromSession } from "@/lib/lesson-pay";
+import { grantCreditFromSession } from "@/lib/block-pay";
 
 // Stripe needs the raw body for signature verification, and the SDK needs Node.
 export const runtime = "nodejs";
@@ -55,6 +56,12 @@ export async function POST(req: Request) {
         // Single-lesson payment (direct charge on a connected account).
         if (s.metadata?.bookingId) {
           await markBookingPaidFromSession(s.metadata.bookingId, s);
+          break;
+        }
+
+        // Block-credit purchase (direct charge on a connected account).
+        if (s.metadata?.kind === "block") {
+          await grantCreditFromSession(s);
           break;
         }
 

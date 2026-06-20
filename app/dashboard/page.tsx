@@ -269,6 +269,13 @@ export default async function DashboardPage({
               title="Theory test"
               desc="Practise by topic and sit timed mock tests."
             />
+            {blockBookingsEnabled() && (
+              <NavCard
+                href="/credit"
+                title="Lesson credit"
+                desc="Buy a block of hours and see your balance."
+              />
+            )}
           </div>
         ) : (
           <NavCard
