@@ -13,6 +13,7 @@ import SignOutButton from "@/components/auth/SignOutButton";
 import BackLink from "@/components/BackLink";
 import InstructorDiary from "@/components/diary/InstructorDiary";
 import LessonCalendar, { type CalLesson } from "@/components/diary/LessonCalendar";
+import PayButton from "@/components/diary/PayButton";
 
 export const metadata = { title: "Diary" };
 
@@ -205,15 +206,28 @@ export default async function DiaryPage({
     user.instructorProfile?.roster ?? [];
   const roster = rosterRaw.map((r) => ({ id: r.id, name: r.user.name }));
 
-  // Learner's completed lessons (newest first), each linking to the instructor's profile.
-  type PastLesson = { id: string; start: string; instructorName: string; slug: string };
+  // Learner's past lessons (newest first): completed or simply in the past, so
+  // any that slipped through unpaid can still be settled here.
+  type PastLesson = {
+    id: string;
+    start: string;
+    instructorName: string;
+    slug: string;
+    paid: boolean;
+    pricePence: number | null;
+    canPay: boolean;
+  };
   const pastLessons: PastLesson[] = [];
   if (!isInstructor) {
-    const completedRows = bookings
-      .filter((b) => b.status === "COMPLETED")
+    const nowMs = Date.now();
+    const pastRows = bookings
+      .filter(
+        (b) =>
+          b.status !== "CANCELLED" && new Date(b.start).getTime() < nowMs,
+      )
       .sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
     const slugCache = new Map<string, string>();
-    for (const b of completedRows) {
+    for (const b of pastRows) {
       const inst = b.instructor;
       if (!inst) continue;
       let s = slugCache.get(inst.id);
@@ -226,14 +240,28 @@ export default async function DiaryPage({
         });
         slugCache.set(inst.id, s);
       }
+      const canPay =
+        !b.paid &&
+        b.pricePence != null &&
+        b.pricePence > 0 &&
+        canAcceptPayments({
+          connectChargesEnabled: inst.connectChargesEnabled,
+          subscriptionStatus: inst.subscriptionStatus,
+          trialEndsAt: inst.trialEndsAt,
+          currentPeriodEnd: inst.currentPeriodEnd,
+        });
       pastLessons.push({
         id: b.id,
         start: new Date(b.start).toISOString(),
         instructorName: inst.businessName || inst.user.name,
         slug: s,
+        paid: b.paid,
+        pricePence: b.pricePence ?? null,
+        canPay,
       });
     }
   }
+  const unpaidPastCount = pastLessons.filter((p) => p.canPay).length;
 
   const pendingRefundCount = isInstructor
     ? lessons.filter((l) => l.refundStatus === "PENDING").length
@@ -333,9 +361,16 @@ export default async function DiaryPage({
             <h2 className="font-display text-2xl font-bold tracking-tight">
               Past lessons
             </h2>
+            {unpaidPastCount > 0 && (
+              <p className="mt-2 text-sm font-medium text-signal">
+                {unpaidPastCount === 1
+                  ? "1 past lesson is still unpaid."
+                  : `${unpaidPastCount} past lessons are still unpaid.`}
+              </p>
+            )}
             {pastLessons.length === 0 ? (
               <p className="mt-3 text-[15px] text-ink-soft">
-                Your completed lessons will show here.
+                Your past lessons will show here.
               </p>
             ) : (
               <ul className="mt-4 space-y-2.5">
@@ -347,15 +382,26 @@ export default async function DiaryPage({
                     <div className="min-w-0">
                       <p className="font-semibold">{fmtPast(pl.start)}</p>
                       <p className="mt-0.5 text-sm text-ink-soft">
-                        with {pl.instructorName}
+                        with{" "}
+                        <Link
+                          href={`/instructors/${pl.slug}`}
+                          className="font-medium text-sea link-grow"
+                        >
+                          {pl.instructorName}
+                        </Link>
                       </p>
                     </div>
-                    <Link
-                      href={`/instructors/${pl.slug}`}
-                      className="shrink-0 rounded-full border border-ink/20 px-3.5 py-1.5 text-sm font-semibold text-ink-soft transition-colors hover:border-ink hover:text-ink"
-                    >
-                      View instructor profile &rarr;
-                    </Link>
+                    {pl.paid ? (
+                      <span className="shrink-0 rounded-full bg-go/15 px-3.5 py-1.5 text-sm font-semibold text-go">
+                        Paid
+                      </span>
+                    ) : pl.canPay && pl.pricePence != null ? (
+                      <PayButton id={pl.id} pricePence={pl.pricePence} />
+                    ) : (
+                      <span className="shrink-0 rounded-full bg-line/15 px-3.5 py-1.5 text-sm font-semibold text-ink-soft">
+                        Unpaid
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>

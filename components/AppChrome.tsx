@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
+import { signOut } from "next-auth/react";
 import { Logo } from "./Logo";
 
 const HIDDEN_ON = ["/", "/login", "/register", "/onboarding"];
@@ -56,6 +57,18 @@ const icons = {
       <path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5Z" />
     </svg>
   ),
+  account: (
+    <svg {...iconProps}>
+      <circle cx="12" cy="8" r="3.4" />
+      <path d="M5.5 20a6.5 6.5 0 0 1 13 0" />
+    </svg>
+  ),
+  logout: (
+    <svg {...iconProps}>
+      <path d="M15 17v1.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2V7" />
+      <path d="M10 12h11m0 0-3-3m3 3-3 3" />
+    </svg>
+  ),
 };
 
 type Tab = {
@@ -90,9 +103,11 @@ const learnerTabs: Tab[] = [
 
 export default function AppChrome({
   role,
+  userName,
   children,
 }: {
   role: string | null;
+  userName?: string | null;
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -172,7 +187,7 @@ export default function AppChrome({
                 key={t.href}
                 href={t.href}
                 title={collapsed ? t.label : undefined}
-                className={`flex items-center gap-3 rounded-xl py-2.5 text-[15px] font-semibold transition-colors ${
+                className={`relative flex items-center gap-3 rounded-xl py-2.5 text-[15px] font-semibold transition-colors ${
                   collapsed ? "justify-center px-0" : "px-4"
                 } ${
                   active
@@ -180,12 +195,47 @@ export default function AppChrome({
                     : "text-cream/70 hover:bg-white/5 hover:text-cream"
                 }`}
               >
+                {active && (
+                  <span
+                    aria-hidden
+                    className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-line"
+                  />
+                )}
                 <span className={active ? "text-sea" : ""}>{t.icon}</span>
                 {!collapsed && t.label}
               </Link>
             );
           })}
         </nav>
+
+        <div className="mt-auto border-t border-white/10 px-3 py-3">
+          {!collapsed && userName && (
+            <p className="truncate px-4 pb-2 text-sm font-semibold text-cream">
+              {userName}
+            </p>
+          )}
+          <Link
+            href="/account"
+            title={collapsed ? "Account" : undefined}
+            className={`flex items-center gap-3 rounded-xl py-2.5 text-[15px] font-semibold text-cream/70 transition-colors hover:bg-white/5 hover:text-cream ${
+              collapsed ? "justify-center px-0" : "px-4"
+            }`}
+          >
+            <span>{icons.account}</span>
+            {!collapsed && "Account"}
+          </Link>
+          <button
+            type="button"
+            onClick={() => signOut({ callbackUrl: "/" })}
+            title={collapsed ? "Sign out" : undefined}
+            className={`flex w-full items-center gap-3 rounded-xl py-2.5 text-[15px] font-semibold text-cream/70 transition-colors hover:bg-white/5 hover:text-cream ${
+              collapsed ? "justify-center px-0" : "px-4"
+            }`}
+          >
+            <span>{icons.logout}</span>
+            {!collapsed && "Sign out"}
+          </button>
+        </div>
       </aside>
 
       {/* Page content */}

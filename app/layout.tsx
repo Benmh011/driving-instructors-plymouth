@@ -60,28 +60,30 @@ export const viewport: Viewport = {
 
 // Role drives which nav the app shell shows. Returns null for signed-out or
 // not-yet-onboarded users, in which case no shell is rendered.
-async function getNavRole(): Promise<string | null> {
+async function getNavInfo(): Promise<{ role: string; name: string } | null> {
   const session = await auth();
   if (!session?.user?.id) return null;
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { role: true, onboardingComplete: true },
+    select: { role: true, name: true, onboardingComplete: true },
   });
   if (!user || !user.onboardingComplete) return null;
-  return user.role;
+  return { role: user.role, name: user.name };
 }
 
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const role = await getNavRole();
+  const nav = await getNavInfo();
   return (
     <html lang="en-GB" className={`${GeistSans.variable} ${bricolage.variable}`}>
       <body>
         <FreshOnRestore />
         <PullToRefresh />
         <RouteProgress />
-        <AppChrome role={role}>{children}</AppChrome>
+        <AppChrome role={nav?.role ?? null} userName={nav?.name ?? null}>
+          {children}
+        </AppChrome>
         <ServiceWorker />
       </body>
     </html>
