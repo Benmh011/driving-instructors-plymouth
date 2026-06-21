@@ -60,13 +60,15 @@ export async function refundAllCredit(): Promise<{
   const instructorId = await currentInstructorId();
   if (!instructorId) return { error: "Only instructors can do this." };
 
-  const grouped: { learnerId: string; _sum: { deltaMinutes: number | null } }[] =
-    await prisma.creditEntry.groupBy({
-      by: ["learnerId"],
-      where: { instructorId },
-      _sum: { deltaMinutes: true },
-    });
-  const owed = grouped.filter((g) => (g._sum.deltaMinutes ?? 0) > 0);
+  const grouped = await prisma.creditEntry.groupBy({
+    by: ["learnerId"],
+    where: { instructorId },
+    _sum: { deltaMinutes: true },
+  });
+  const owed = grouped.filter(
+    (g: { learnerId: string; _sum: { deltaMinutes: number | null } }) =>
+      (g._sum.deltaMinutes ?? 0) > 0,
+  );
 
   let students = 0;
   let refundedPence = 0;

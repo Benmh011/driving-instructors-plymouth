@@ -36,17 +36,21 @@ export default async function CreditAdminPage() {
   });
   if (!instructor) redirect("/dashboard");
 
-  const grouped: { learnerId: string; _sum: { deltaMinutes: number | null } }[] =
-    await prisma.creditEntry.groupBy({
-      by: ["learnerId"],
-      where: { instructorId: instructor.id },
-      _sum: { deltaMinutes: true },
-    });
-  const owing = grouped.filter((g) => (g._sum.deltaMinutes ?? 0) > 0);
+  const grouped = await prisma.creditEntry.groupBy({
+    by: ["learnerId"],
+    where: { instructorId: instructor.id },
+    _sum: { deltaMinutes: true },
+  });
+  const owing = grouped.filter(
+    (g: { learnerId: string; _sum: { deltaMinutes: number | null } }) =>
+      (g._sum.deltaMinutes ?? 0) > 0,
+  );
 
   const profiles: { id: string; user: { name: string } }[] =
     await prisma.learnerProfile.findMany({
-      where: { id: { in: owing.map((g) => g.learnerId) } },
+      where: {
+        id: { in: owing.map((g: { learnerId: string }) => g.learnerId) },
+      },
       select: { id: true, user: { select: { name: true } } },
     });
   const nameById = new Map(profiles.map((p) => [p.id, p.user.name]));
