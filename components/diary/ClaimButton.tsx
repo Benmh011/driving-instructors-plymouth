@@ -1,22 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { claimOpenLesson } from "@/app/diary/actions";
 
 export default function ClaimButton({ id }: { id: string }) {
-  const [pending, setPending] = useState(false);
+  const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
 
-  async function onClick() {
+  function onClick() {
     setError("");
-    setPending(true);
-    const res = await claimOpenLesson(id);
-    if (res?.error) {
-      setError(res.error);
-      setPending(false);
-    }
-    // On success the action revalidates the diary, so this card re-renders as a
-    // booked lesson — keep the spinner up until that happens.
+    startTransition(async () => {
+      const res = await claimOpenLesson(id);
+      if (res?.error) setError(res.error);
+      // On success the action revalidates the diary within this transition, so
+      // the card reliably re-renders as a booked lesson.
+    });
   }
 
   return (

@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import ServiceWorker from "@/components/ServiceWorker";
 import AppChrome from "@/components/AppChrome";
 import FreshOnRestore from "@/components/FreshOnRestore";
+import PullToRefresh from "@/components/PullToRefresh";
 import { RouteProgress } from "@/components/RouteProgress";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
@@ -78,6 +79,7 @@ export default async function RootLayout({
     <html lang="en-GB" className={`${GeistSans.variable} ${bricolage.variable}`}>
       <body>
         <FreshOnRestore />
+        <PullToRefresh />
         <RouteProgress />
         <AppChrome role={role}>{children}</AppChrome>
         <ServiceWorker />

@@ -64,11 +64,13 @@ function endTime(iso: string, m: number) {
   return fmtTime(new Date(new Date(iso).getTime() + m * 60000).toISOString());
 }
 
-type Tone = "open" | "paid" | "unpaid" | "cancelled";
+type Tone = "open" | "paid" | "unpaid" | "cancelled" | "refund";
 
 function toneOf(l: CalLesson): Tone {
   if (l.kind === "open") return "open";
-  if (l.status === "CANCELLED") return "cancelled";
+  if (l.status === "CANCELLED") {
+    return l.refundStatus === "PENDING" ? "refund" : "cancelled";
+  }
   return l.paid ? "paid" : "unpaid";
 }
 
@@ -77,6 +79,7 @@ const TONE_BORDER: Record<Tone, string> = {
   paid: "border-l-go",
   unpaid: "border-l-sea",
   cancelled: "border-l-ink/20",
+  refund: "border-l-signal",
 };
 
 const TONE_DOT: Record<Tone, string> = {
@@ -84,6 +87,7 @@ const TONE_DOT: Record<Tone, string> = {
   paid: "bg-go",
   unpaid: "bg-sea",
   cancelled: "bg-ink/30",
+  refund: "bg-signal",
 };
 
 export default function LessonCalendar({
@@ -187,7 +191,7 @@ export default function LessonCalendar({
             if (d === null) return <div key={idx} />;
             const k = key(viewY, viewM, d);
             const dayLessons = byDay[k] ?? [];
-            const dayTones = (["open", "unpaid", "paid"] as Tone[]).filter((t) =>
+            const dayTones = (["open", "unpaid", "paid", "refund"] as Tone[]).filter((t) =>
               dayLessons.some((l) => toneOf(l) === t),
             );
             const isSel = k === selKey;
@@ -234,6 +238,9 @@ export default function LessonCalendar({
         </span>
         <span className="flex items-center gap-1.5">
           <span className="h-2 w-2 rounded-full bg-go" /> Paid
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-signal" /> Refund pending
         </span>
       </div>
 

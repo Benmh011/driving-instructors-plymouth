@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { approveRefund, declineRefund } from "@/app/diary/actions";
 
 export default function RefundButtons({
@@ -10,19 +10,17 @@ export default function RefundButtons({
   id: string;
   late: boolean;
 }) {
-  const [pending, setPending] = useState(false);
+  const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
 
-  async function run(fn: (id: string) => Promise<{ error?: string }>) {
+  function run(fn: (id: string) => Promise<{ error?: string }>) {
     setError("");
-    setPending(true);
-    const res = await fn(id);
-    if (res?.error) {
-      setError(res.error);
-      setPending(false);
-    }
-    // On success the diary revalidates and the lesson re-renders with its new
-    // refund status.
+    startTransition(async () => {
+      const res = await fn(id);
+      if (res?.error) setError(res.error);
+      // On success the diary revalidates and the lesson re-renders with its new
+      // refund status.
+    });
   }
 
   return (

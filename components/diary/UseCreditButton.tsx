@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { coverLessonWithCredit } from "@/app/diary/actions";
 
 export default function UseCreditButton({
@@ -10,18 +10,16 @@ export default function UseCreditButton({
   id: string;
   label: string;
 }) {
-  const [pending, setPending] = useState(false);
+  const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
 
-  async function onClick() {
+  function onClick() {
     setError("");
-    setPending(true);
-    const res = await coverLessonWithCredit(id);
-    if (res?.error) {
-      setError(res.error);
-      setPending(false);
-    }
-    // On success the diary revalidates and this lesson re-renders as paid.
+    startTransition(async () => {
+      const res = await coverLessonWithCredit(id);
+      if (res?.error) setError(res.error);
+      // On success the diary revalidates and this lesson re-renders as paid.
+    });
   }
 
   return (

@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useTransition } from "react";
 import { removeOpenLesson } from "@/app/diary/actions";
 
 export default function RemoveOpenButton({ id }: { id: string }) {
-  const [pending, setPending] = useState(false);
+  const [pending, startTransition] = useTransition();
 
   function onClick() {
     if (!window.confirm("Remove this open lesson slot?")) return;
-    setPending(true);
-    void removeOpenLesson(id);
+    startTransition(async () => {
+      await removeOpenLesson(id);
+    });
   }
 
   return (

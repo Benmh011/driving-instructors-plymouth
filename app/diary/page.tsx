@@ -235,6 +235,10 @@ export default async function DiaryPage({
     }
   }
 
+  const pendingRefundCount = isInstructor
+    ? lessons.filter((l) => l.refundStatus === "PENDING").length
+    : 0;
+
   return (
     <div className="relative z-10 min-h-dvh">
       <AppHeader home="/dashboard" right={<SignOutButton />} />
@@ -273,6 +277,22 @@ export default async function DiaryPage({
             >
               Buy hours &rarr;
             </Link>
+          </div>
+        )}
+
+        {isInstructor && pendingRefundCount > 0 && (
+          <div className="mt-6 flex items-center gap-3 rounded-2xl border border-signal/40 bg-signal/10 p-4">
+            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-signal text-sm font-bold text-white">
+              {pendingRefundCount}
+            </span>
+            <p className="text-sm font-medium text-ink">
+              {pendingRefundCount === 1
+                ? "A cancelled lesson is"
+                : "Cancelled lessons are"}{" "}
+              awaiting your refund decision — marked in{" "}
+              <span className="font-semibold text-signal">red</span> on the
+              calendar.
+            </p>
           </div>
         )}
 
