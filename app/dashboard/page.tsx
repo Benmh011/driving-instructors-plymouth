@@ -241,6 +241,13 @@ export default async function DashboardPage({
                 desc="Sell blocks of hours your students can buy up front."
               />
             )}
+            {blockBookingsEnabled() && (
+              <NavCard
+                href="/dashboard/credit"
+                title="Prepaid credit"
+                desc="See unused hours and refund them when lessons stop."
+              />
+            )}
             <NavCard
               href="/messages"
               title="Messages"
