@@ -402,9 +402,11 @@ export default async function InstructorProfilePage({
         {(formatCar(instructor) || instructor.carDetails) && (
           <p className="mt-4 text-[15px] text-ink-soft">
             Tuition car:{" "}
-            {[formatCar(instructor), instructor.carDetails]
-              .filter(Boolean)
-              .join(" · ")}
+            <span className="font-semibold text-ink">
+              {[formatCar(instructor), instructor.carDetails]
+                .filter(Boolean)
+                .join(" · ")}
+            </span>
           </p>
         )}
 
