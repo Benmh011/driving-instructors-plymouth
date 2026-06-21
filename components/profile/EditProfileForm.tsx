@@ -12,6 +12,10 @@ export default function EditProfileForm({
   postcodes,
   transmission,
   hourlyRate,
+  carMake,
+  carModel,
+  carYear,
+  carColour,
   carDetails,
   bio,
   cancellationNoticeHours,
@@ -20,6 +24,10 @@ export default function EditProfileForm({
   postcodes: string;
   transmission: string;
   hourlyRate: number;
+  carMake: string;
+  carModel: string;
+  carYear: number | null;
+  carColour: string;
   carDetails: string;
   bio: string;
   cancellationNoticeHours: number;
@@ -89,15 +97,56 @@ export default function EditProfileForm({
       </div>
 
       <div>
+        <p className={label}>Tuition car</p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <input
+            name="carMake"
+            type="text"
+            defaultValue={carMake}
+            placeholder="Make (e.g. Vauxhall)"
+            className={field}
+            aria-label="Car make"
+          />
+          <input
+            name="carModel"
+            type="text"
+            defaultValue={carModel}
+            placeholder="Model (e.g. Corsa)"
+            className={field}
+            aria-label="Car model"
+          />
+          <input
+            name="carYear"
+            type="number"
+            min="1980"
+            max="2100"
+            defaultValue={carYear ?? ""}
+            placeholder="Year (e.g. 2021)"
+            className={field}
+            aria-label="Car year"
+          />
+          <input
+            name="carColour"
+            type="text"
+            defaultValue={carColour}
+            placeholder="Colour (e.g. Blue)"
+            className={field}
+            aria-label="Car colour"
+          />
+        </div>
+      </div>
+
+      <div>
         <label className={label} htmlFor="carDetails">
-          Car <span className="font-normal text-ink-soft">(optional)</span>
+          Other car details{" "}
+          <span className="font-normal text-ink-soft">(optional)</span>
         </label>
         <input
           id="carDetails"
           name="carDetails"
           type="text"
           defaultValue={carDetails}
-          placeholder="e.g. Vauxhall Corsa, dual controls"
+          placeholder="e.g. dual controls, reversing camera"
           className={field}
         />
       </div>

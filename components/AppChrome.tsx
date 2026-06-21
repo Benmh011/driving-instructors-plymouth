@@ -63,6 +63,12 @@ const icons = {
       <path d="M5.5 20a6.5 6.5 0 0 1 13 0" />
     </svg>
   ),
+  book: (
+    <svg {...iconProps}>
+      <path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V4.5Z" />
+      <path d="M8 3v14" />
+    </svg>
+  ),
   logout: (
     <svg {...iconProps}>
       <path d="M15 17v1.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2V7" />
@@ -97,6 +103,7 @@ const instructorTabs: Tab[] = [
 const learnerTabs: Tab[] = [
   { href: "/dashboard", label: "Home", icon: icons.home, match: (p) => p === "/dashboard" },
   { href: "/diary", label: "Lessons", icon: icons.calendar, match: (p) => p.startsWith("/diary") },
+  { href: "/theory", label: "Theory", icon: icons.book, match: (p) => p.startsWith("/theory") },
   { href: "/messages", label: "Messages", icon: icons.chat, match: (p) => p.startsWith("/messages") },
   { href: "/instructors", label: "Find", icon: icons.search, match: (p) => p.startsWith("/instructors") },
 ];

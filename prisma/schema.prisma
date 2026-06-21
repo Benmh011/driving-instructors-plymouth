@@ -113,7 +113,11 @@ model InstructorProfile {
   postcodes    String // comma-separated coverage areas for now
   transmission Transmission @default(MANUAL)
   hourlyRate   Int // whole pounds per hour
-  carDetails   String?
+  carMake      String? // e.g. Vauxhall
+  carModel     String? // e.g. Corsa
+  carYear      Int? // registration year
+  carColour    String? // e.g. Blue
+  carDetails   String? // free-text extras: dual controls, features, etc.
   bio          String?
 
   // ADI verification (manual admin review against the DVSA register)

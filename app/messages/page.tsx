@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
+import BackLink from "@/components/BackLink";
 import Conversation from "@/components/messages/Conversation";
 import ConversationList from "@/components/messages/ConversationList";
 
@@ -107,12 +108,7 @@ export default async function MessagesPage() {
       <div className="relative z-10 min-h-dvh">
         <AppHeader home="/dashboard" right={<SignOutButton />} />
         <main className="mx-auto max-w-2xl px-5 py-14 sm:px-8">
-          <Link
-            href="/dashboard"
-            className="text-sm font-semibold text-ink-soft transition-colors hover:text-ink"
-          >
-            &larr; Back to dashboard
-          </Link>
+          <BackLink />
           <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl">
             Messages
           </h1>
@@ -176,12 +172,7 @@ export default async function MessagesPage() {
     <div className="relative z-10 min-h-dvh">
       <AppHeader home="/dashboard" right={<SignOutButton />} />
       <main className="mx-auto max-w-2xl px-5 py-8 sm:px-8 sm:py-12">
-        <Link
-          href="/dashboard"
-          className="text-sm font-semibold text-ink-soft transition-colors hover:text-ink"
-        >
-          &larr; Back to dashboard
-        </Link>
+        <BackLink />
         <h1 className="mt-3 font-display text-2xl font-bold tracking-tight">{otherName}</h1>
         {initial.length === 0 && (
           <div className="mt-5 rounded-2xl border border-dashed border-ink/20 bg-paper-dim/40 p-5">

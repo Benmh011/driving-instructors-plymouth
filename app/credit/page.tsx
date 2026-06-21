@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
+import BackLink from "@/components/BackLink";
 import { blockBookingsEnabled } from "@/lib/flags";
 import { creditBalanceMinutes, formatHours } from "@/lib/credit";
 import { canAcceptPayments } from "@/lib/connect";
@@ -127,12 +128,7 @@ export default async function CreditPage({
       <AppHeader home="/dashboard" right={<SignOutButton />} />
 
       <main className="mx-auto max-w-xl px-5 py-14 sm:px-8">
-        <Link
-          href="/dashboard"
-          className="text-sm font-semibold text-ink-soft transition-colors hover:text-ink"
-        >
-          &larr; Back to dashboard
-        </Link>
+        <BackLink />
 
         <h1 className="mt-4 font-display text-4xl font-bold tracking-tight">
           Lesson credit

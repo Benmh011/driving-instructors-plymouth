@@ -6,6 +6,7 @@ import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import { MAX_ROSTER } from "@/lib/constants";
 import { ensureInstructorSlug } from "@/lib/slug";
+import { formatCar } from "@/lib/car";
 import { accessState, hasFullAccess } from "@/lib/subscription";
 import BackLink from "@/components/BackLink";
 import { Stars } from "@/components/reviews/Stars";
@@ -398,9 +399,12 @@ export default async function InstructorProfilePage({
           </div>
         )}
 
-        {instructor.carDetails && (
+        {(formatCar(instructor) || instructor.carDetails) && (
           <p className="mt-4 text-[15px] text-ink-soft">
-            Tuition car: {instructor.carDetails}
+            Tuition car:{" "}
+            {[formatCar(instructor), instructor.carDetails]
+              .filter(Boolean)
+              .join(" · ")}
           </p>
         )}
 

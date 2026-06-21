@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
+import BackLink from "@/components/BackLink";
 import { stripeConfigured } from "@/lib/stripe";
 import { syncConnectStatus } from "@/lib/connect";
 import { accessState, hasFullAccess } from "@/lib/subscription";
@@ -61,12 +62,7 @@ export default async function PaymentsPage() {
       <AppHeader home="/dashboard" right={<SignOutButton />} />
 
       <main className="mx-auto max-w-xl px-5 py-14 sm:px-8">
-        <Link
-          href="/dashboard"
-          className="text-sm font-semibold text-ink-soft transition-colors hover:text-ink"
-        >
-          &larr; Back to dashboard
-        </Link>
+        <BackLink />
 
         <h1 className="mt-4 font-display text-4xl font-bold tracking-tight">Payments</h1>
         <p className="mt-2 text-ink-soft">

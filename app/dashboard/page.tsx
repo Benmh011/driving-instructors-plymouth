@@ -12,6 +12,7 @@ import { isAdminEmail } from "@/lib/admin";
 import { blockBookingsEnabled } from "@/lib/flags";
 import { accessState } from "@/lib/subscription";
 import { creditBalanceMinutes, formatHours } from "@/lib/credit";
+import { formatCar } from "@/lib/car";
 import SubscriptionBanner from "@/components/billing/SubscriptionBanner";
 
 export const metadata = { title: "Dashboard" };
@@ -46,6 +47,10 @@ export default async function DashboardPage({
   const instructor = l?.activeInstructor;
   const instructorName = instructor
     ? instructor.businessName || instructor.user.name
+    : null;
+  const instructorCar = instructor
+    ? [formatCar(instructor), instructor.carDetails].filter(Boolean).join(" · ") ||
+      null
     : null;
 
   const publicSlug =
@@ -217,7 +222,12 @@ export default async function DashboardPage({
               <Field label="Transmission" value={pretty(i.transmission)} />
               <Field label="Hourly rate" value={`£${i.hourlyRate}`} />
               {i.businessName && <Field label="Business" value={i.businessName} />}
-              {i.carDetails && <Field label="Car" value={i.carDetails} />}
+              {(formatCar(i) || i.carDetails) && (
+                <Field
+                  label="Car"
+                  value={[formatCar(i), i.carDetails].filter(Boolean).join(" · ")}
+                />
+              )}
             </dl>
             <p className="mt-4 text-sm text-ink-soft">
               Your ADI badge number is tied to DVSA verification and can&rsquo;t be edited
@@ -394,6 +404,9 @@ export default async function DashboardPage({
                   label="Your instructor"
                   value={instructorName ?? "Not joined yet"}
                 />
+                {instructorCar && (
+                  <Field label="Their car" value={instructorCar} />
+                )}
               </dl>
             </CollapsiblePanel>
           </div>

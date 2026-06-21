@@ -10,7 +10,7 @@ export default function BackLink({
   return (
     <Link
       href={href}
-      className="group inline-flex items-center gap-1.5 rounded-full border border-hairline bg-cream/70 px-3.5 py-1.5 text-sm font-semibold text-ink-soft transition-colors hover:border-ink/30 hover:text-ink"
+      className="group lift press inline-flex items-center gap-1.5 rounded-full border border-hairline bg-cream px-4 py-2 text-sm font-semibold text-ink transition-colors hover:border-tarmac hover:bg-tarmac hover:text-paper"
     >
       <svg
         className="h-4 w-4 transition-transform group-hover:-translate-x-0.5"
