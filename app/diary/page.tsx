@@ -29,6 +29,8 @@ type Row = {
   notes: string | null;
   paid: boolean;
   pricePence: number | null;
+  cancelledAt: string | Date | null;
+  refundStatus: string;
   learner?: { user: { name: string } };
   instructor?: {
     id: string;
@@ -107,36 +109,47 @@ export default async function DiaryPage({
 
   const ownNotice = user.instructorProfile?.cancellationNoticeHours ?? 48;
 
-  const lessons: CalLesson[] = bookings.map((b) => ({
-    id: b.id,
-    start: new Date(b.start).toISOString(),
-    durationMins: b.durationMins,
-    status: b.status,
-    other: isInstructor
-      ? (b.learner?.user.name ?? "Student")
-      : (b.instructor?.businessName || b.instructor?.user.name || "Instructor"),
-    notes: b.notes ?? null,
-    noticeHours: isInstructor
+  const lessons: CalLesson[] = bookings.map((b) => {
+    const noticeForLesson = isInstructor
       ? ownNotice
-      : (b.instructor?.cancellationNoticeHours ?? 48),
-    paid: b.paid,
-    pricePence: b.pricePence ?? null,
-    canPay:
-      !isInstructor &&
-      !b.paid &&
-      b.status !== "CANCELLED" &&
-      b.pricePence != null &&
-      b.pricePence > 0 &&
-      b.instructor != null &&
-      canAcceptPayments({
-        connectChargesEnabled: b.instructor.connectChargesEnabled,
-        subscriptionStatus: b.instructor.subscriptionStatus,
-        trialEndsAt: b.instructor.trialEndsAt,
-        currentPeriodEnd: b.instructor.currentPeriodEnd,
-      }),
-    kind: "lesson",
-    canClaim: false,
-  }));
+      : (b.instructor?.cancellationNoticeHours ?? 48);
+    const lateCancellation =
+      b.status === "CANCELLED" && b.cancelledAt
+        ? (new Date(b.start).getTime() - new Date(b.cancelledAt).getTime()) /
+            3_600_000 <
+          noticeForLesson
+        : false;
+    return {
+      id: b.id,
+      start: new Date(b.start).toISOString(),
+      durationMins: b.durationMins,
+      status: b.status,
+      other: isInstructor
+        ? (b.learner?.user.name ?? "Student")
+        : (b.instructor?.businessName || b.instructor?.user.name || "Instructor"),
+      notes: b.notes ?? null,
+      noticeHours: noticeForLesson,
+      paid: b.paid,
+      pricePence: b.pricePence ?? null,
+      canPay:
+        !isInstructor &&
+        !b.paid &&
+        b.status !== "CANCELLED" &&
+        b.pricePence != null &&
+        b.pricePence > 0 &&
+        b.instructor != null &&
+        canAcceptPayments({
+          connectChargesEnabled: b.instructor.connectChargesEnabled,
+          subscriptionStatus: b.instructor.subscriptionStatus,
+          trialEndsAt: b.instructor.trialEndsAt,
+          currentPeriodEnd: b.instructor.currentPeriodEnd,
+        }),
+      kind: "lesson",
+      canClaim: false,
+      refundStatus: b.refundStatus ?? "NONE",
+      lateCancellation,
+    };
+  });
 
   // Open (unclaimed) slots: an instructor sees their own; a learner sees their
   // active instructor's, which they can claim.
@@ -173,6 +186,8 @@ export default async function DiaryPage({
     canPay: false,
     kind: "open",
     canClaim: !isInstructor,
+    refundStatus: "NONE",
+    lateCancellation: false,
   }));
 
   const allLessons: CalLesson[] = [...lessons, ...openLessons].sort((a, b) =>

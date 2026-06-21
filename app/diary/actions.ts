@@ -230,7 +230,12 @@ export async function cancelLesson(bookingId: string) {
 
   await prisma.booking.update({
     where: { id: bookingId },
-    data: { status: "CANCELLED", cancelledAt: new Date() },
+    data: {
+      status: "CANCELLED",
+      cancelledAt: new Date(),
+      // A paid lesson now needs a refund decision from the instructor.
+      ...(booking.paid ? { refundStatus: "PENDING" } : {}),
+    },
   });
 
   // Notify whoever didn't cancel.
@@ -253,8 +258,8 @@ export async function cancelLesson(bookingId: string) {
     });
   }
 
-  // If this lesson was covered by prepaid credit, give the hours back.
-  await refundLessonCredit(bookingId);
+  // Paid lessons leave a pending refund for the instructor to approve or
+  // decline (see approveRefund / declineRefund) — nothing is returned here.
 
   revalidatePath("/diary");
 }
@@ -573,6 +578,139 @@ export async function coverLessonWithCredit(
   } catch {
     return { error: "Couldn't use your credit just now — please try again." };
   }
+
+  revalidatePath("/diary");
+  return {};
+}
+
+// ── Refunds (instructor-approved) ──────────────────────────────────────────
+
+// Instructor approves a pending refund on a cancelled, paid lesson. Card
+// payments are refunded via Stripe on the connected account; credit-covered
+// lessons return their hours to the learner's balance.
+export async function approveRefund(
+  bookingId: string,
+): Promise<{ error?: string }> {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Please sign in." };
+
+  const instructor = await prisma.instructorProfile.findUnique({
+    where: { userId: session.user.id },
+    select: { id: true, stripeConnectAccountId: true, businessName: true },
+  });
+  if (!instructor) return { error: "Only instructors can do this." };
+
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    select: {
+      id: true,
+      instructorId: true,
+      start: true,
+      durationMins: true,
+      pricePence: true,
+      refundStatus: true,
+      stripePaymentIntentId: true,
+      learner: { select: { userId: true } },
+    },
+  });
+  if (!booking) return { error: "Lesson not found." };
+  if (booking.instructorId !== instructor.id) {
+    return { error: "That isn't your lesson." };
+  }
+  if (booking.refundStatus !== "PENDING") {
+    return { error: "There's no refund waiting on this lesson." };
+  }
+
+  const creditEntry = await prisma.creditEntry.findFirst({
+    where: { bookingId, reason: "LESSON" },
+    select: { id: true },
+  });
+  const paidByCredit = !!creditEntry;
+
+  // Claim atomically so a refund can't be processed twice.
+  const claimed = await prisma.booking.updateMany({
+    where: { id: bookingId, refundStatus: "PENDING" },
+    data: { refundStatus: "REFUNDED" },
+  });
+  if (claimed.count === 0) return { error: "That refund was already handled." };
+
+  if (paidByCredit) {
+    await refundLessonCredit(bookingId);
+  } else if (booking.stripePaymentIntentId && instructor.stripeConnectAccountId) {
+    try {
+      const refund = await stripe.refunds.create(
+        { payment_intent: booking.stripePaymentIntentId },
+        { stripeAccount: instructor.stripeConnectAccountId },
+      );
+      await prisma.booking.update({
+        where: { id: bookingId },
+        data: { stripeRefundId: refund.id },
+      });
+    } catch {
+      // Roll the claim back so the instructor can retry.
+      await prisma.booking.update({
+        where: { id: bookingId },
+        data: { refundStatus: "PENDING" },
+      });
+      return { error: "The card refund didn't go through — please try again." };
+    }
+  }
+
+  await sendPushToUser(booking.learner.userId, {
+    title: "Refund approved",
+    body: paidByCredit
+      ? `Your hours have been returned — ${formatLessonWhen(booking.start)}.`
+      : `Your payment has been refunded — ${formatLessonWhen(booking.start)}.`,
+    url: "/diary",
+    tag: `refund-${bookingId}`,
+  });
+
+  revalidatePath("/diary");
+  return {};
+}
+
+// Instructor declines a pending refund (e.g. a late cancellation inside their
+// notice window). The lesson stays paid; nothing is returned.
+export async function declineRefund(
+  bookingId: string,
+): Promise<{ error?: string }> {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Please sign in." };
+
+  const instructor = await prisma.instructorProfile.findUnique({
+    where: { userId: session.user.id },
+    select: { id: true },
+  });
+  if (!instructor) return { error: "Only instructors can do this." };
+
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    select: {
+      instructorId: true,
+      start: true,
+      refundStatus: true,
+      learner: { select: { userId: true } },
+    },
+  });
+  if (!booking) return { error: "Lesson not found." };
+  if (booking.instructorId !== instructor.id) {
+    return { error: "That isn't your lesson." };
+  }
+
+  const claimed = await prisma.booking.updateMany({
+    where: { id: bookingId, instructorId: instructor.id, refundStatus: "PENDING" },
+    data: { refundStatus: "DECLINED" },
+  });
+  if (claimed.count === 0) {
+    return { error: "There's no refund waiting on this lesson." };
+  }
+
+  await sendPushToUser(booking.learner.userId, {
+    title: "Refund declined",
+    body: `Your instructor declined a refund for the cancelled lesson — ${formatLessonWhen(booking.start)}.`,
+    url: "/diary",
+    tag: `refund-${bookingId}`,
+  });
 
   revalidatePath("/diary");
   return {};

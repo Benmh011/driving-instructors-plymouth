@@ -173,6 +173,8 @@ model Booking {
   paidAt       DateTime? // set when paid online via Stripe
   stripePaymentIntentId String? // the Stripe PaymentIntent, for receipts/refunds
   stripeCheckoutSessionId String? // in-flight/last checkout session, for reconcile + anti-double-pay
+  refundStatus String @default("NONE") // NONE | PENDING | REFUNDED | DECLINED
+  stripeRefundId String? // the Stripe Refund, when a card payment is refunded
   notes        String?
   cancelledAt  DateTime?
   reminderSentAt DateTime?

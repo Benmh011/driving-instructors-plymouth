@@ -9,6 +9,7 @@ import PayButton from "./PayButton";
 import ClaimButton from "./ClaimButton";
 import RemoveOpenButton from "./RemoveOpenButton";
 import UseCreditButton from "./UseCreditButton";
+import RefundButtons from "./RefundButtons";
 
 export type CalLesson = {
   id: string;
@@ -23,6 +24,8 @@ export type CalLesson = {
   canPay: boolean;
   kind: "lesson" | "open";
   canClaim: boolean;
+  refundStatus: string;
+  lateCancellation: boolean;
 };
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -338,6 +341,30 @@ export default function LessonCalendar({
                           {cancellable && !readOnly && (
                             <CancelButton id={l.id} confirmText={confirmText} />
                           )}
+                          {l.status === "CANCELLED" &&
+                            l.refundStatus === "PENDING" &&
+                            (isInstructor && !readOnly ? (
+                              <RefundButtons
+                                id={l.id}
+                                late={l.lateCancellation}
+                              />
+                            ) : (
+                              <span className="shrink-0 rounded-full bg-line/15 px-3.5 py-1.5 text-sm font-semibold text-ink-soft">
+                                Refund pending
+                              </span>
+                            ))}
+                          {l.status === "CANCELLED" &&
+                            l.refundStatus === "REFUNDED" && (
+                              <span className="shrink-0 rounded-full bg-go/15 px-3.5 py-1.5 text-sm font-semibold text-go">
+                                Refunded
+                              </span>
+                            )}
+                          {l.status === "CANCELLED" &&
+                            l.refundStatus === "DECLINED" && (
+                              <span className="shrink-0 rounded-full bg-ink/10 px-3.5 py-1.5 text-sm font-semibold text-ink-soft">
+                                No refund
+                              </span>
+                            )}
                         </>
                       )}
                     </div>
