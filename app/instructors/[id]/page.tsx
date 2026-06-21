@@ -78,6 +78,8 @@ export default async function InstructorProfilePage({
 
   // An account scheduled for deletion disappears from public view immediately.
   if (instructor.user.deletionScheduledFor) notFound();
+  // A closed (anonymised) account stays gone for good.
+  if (instructor.user.anonymizedAt) notFound();
 
   // Canonicalise to the slug URL (older /instructors/<id> links 308 to the slug).
   const slug = await ensureInstructorSlug(instructor);

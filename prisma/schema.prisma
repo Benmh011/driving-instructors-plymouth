@@ -57,6 +57,11 @@ model User {
   // user can restore it by signing in before the date.
   deletionScheduledFor DateTime?
 
+  // When set, the account has been closed and its personal data scrubbed, but
+  // financial records (bookings, payments, credit) are retained for accounting.
+  // The account can never be logged into or restored.
+  anonymizedAt DateTime?
+
   learnerProfile    LearnerProfile?
   instructorProfile InstructorProfile?
   pushSubscriptions PushSubscription[]

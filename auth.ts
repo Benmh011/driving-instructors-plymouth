@@ -24,6 +24,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           where: { email: { equals: email, mode: "insensitive" } },
         });
         if (!user) return null;
+        if (user.anonymizedAt) return null;
 
         const valid = await bcrypt.compare(password, user.passwordHash);
         if (!valid) return null;
