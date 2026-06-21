@@ -11,6 +11,7 @@ import { ensureInstructorSlug } from "@/lib/slug";
 import { isAdminEmail } from "@/lib/admin";
 import { blockBookingsEnabled } from "@/lib/flags";
 import { accessState } from "@/lib/subscription";
+import { creditBalanceMinutes, formatHours } from "@/lib/credit";
 import SubscriptionBanner from "@/components/billing/SubscriptionBanner";
 
 export const metadata = { title: "Dashboard" };
@@ -56,6 +57,48 @@ export default async function DashboardPage({
           user: { name: user.name },
         })
       : null;
+
+  // Learner snapshot: next lesson, upcoming/unpaid counts, credit balance.
+  type NextLesson = {
+    start: string | Date;
+    instructor: {
+      businessName: string | null;
+      user: { name: string };
+    } | null;
+  };
+  let nextLesson: NextLesson | null = null;
+  let upcomingCount = 0;
+  let unpaidPastCount = 0;
+  let creditMinutes = 0;
+  if (!isInstructor && l) {
+    const now = new Date();
+    const upcoming: NextLesson[] = await prisma.booking.findMany({
+      where: { learnerId: l.id, status: { not: "CANCELLED" }, start: { gte: now } },
+      orderBy: { start: "asc" },
+      select: {
+        start: true,
+        instructor: {
+          select: { businessName: true, user: { select: { name: true } } },
+        },
+      },
+    });
+    upcomingCount = upcoming.length;
+    nextLesson = upcoming[0] ?? null;
+    unpaidPastCount = await prisma.booking.count({
+      where: {
+        learnerId: l.id,
+        status: { not: "CANCELLED" },
+        start: { lt: now },
+        paid: false,
+      },
+    });
+    if (blockBookingsEnabled() && l.activeInstructorId) {
+      creditMinutes = await creditBalanceMinutes(l.activeInstructorId, l.id);
+    }
+  }
+  const nextInstructorName = nextLesson?.instructor
+    ? nextLesson.instructor.businessName || nextLesson.instructor.user.name
+    : instructorName;
 
   return (
     <div className="relative z-10 min-h-dvh">
@@ -200,12 +243,59 @@ export default async function DashboardPage({
             </div>
           </CollapsiblePanel>
         ) : l ? (
-          <div className="mt-9 grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline sm:grid-cols-2">
-            <Cell label="Area" value={l.postcode} />
-            <Cell label="Transmission" value={pretty(l.transmission)} />
-            {l.goal && <Cell label="Goal" value={l.goal} />}
-            <Cell label="Your instructor" value={instructorName ?? "Not joined yet"} />
-          </div>
+          <>
+            {nextLesson ? (
+              <Link
+                href="/diary"
+                className="lift press mt-8 block rounded-2xl border border-sea/30 bg-sea/10 p-6"
+              >
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-sea">
+                  Next lesson
+                </p>
+                <p className="mt-2 font-display text-2xl font-bold tracking-tight">
+                  {fmtWhen(nextLesson.start)}
+                </p>
+                <p className="mt-1 text-ink-soft">
+                  {nextInstructorName ? `with ${nextInstructorName} · ` : ""}
+                  {countdown(nextLesson.start)}
+                </p>
+              </Link>
+            ) : instructorName ? (
+              <div className="mt-8 rounded-2xl border border-hairline bg-cream p-6">
+                <p className="font-display text-xl font-semibold">
+                  No lessons booked
+                </p>
+                <p className="mt-1 text-ink-soft">
+                  Book your next lesson with {instructorName} in your diary.
+                </p>
+                <Link
+                  href="/diary"
+                  className="mt-4 inline-flex items-center rounded-full bg-sea px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-sea-dark"
+                >
+                  Go to diary &rarr;
+                </Link>
+              </div>
+            ) : null}
+
+            {instructorName && (
+              <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                <Stat label="Upcoming" value={String(upcomingCount)} href="/diary" />
+                <Stat
+                  label="Unpaid"
+                  value={String(unpaidPastCount)}
+                  href="/diary"
+                  accent={unpaidPastCount > 0}
+                />
+                {blockBookingsEnabled() && (
+                  <Stat
+                    label="Lesson credit"
+                    value={formatHours(creditMinutes)}
+                    href="/credit"
+                  />
+                )}
+              </div>
+            )}
+          </>
         ) : null}
 
         {isInstructor ? (
@@ -293,6 +383,22 @@ export default async function DashboardPage({
           />
         )}
 
+        {!isInstructor && l && (
+          <div className="mt-5">
+            <CollapsiblePanel title="Your details">
+              <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
+                <Field label="Area" value={l.postcode} />
+                <Field label="Transmission" value={pretty(l.transmission)} />
+                {l.goal && <Field label="Goal" value={l.goal} />}
+                <Field
+                  label="Your instructor"
+                  value={instructorName ?? "Not joined yet"}
+                />
+              </dl>
+            </CollapsiblePanel>
+          </div>
+        )}
+
         <div className="mt-5">
           <EnablePush />
         </div>
@@ -348,15 +454,70 @@ function Field({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Cell({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="bg-cream p-5">
+function Stat({
+  label,
+  value,
+  href,
+  accent,
+}: {
+  label: string;
+  value: string;
+  href?: string;
+  accent?: boolean;
+}) {
+  const inner = (
+    <>
       <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">
         {label}
       </p>
-      <p className="mt-1 font-medium">{value}</p>
-    </div>
+      <p
+        className={`mt-1 font-display text-2xl font-bold ${
+          accent ? "text-signal" : ""
+        }`}
+      >
+        {value}
+      </p>
+    </>
   );
+  const base = `rounded-2xl border bg-cream p-5 ${
+    accent ? "border-signal/40" : "border-hairline"
+  }`;
+  return href ? (
+    <Link href={href} className={`lift block ${base}`}>
+      {inner}
+    </Link>
+  ) : (
+    <div className={base}>{inner}</div>
+  );
+}
+
+function fmtWhen(d: string | Date) {
+  return new Date(d).toLocaleString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: "UTC",
+  });
+}
+
+function countdown(d: string | Date) {
+  const target = new Date(d);
+  const now = new Date();
+  const t = Date.UTC(
+    target.getUTCFullYear(),
+    target.getUTCMonth(),
+    target.getUTCDate(),
+  );
+  const n = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const days = Math.round((t - n) / 86_400_000);
+  if (days <= 0) return "today";
+  if (days === 1) return "tomorrow";
+  if (days < 7) return `in ${days} days`;
+  const weeks = Math.round(days / 7);
+  return weeks === 1 ? "in 1 week" : `in ${weeks} weeks`;
 }
 
 function pretty(t: string) {

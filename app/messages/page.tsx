@@ -5,8 +5,29 @@ import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import Conversation from "@/components/messages/Conversation";
+import ConversationList from "@/components/messages/ConversationList";
 
 export const metadata = { title: "Messages" };
+
+function msgTimeLabel(d: Date) {
+  const now = new Date();
+  const sameDay =
+    d.getUTCFullYear() === now.getUTCFullYear() &&
+    d.getUTCMonth() === now.getUTCMonth() &&
+    d.getUTCDate() === now.getUTCDate();
+  return sameDay
+    ? d.toLocaleTimeString("en-GB", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+        timeZone: "UTC",
+      })
+    : d.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        timeZone: "UTC",
+      });
+}
 
 export default async function MessagesPage() {
   const session = await auth();
@@ -39,14 +60,48 @@ export default async function MessagesPage() {
         select: { learnerId: true, body: true, createdAt: true, senderId: true, readAt: true },
       });
 
-    const lastByLearner = new Map<string, string>();
+    const lastByLearner = new Map<
+      string,
+      { body: string; createdAt: Date; senderId: string }
+    >();
     const unreadByLearner = new Map<string, number>();
     for (const m of msgs) {
-      if (!lastByLearner.has(m.learnerId)) lastByLearner.set(m.learnerId, m.body);
+      if (!lastByLearner.has(m.learnerId)) {
+        lastByLearner.set(m.learnerId, {
+          body: m.body,
+          createdAt: m.createdAt,
+          senderId: m.senderId,
+        });
+      }
       if (m.senderId !== user.id && !m.readAt) {
         unreadByLearner.set(m.learnerId, (unreadByLearner.get(m.learnerId) ?? 0) + 1);
       }
     }
+
+    const convos = roster
+      .map((l: { id: string; user: { name: string } }) => {
+        const last = lastByLearner.get(l.id);
+        return {
+          learnerId: l.id,
+          name: l.user.name,
+          lastBody: last?.body ?? null,
+          lastLabel: last ? msgTimeLabel(last.createdAt) : null,
+          lastMs: last ? last.createdAt.getTime() : 0,
+          fromMe: last ? last.senderId === user.id : false,
+          unread: unreadByLearner.get(l.id) ?? 0,
+        };
+      })
+      .sort(
+        (
+          a: { unread: number; lastMs: number },
+          b: { unread: number; lastMs: number },
+        ) => {
+          const au = a.unread > 0 ? 1 : 0;
+          const bu = b.unread > 0 ? 1 : 0;
+          if (au !== bu) return bu - au;
+          return b.lastMs - a.lastMs;
+        },
+      );
 
     return (
       <div className="relative z-10 min-h-dvh">
@@ -69,32 +124,7 @@ export default async function MessagesPage() {
               </p>
             </div>
           ) : (
-            <ul className="mt-6 space-y-2.5">
-              {roster.map((l: { id: string; user: { name: string } }) => {
-                const last = lastByLearner.get(l.id);
-                const unread = unreadByLearner.get(l.id) ?? 0;
-                return (
-                  <li key={l.id}>
-                    <Link
-                      href={`/messages/${l.id}`}
-                      className="flex items-center justify-between gap-4 rounded-2xl border border-hairline bg-cream p-5 transition-colors hover:border-ink/30"
-                    >
-                      <div className="min-w-0">
-                        <p className="font-semibold">{l.user.name}</p>
-                        <p className="mt-0.5 truncate text-sm text-ink-soft">
-                          {last ?? "No messages yet"}
-                        </p>
-                      </div>
-                      {unread > 0 && (
-                        <span className="shrink-0 rounded-full bg-signal px-2.5 py-1 text-xs font-bold text-white">
-                          {unread}
-                        </span>
-                      )}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+            <ConversationList convos={convos} />
           )}
         </main>
       </div>
@@ -153,6 +183,17 @@ export default async function MessagesPage() {
           &larr; Back to dashboard
         </Link>
         <h1 className="mt-3 font-display text-2xl font-bold tracking-tight">{otherName}</h1>
+        {initial.length === 0 && (
+          <div className="mt-5 rounded-2xl border border-dashed border-ink/20 bg-paper-dim/40 p-5">
+            <p className="text-[15px] font-medium text-ink">
+              Start the conversation with {otherName}
+            </p>
+            <p className="mt-1 text-sm text-ink-soft">
+              Ask about availability, where they&rsquo;ll pick you up, or what to
+              bring to your first lesson.
+            </p>
+          </div>
+        )}
         <div className="mt-5">
           <Conversation
             instructorId={instructorId}
