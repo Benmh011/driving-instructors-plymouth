@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import DeleteExpenseButton from "./DeleteExpenseButton";
+import ExpenseForm from "./ExpenseForm";
 
 type CalLesson = { start: string; pricePence: number; name: string };
 type CalExpense = {
@@ -42,17 +43,30 @@ function fmtTime(iso: string) {
 export default function TaxCalendar({
   lessons,
   expenses,
+  taxYear,
 }: {
   lessons: CalLesson[];
   expenses: CalExpense[];
+  taxYear: number;
 }) {
   const today = new Date();
   const [open, setOpen] = useState(false);
+  const [adding, setAdding] = useState(false);
   const [viewY, setViewY] = useState(today.getUTCFullYear());
   const [viewM, setViewM] = useState(today.getUTCMonth());
   const [selKey, setSelKey] = useState(
     key(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()),
   );
+
+  function jumpTo(value: string) {
+    if (!value) return;
+    const [y, mo, d] = value.split("-").map(Number);
+    if (!y || !mo || !d) return;
+    setViewY(y);
+    setViewM(mo - 1);
+    setSelKey(key(y, mo - 1, d));
+    setAdding(false);
+  }
 
   const incomeByDay: Record<string, CalLesson[]> = {};
   for (const l of lessons) (incomeByDay[dayKeyFromIso(l.start)] ??= []).push(l);
@@ -92,6 +106,8 @@ export default function TaxCalendar({
     year: "numeric",
     timeZone: "UTC",
   });
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const selIso = `${sy}-${pad(sm + 1)}-${pad(sd)}`;
 
   const dayLessons = (incomeByDay[selKey] ?? [])
     .slice()
@@ -124,6 +140,19 @@ export default function TaxCalendar({
 
       {open && (
         <div className="mt-4">
+          <div className="mb-4 flex items-center gap-2">
+            <label htmlFor="jump-date" className="text-sm font-medium text-ink-soft">
+              Jump to
+            </label>
+            <input
+              id="jump-date"
+              type="date"
+              value={selIso}
+              onChange={(e) => jumpTo(e.target.value)}
+              className="rounded-xl border border-ink/20 bg-white px-3 py-2 text-sm outline-none transition-colors focus:border-ink"
+            />
+          </div>
+
           <div className="overflow-hidden rounded-2xl border border-hairline bg-cream">
             <div className="flex items-center justify-between bg-tarmac px-5 py-4 text-cream">
               <button type="button" onClick={prevMonth} className={navBtn} aria-label="Previous month">
@@ -235,6 +264,25 @@ export default function TaxCalendar({
                 ))}
               </div>
             )}
+
+            <div className="mt-4">
+              {adding ? (
+                <div className="rounded-2xl border border-hairline bg-cream p-5">
+                  <p className="mb-3 text-sm font-semibold">
+                    Add expense for {selLabel}
+                  </p>
+                  <ExpenseForm key={selKey} year={taxYear} defaultDate={selIso} />
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setAdding(true)}
+                  className="rounded-full border border-sea px-4 py-2 text-sm font-semibold text-sea transition-colors hover:bg-sea hover:text-white press"
+                >
+                  + Add expense for this day
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}

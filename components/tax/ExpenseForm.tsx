@@ -8,7 +8,13 @@ const field =
   "w-full rounded-xl border border-ink/20 bg-white px-4 py-3 text-base outline-none transition-colors focus:border-ink";
 const label = "mb-1.5 block text-sm font-semibold";
 
-export default function ExpenseForm({ year }: { year: number }) {
+export default function ExpenseForm({
+  year,
+  defaultDate,
+}: {
+  year: number;
+  defaultDate?: string;
+}) {
   const [state, action, pending] = useActionState(
     addExpense.bind(null, year),
     undefined,
@@ -21,7 +27,14 @@ export default function ExpenseForm({ year }: { year: number }) {
           <label className={label} htmlFor="date">
             Date
           </label>
-          <input id="date" name="date" type="date" required className={field} />
+          <input
+            id="date"
+            name="date"
+            type="date"
+            required
+            defaultValue={defaultDate}
+            className={field}
+          />
         </div>
         <div>
           <label className={label} htmlFor="amount">

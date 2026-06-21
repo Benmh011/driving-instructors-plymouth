@@ -254,7 +254,11 @@ export default async function TaxPage({
         )}
 
         {/* Day view */}
-        <TaxCalendar lessons={calLessons} expenses={calExpenses} />
+        <TaxCalendar
+          lessons={calLessons}
+          expenses={calExpenses}
+          taxYear={startYear}
+        />
 
         {/* Add expense */}
         <CollapsiblePanel title="Add an expense">
