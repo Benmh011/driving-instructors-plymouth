@@ -7,10 +7,13 @@ export const metadata = { title: "Create an account" };
 export default async function RegisterPage({
   searchParams,
 }: {
-  searchParams: Promise<{ role?: string }>;
+  searchParams: Promise<{ role?: string; next?: string }>;
 }) {
-  const { role } = await searchParams;
+  const { role, next } = await searchParams;
   const defaultRole = role === "instructor" ? "INSTRUCTOR" : "LEARNER";
+  const signInHref = next
+    ? `/login?next=${encodeURIComponent(next)}`
+    : "/login";
 
   return (
     <AuthShell
@@ -19,13 +22,13 @@ export default async function RegisterPage({
       footer={
         <>
           Already have an account?{" "}
-          <Link href="/login" className="font-semibold text-paper link-grow">
+          <Link href={signInHref} className="font-semibold text-paper link-grow">
             Sign in
           </Link>
         </>
       }
     >
-      <RegisterForm defaultRole={defaultRole} />
+      <RegisterForm defaultRole={defaultRole} next={next} />
     </AuthShell>
   );
 }

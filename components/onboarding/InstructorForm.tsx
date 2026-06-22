@@ -7,11 +7,12 @@ const field =
   "w-full rounded-xl border border-ink/20 bg-white px-4 py-3 text-base outline-none transition-colors focus:border-ink";
 const label = "mb-1.5 block text-sm font-semibold";
 
-export default function InstructorForm() {
+export default function InstructorForm({ next }: { next?: string }) {
   const [state, action, pending] = useActionState(completeInstructor, undefined);
 
   return (
     <form action={action} className="space-y-4">
+      {next && <input type="hidden" name="next" value={next} />}
       <div>
         <label className={label} htmlFor="adiNumber">
           ADI badge number

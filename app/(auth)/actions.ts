@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { registerSchema } from "@/lib/validators";
+import { safeNext } from "@/lib/nav";
 import { signIn } from "@/auth";
 import {
   getClientIp,
@@ -46,12 +47,19 @@ export async function registerUser(
   const passwordHash = await bcrypt.hash(password, 10);
   await prisma.user.create({ data: { name, email, passwordHash, role } });
 
+  // Carry an invite/next destination through onboarding so the user lands where
+  // they intended once setup is done.
+  const next = safeNext(formData.get("next"), "");
+  const onboarding = next
+    ? `/onboarding?next=${encodeURIComponent(next)}`
+    : "/onboarding";
+
   // signIn throws a redirect, which is expected and must propagate. New users
   // who opted into 2FA go straight to setup; everyone else into onboarding.
   await signIn("credentials", {
     email,
     password,
-    redirectTo: wants2fa ? "/dashboard/security?setup=1" : "/onboarding",
+    redirectTo: wants2fa ? "/dashboard/security?setup=1" : onboarding,
   });
 }
 
@@ -64,9 +72,7 @@ export async function authenticate(
   const code = String(formData.get("code") ?? "").trim();
   // Where to go after login — honour an internal ?next (e.g. an invite link),
   // but never an external/protocol-relative URL.
-  const nextRaw = String(formData.get("next") ?? "");
-  const next =
-    nextRaw.startsWith("/") && !nextRaw.startsWith("//") ? nextRaw : "/dashboard";
+  const next = safeNext(formData.get("next"));
 
   const ip = await getClientIp();
   const keys = loginThrottleKeys(email, ip);

@@ -9,13 +9,20 @@ const field =
   "w-full rounded-xl border border-ink/20 bg-white px-4 py-3 text-base outline-none transition-colors focus:border-ink";
 const label = "mb-1.5 block text-sm font-semibold";
 
-export default function RegisterForm({ defaultRole = "LEARNER" }: { defaultRole?: RoleChoice }) {
+export default function RegisterForm({
+  defaultRole = "LEARNER",
+  next,
+}: {
+  defaultRole?: RoleChoice;
+  next?: string;
+}) {
   const [state, action, pending] = useActionState(registerUser, undefined);
   const [role, setRole] = useState<RoleChoice>(defaultRole);
 
   return (
     <form action={action} className="space-y-4">
       <input type="hidden" name="role" value={role} />
+      {next && <input type="hidden" name="next" value={next} />}
 
       <div>
         <span className={label}>I am a…</span>

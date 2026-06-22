@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { uniqueInstructorSlug } from "@/lib/slug";
+import { safeNext } from "@/lib/nav";
 import { learnerSchema, instructorSchema } from "@/lib/validators";
 
 export type ActionState = { error?: string } | undefined;
@@ -36,7 +37,7 @@ export async function completeLearner(
     prisma.user.update({ where: { id: userId }, data: { onboardingComplete: true } }),
   ]);
 
-  redirect("/dashboard");
+  redirect(safeNext(formData.get("next")));
 }
 
 export async function completeInstructor(
@@ -78,5 +79,5 @@ export async function completeInstructor(
     prisma.user.update({ where: { id: userId }, data: { onboardingComplete: true } }),
   ]);
 
-  redirect("/dashboard");
+  redirect(safeNext(formData.get("next")));
 }
