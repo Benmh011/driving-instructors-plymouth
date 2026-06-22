@@ -715,3 +715,56 @@ export async function declineRefund(
   revalidatePath("/diary");
   return {};
 }
+
+// Instructor edits an unclaimed open slot (time, length, price, notes). Uses an
+// atomic guard so a slot claimed/removed in the meantime can't be edited.
+export async function updateOpenLesson(
+  id: string,
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const session = await auth();
+  if (!session?.user?.id) redirect("/login");
+
+  const instructor = await prisma.instructorProfile.findUnique({
+    where: { userId: session.user.id },
+  });
+  if (!instructor) redirect("/dashboard");
+  if (!hasFullAccess(accessState(instructor))) return { error: LOCKED_MESSAGE };
+
+  const parsed = openLessonSchema.safeParse({
+    start: formData.get("start"),
+    durationMins: formData.get("durationMins"),
+    price: formData.get("price") || undefined,
+    notes: formData.get("notes") || undefined,
+  });
+  if (!parsed.success) {
+    return {
+      error: parsed.error.issues[0]?.message ?? "Please check the lesson details.",
+    };
+  }
+
+  const startDate = new Date(parsed.data.start);
+  if (Number.isNaN(startDate.getTime())) {
+    return { error: "That date and time didn't look right." };
+  }
+
+  const pricePence =
+    parsed.data.price != null
+      ? Math.round(parsed.data.price * 100)
+      : Math.round(instructor.hourlyRate * 100 * (parsed.data.durationMins / 60));
+
+  const res = await prisma.openLesson.updateMany({
+    where: { id, instructorId: instructor.id },
+    data: {
+      start: startDate,
+      durationMins: parsed.data.durationMins,
+      pricePence,
+      notes: parsed.data.notes ?? null,
+    },
+  });
+  if (res.count === 0) redirect("/diary"); // claimed or removed in the meantime
+
+  revalidatePath("/diary");
+  redirect("/diary");
+}

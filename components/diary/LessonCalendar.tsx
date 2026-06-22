@@ -306,7 +306,15 @@ export default function LessonCalendar({
                         <>
                           {l.canClaim && <ClaimButton id={l.id} />}
                           {isInstructor && !readOnly && (
-                            <RemoveOpenButton id={l.id} />
+                            <>
+                              <Link
+                                href={`/diary/open/${l.id}/edit`}
+                                className="rounded-full border border-ink/20 px-3.5 py-1.5 text-sm font-semibold text-ink-soft transition-colors hover:border-ink hover:text-ink"
+                              >
+                                Edit
+                              </Link>
+                              <RemoveOpenButton id={l.id} />
+                            </>
                           )}
                         </>
                       ) : (
