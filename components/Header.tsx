@@ -6,13 +6,13 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
         <Logo variant="onDark" />
         <nav className="hidden items-center gap-8 text-sm font-medium text-paper/80 md:flex">
-          <a href="#how" className="link-grow hover:text-paper">
+          <a href="/#how" className="link-grow hover:text-paper">
             How it works
           </a>
-          <a href="#instructors" className="link-grow hover:text-paper">
+          <a href="/#instructors" className="link-grow hover:text-paper">
             For instructors
           </a>
-          <a href="#coverage" className="link-grow hover:text-paper">
+          <a href="/#coverage" className="link-grow hover:text-paper">
             Areas
           </a>
         </nav>

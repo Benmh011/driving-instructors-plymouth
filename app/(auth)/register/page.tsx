@@ -29,6 +29,17 @@ export default async function RegisterPage({
       }
     >
       <RegisterForm defaultRole={defaultRole} next={next} />
+      <p className="mt-4 text-center text-xs leading-relaxed text-paper/50">
+        By creating an account you agree to our{" "}
+        <Link href="/terms" className="underline hover:text-paper/80">
+          Terms
+        </Link>{" "}
+        and{" "}
+        <Link href="/privacy" className="underline hover:text-paper/80">
+          Privacy Policy
+        </Link>
+        .
+      </p>
     </AuthShell>
   );
 }
