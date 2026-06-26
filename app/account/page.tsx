@@ -87,6 +87,32 @@ export default async function AccountPage() {
             </li>
           ))}
         </ul>
+
+        <div className="mt-8 border-t border-hairline pt-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">
+            Legal &amp; contact
+          </p>
+          <nav className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+            <Link href="/privacy" className="text-ink-soft underline hover:text-ink">
+              Privacy
+            </Link>
+            <Link href="/terms" className="text-ink-soft underline hover:text-ink">
+              Terms
+            </Link>
+            <Link href="/cookies" className="text-ink-soft underline hover:text-ink">
+              Cookies
+            </Link>
+            <Link
+              href="/acceptable-use"
+              className="text-ink-soft underline hover:text-ink"
+            >
+              Acceptable use
+            </Link>
+            <Link href="/contact" className="text-ink-soft underline hover:text-ink">
+              Contact us
+            </Link>
+          </nav>
+        </div>
       </main>
     </div>
   );

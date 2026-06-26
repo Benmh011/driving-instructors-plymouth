@@ -18,13 +18,13 @@ export function Footer() {
           </div>
 
           <nav className="grid grid-cols-2 gap-x-14 gap-y-2.5 text-sm text-paper/70 sm:grid-cols-2">
-            <a href="#how" className="link-grow w-fit">
+            <a href="/#how" className="link-grow w-fit">
               How it works
             </a>
-            <a href="#instructors" className="link-grow w-fit">
+            <a href="/#instructors" className="link-grow w-fit">
               For instructors
             </a>
-            <a href="#coverage" className="link-grow w-fit">
+            <a href="/#coverage" className="link-grow w-fit">
               Areas covered
             </a>
             <a href="/register" className="link-grow w-fit">
@@ -47,6 +47,9 @@ export function Footer() {
             </Link>
             <Link href="/acceptable-use" className="link-grow hover:text-paper/70">
               Acceptable use
+            </Link>
+            <Link href="/contact" className="link-grow hover:text-paper/70">
+              Contact
             </Link>
             <a
               href={`mailto:${LEGAL.contactEmail}`}
