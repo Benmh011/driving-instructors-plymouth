@@ -8,6 +8,7 @@ import PullToRefresh from "@/components/PullToRefresh";
 import { RouteProgress } from "@/components/RouteProgress";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { SITE } from "@/lib/site";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -16,8 +17,6 @@ const bricolage = Bricolage_Grotesque({
   display: "swap",
   weight: ["400", "500", "600", "700", "800"],
 });
-
-const SITE = "https://drivinginstructorsplymouth.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
