@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { accessState, hasFullAccess } from "@/lib/subscription";
+import { isAdminEmail } from "@/lib/admin";
 
 // A learner asks to join an instructor from the marketplace (cold request).
 export async function createJoinRequest(instructorId: string, formData: FormData) {
@@ -90,13 +91,22 @@ export async function submitReview(
   });
   if (!learner) return { error: "Only learner accounts can leave reviews." };
 
-  // Must have a real relationship — a booking with this instructor.
+  // Must have a real, completed and paid lesson with this instructor — keeps
+  // reviews tied to genuine tuition.
   const booking = await prisma.booking.findFirst({
-    where: { instructorId, learnerId: learner.id },
+    where: {
+      instructorId,
+      learnerId: learner.id,
+      status: "COMPLETED",
+      paid: true,
+    },
     select: { id: true },
   });
   if (!booking) {
-    return { error: "You can review an instructor once you've booked a lesson with them." };
+    return {
+      error:
+        "You can review an instructor after a completed, paid lesson with them.",
+    };
   }
 
   const rating = Number.parseInt(String(formData.get("rating") ?? ""), 10);
@@ -114,4 +124,38 @@ export async function submitReview(
 
   revalidatePath("/instructors/[id]", "page");
   return undefined;
+}
+
+// A learner removes their own review.
+export async function deleteReview(
+  instructorId: string,
+  _formData?: FormData,
+): Promise<void> {
+  const session = await auth();
+  if (!session?.user?.id) redirect("/login");
+
+  const learner = await prisma.learnerProfile.findUnique({
+    where: { userId: session.user.id },
+    select: { id: true },
+  });
+  if (!learner) return;
+
+  await prisma.review.deleteMany({
+    where: { instructorId, learnerId: learner.id },
+  });
+
+  revalidatePath("/instructors/[id]", "page");
+}
+
+// An admin removes any review — moderation for fake or abusive content.
+export async function removeReviewAsAdmin(
+  reviewId: string,
+  _formData?: FormData,
+): Promise<void> {
+  const session = await auth();
+  if (!isAdminEmail(session?.user?.email)) return;
+
+  await prisma.review.deleteMany({ where: { id: reviewId } });
+
+  revalidatePath("/instructors/[id]", "page");
 }

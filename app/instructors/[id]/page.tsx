@@ -13,7 +13,13 @@ import { Stars } from "@/components/reviews/Stars";
 import { Avatar } from "@/components/profile/Avatar";
 import { instructorPhotoSrc } from "@/lib/photo";
 import ReviewForm from "@/components/reviews/ReviewForm";
-import { createJoinRequest, withdrawJoinRequest } from "../actions";
+import {
+  createJoinRequest,
+  withdrawJoinRequest,
+  deleteReview,
+  removeReviewAsAdmin,
+} from "../actions";
+import { isAdminEmail } from "@/lib/admin";
 
 function pretty(t: string) {
   return t === "BOTH" ? "Manual & automatic" : t.charAt(0) + t.slice(1).toLowerCase();
@@ -94,6 +100,7 @@ export default async function InstructorProfilePage({
       : 0;
 
   const session = await auth();
+  const isAdmin = isAdminEmail(session?.user?.email);
 
   // Locked instructors vanish from public view entirely — no "not taking
   // students" messaging to learners. The owner gets a private heads-up instead.
@@ -158,7 +165,12 @@ export default async function InstructorProfilePage({
       existingStatus = req?.status ?? null;
 
       const booked = await prisma.booking.findFirst({
-        where: { instructorId: instructor.id, learnerId: viewer.learnerProfile.id },
+        where: {
+          instructorId: instructor.id,
+          learnerId: viewer.learnerProfile.id,
+          status: "COMPLETED",
+          paid: true,
+        },
         select: { id: true },
       });
       canReview = !!booked;
@@ -429,6 +441,19 @@ export default async function InstructorProfilePage({
                   initialBody={myReview?.body ?? ""}
                 />
               </div>
+              {myReview && (
+                <form
+                  action={deleteReview.bind(null, instructorId)}
+                  className="mt-3"
+                >
+                  <button
+                    type="submit"
+                    className="text-sm font-medium text-signal hover:underline"
+                  >
+                    Remove my review
+                  </button>
+                </form>
+              )}
             </div>
           )}
 
@@ -455,6 +480,19 @@ export default async function InstructorProfilePage({
                     <p className="mt-2 text-sm font-medium text-ink-soft">
                       {firstName(r.learner.user.name)}
                     </p>
+                    {isAdmin && (
+                      <form
+                        action={removeReviewAsAdmin.bind(null, r.id)}
+                        className="mt-2"
+                      >
+                        <button
+                          type="submit"
+                          className="text-xs font-medium text-signal hover:underline"
+                        >
+                          Remove (admin)
+                        </button>
+                      </form>
+                    )}
                   </li>
                 ),
               )}

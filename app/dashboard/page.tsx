@@ -63,6 +63,17 @@ export default async function DashboardPage({
         })
       : null;
 
+  // A learner's active instructor's public profile (for the dashboard link).
+  const instructorSlug =
+    !isInstructor && instructor
+      ? await ensureInstructorSlug({
+          id: instructor.id,
+          slug: instructor.slug,
+          businessName: instructor.businessName,
+          user: { name: instructor.user.name },
+        })
+      : null;
+
   // Learner snapshot: next lesson, upcoming/unpaid counts, credit balance.
   type NextLesson = {
     start: string | Date;
@@ -361,6 +372,13 @@ export default async function DashboardPage({
           </div>
         ) : instructorName ? (
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            {instructorSlug && (
+              <NavCard
+                href={`/instructors/${instructorSlug}`}
+                title="Your instructor"
+                desc={`View ${instructorName}'s profile and leave a review.`}
+              />
+            )}
             <NavCard
               href="/diary"
               title="Your lessons"
