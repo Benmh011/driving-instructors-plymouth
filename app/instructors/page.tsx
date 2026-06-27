@@ -8,6 +8,7 @@ import { ensureInstructorSlug } from "@/lib/slug";
 import { accessState, hasFullAccess } from "@/lib/subscription";
 import { instructorPhotoSrc } from "@/lib/photo";
 import { Avatar } from "@/components/profile/Avatar";
+import { Stars } from "@/components/reviews/Stars";
 
 export const metadata = {
   title: "Find a driving instructor in Plymouth",
@@ -85,6 +86,31 @@ export default async function InstructorsPage({
   const slugById = new Map<string, string>();
   for (const i of instructors) {
     slugById.set(i.id, await ensureInstructorSlug(i));
+  }
+
+  // Pull review aggregates (average + count) for the listed instructors in one
+  // query, so cards can show ratings without an N+1.
+  const ids = instructors.map((i) => i.id);
+  const ratingById = new Map<string, { avg: number; count: number }>();
+  if (ids.length > 0) {
+    const agg = await prisma.review.groupBy({
+      by: ["instructorId"],
+      where: { instructorId: { in: ids } },
+      _avg: { rating: true },
+      _count: { rating: true },
+    });
+    agg.forEach(
+      (a: {
+        instructorId: string;
+        _avg: { rating: number | null };
+        _count: { rating: number };
+      }) => {
+        ratingById.set(a.instructorId, {
+          avg: a._avg.rating ?? 0,
+          count: a._count.rating,
+        });
+      },
+    );
   }
 
   const right = session ? (
@@ -166,6 +192,7 @@ export default async function InstructorsPage({
           <ul className="mt-4 grid gap-4 sm:grid-cols-2">
             {instructors.map((i) => {
               const full = !i.acceptingStudents || i._count.roster >= MAX_ROSTER;
+              const r = ratingById.get(i.id);
               return (
                 <li key={i.id}>
                   <Link
@@ -197,6 +224,19 @@ export default async function InstructorsPage({
                     <p className="mt-1 text-sm text-ink-soft">
                       {i.postcodes} &middot; {pretty(i.transmission)}
                     </p>
+                    {r && r.count > 0 ? (
+                      <div className="mt-2 flex items-center gap-1.5 text-sm">
+                        <Stars value={r.avg} className="h-3.5 w-3.5" />
+                        <span className="font-semibold text-ink">
+                          {r.avg.toFixed(1)}
+                        </span>
+                        <span className="text-ink-soft">
+                          ({r.count} review{r.count === 1 ? "" : "s"})
+                        </span>
+                      </div>
+                    ) : (
+                      <p className="mt-2 text-sm text-ink-soft">No reviews yet</p>
+                    )}
                     {i.bio && (
                       <p className="mt-3 line-clamp-2 text-[15px] text-ink">{i.bio}</p>
                     )}
