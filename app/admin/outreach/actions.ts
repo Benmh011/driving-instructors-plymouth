@@ -8,7 +8,13 @@ import { isAdminEmail } from "@/lib/admin";
 import { SITE_URL } from "@/lib/constants";
 import { SEED_PROSPECTS } from "@/lib/outreach/seed";
 import { sendOutreachEmail } from "@/lib/outreach/email";
-import { buildDraft, withUnsubscribeFooter } from "@/lib/outreach/draft";
+import {
+  buildDraft,
+  buildFollowUp,
+  withUnsubscribeFooter,
+  FOLLOWUP_AFTER_DAYS,
+  MAX_TOUCHES,
+} from "@/lib/outreach/draft";
 
 const STATUSES = [
   "NEW",
@@ -115,8 +121,56 @@ export async function generateDrafts() {
       where: { prospectId: p.id, status: "FAILED" },
     });
     const { subject, body } = buildDraft(p);
+    await prisma.outreachEmail.create({
+      data: { prospectId: p.id, subject, body },
+    });
+  }
+  revalidatePath("/admin/outreach");
+}
+
+// Create a follow-up draft for every CONTACTED prospect whose last email went
+// out at least FOLLOWUP_AFTER_DAYS ago, who hasn't replied or been ruled out,
+// who hasn't hit MAX_TOUCHES, and who has no draft already waiting. Nothing
+// sends here — they land in the same approval queue as first-contact drafts.
+export async function generateFollowUps() {
+  if (!(await requireAdmin())) return;
+  const cutoff = new Date(Date.now() - FOLLOWUP_AFTER_DAYS * 24 * 60 * 60 * 1000);
+
+  const prospects = await prisma.prospect.findMany({
+    where: {
+      status: "CONTACTED",
+      email: { not: null },
+      emails: { some: { status: "SENT" }, none: { status: "DRAFT" } },
+    },
+    select: {
+      id: true,
+      name: true,
+      area: true,
+      emails: {
+        where: { status: "SENT" },
+        select: { sentAt: true },
+        orderBy: { sentAt: "desc" },
+      },
+    },
+  });
+
+  for (const p of prospects as {
+    id: string;
+    name: string;
+    area: string | null;
+    emails: { sentAt: Date | null }[];
+  }[]) {
+    const sentCount = p.emails.length;
+    const lastSentAt = p.emails[0]?.sentAt;
+    if (sentCount >= MAX_TOUCHES) continue; // enough touches already
+    if (!lastSentAt || lastSentAt > cutoff) continue; // contacted too recently
+    const { subject, body } = buildFollowUp(
+      { name: p.name, area: p.area },
+      sentCount + 1,
+    );
     await prisma.outreachEmail.create({ data: { prospectId: p.id, subject, body } });
   }
+
   revalidatePath("/admin/outreach");
 }
 

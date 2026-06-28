@@ -11,10 +11,12 @@ import {
   updateProspect,
   deleteProspect,
   generateDrafts,
+  generateFollowUps,
   updateDraft,
   sendDraft,
   discardDraft,
 } from "./actions";
+import { FOLLOWUP_AFTER_DAYS, MAX_TOUCHES } from "@/lib/outreach/draft";
 
 export const metadata = { title: "Instructor outreach" };
 
@@ -37,7 +39,7 @@ type Draft = {
   body: string;
   status: string;
   error: string | null;
-  prospect: { name: string; email: string | null };
+  prospect: { name: string; email: string | null; emails: { id: string }[] };
 };
 
 type SentEmail = {
@@ -96,7 +98,15 @@ export default async function OutreachPage({
 
   const drafts: Draft[] = await prisma.outreachEmail.findMany({
     where: { status: { in: ["DRAFT", "FAILED"] } },
-    include: { prospect: { select: { name: true, email: true } } },
+    include: {
+      prospect: {
+        select: {
+          name: true,
+          email: true,
+          emails: { where: { status: "SENT" }, select: { id: true } },
+        },
+      },
+    },
     orderBy: { createdAt: "asc" },
   });
 
@@ -130,6 +140,37 @@ export default async function OutreachPage({
   const field =
     "rounded-xl border border-ink/20 bg-white px-3.5 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink";
 
+  // How many contacted prospects are due a follow-up (no reply, last email old
+  // enough, still under the touch cap, no draft already waiting).
+  const followUpCutoff = new Date(
+    Date.now() - FOLLOWUP_AFTER_DAYS * 24 * 60 * 60 * 1000,
+  );
+  const followUpCandidates = await prisma.prospect.findMany({
+    where: {
+      status: "CONTACTED",
+      email: { not: null },
+      emails: { some: { status: "SENT" }, none: { status: "DRAFT" } },
+    },
+    select: {
+      id: true,
+      emails: {
+        where: { status: "SENT" },
+        select: { sentAt: true },
+        orderBy: { sentAt: "desc" },
+      },
+    },
+  });
+  let dueFollowUp = 0;
+  for (const p of followUpCandidates as {
+    id: string;
+    emails: { sentAt: Date | null }[];
+  }[]) {
+    const lastSentAt = p.emails[0]?.sentAt;
+    if (p.emails.length < MAX_TOUCHES && lastSentAt && lastSentAt <= followUpCutoff) {
+      dueFollowUp++;
+    }
+  }
+
   return (
     <div className="relative z-10 min-h-dvh">
       <AppHeader home="/dashboard" right={<SignOutButton />} />
@@ -162,17 +203,29 @@ export default async function OutreachPage({
             <div>
               <p className="font-display text-lg font-bold text-ink">Outreach agent</p>
               <p className="text-sm text-ink-soft">
-                {withEmail} with an email · {drafts.length} awaiting approval · {sentCount} sent
+                {withEmail} with an email · {drafts.length} awaiting approval ·{" "}
+                {sentCount} sent · {dueFollowUp} due a follow-up
               </p>
             </div>
-            <form action={generateDrafts}>
-              <button
-                type="submit"
-                className="rounded-full bg-sea px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-sea-dark"
-              >
-                Generate drafts
-              </button>
-            </form>
+            <div className="flex flex-wrap gap-2">
+              <form action={generateDrafts}>
+                <button
+                  type="submit"
+                  className="rounded-full bg-sea px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-sea-dark"
+                >
+                  Generate drafts
+                </button>
+              </form>
+              <form action={generateFollowUps}>
+                <button
+                  type="submit"
+                  disabled={dueFollowUp === 0}
+                  className="rounded-full border border-sea px-4 py-2 text-sm font-semibold text-sea transition-colors hover:bg-sea/10 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Generate follow-ups{dueFollowUp > 0 ? ` (${dueFollowUp})` : ""}
+                </button>
+              </form>
+            </div>
           </div>
 
           {withEmail === 0 && (
@@ -193,11 +246,18 @@ export default async function OutreachPage({
                         {d.prospect.email ?? "no email"}
                       </span>
                     </p>
-                    {d.status === "FAILED" && (
-                      <span className="rounded-full bg-signal/15 px-2 py-0.5 text-xs font-semibold text-signal">
-                        Failed
-                      </span>
-                    )}
+                    <div className="flex shrink-0 items-center gap-1.5">
+                      {d.prospect.emails.length > 0 && (
+                        <span className="rounded-full bg-sea/15 px-2 py-0.5 text-xs font-semibold text-sea">
+                          Follow-up
+                        </span>
+                      )}
+                      {d.status === "FAILED" && (
+                        <span className="rounded-full bg-signal/15 px-2 py-0.5 text-xs font-semibold text-signal">
+                          Failed
+                        </span>
+                      )}
+                    </div>
                   </div>
                   {d.status === "FAILED" && d.error && (
                     <p className="mt-1 text-xs text-signal">{d.error}</p>
