@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import BackLink from "@/components/BackLink";
+import { isAdminEmail } from "@/lib/admin";
 
 export const metadata = { title: "Account" };
 export const dynamic = "force-dynamic";
@@ -23,6 +24,7 @@ export default async function AccountPage() {
   if (!user.onboardingComplete) redirect("/onboarding");
 
   const isInstructor = user.role === "INSTRUCTOR";
+  const isAdmin = isAdminEmail(user.email);
 
   const items: Item[] = [
     ...(isInstructor
@@ -87,6 +89,48 @@ export default async function AccountPage() {
             </li>
           ))}
         </ul>
+
+        {isAdmin && (
+          <div className="mt-8 border-t border-hairline pt-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">
+              Admin
+            </p>
+            <ul className="mt-3 space-y-3">
+              {[
+                {
+                  href: "/admin/outreach",
+                  title: "Instructor outreach",
+                  desc: "Prospect pipeline, drafts and follow-ups.",
+                },
+                {
+                  href: "/admin/verification",
+                  title: "ADI verification",
+                  desc: "Review and approve instructor badges.",
+                },
+                {
+                  href: "/admin/theory",
+                  title: "Theory admin",
+                  desc: "Manage the theory-test question bank.",
+                },
+              ].map((it) => (
+                <li key={it.href}>
+                  <Link
+                    href={it.href}
+                    className="lift flex items-center justify-between gap-4 rounded-2xl border border-hairline bg-cream p-5 transition-colors hover:border-ink/30"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-semibold">{it.title}</p>
+                      <p className="mt-0.5 text-sm text-ink-soft">{it.desc}</p>
+                    </div>
+                    <span aria-hidden className="shrink-0 text-xl text-ink-soft">
+                      &rsaquo;
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div className="mt-8 border-t border-hairline pt-6">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">

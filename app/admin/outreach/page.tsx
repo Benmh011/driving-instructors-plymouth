@@ -5,6 +5,7 @@ import { isAdminEmail } from "@/lib/admin";
 import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import BackLink from "@/components/BackLink";
+import ClearProspectsButton from "@/components/outreach/ClearProspectsButton";
 import {
   importSeedProspects,
   addProspect,
@@ -438,6 +439,22 @@ export default async function OutreachPage({
             </li>
           )}
         </ul>
+
+        {total > 0 && (
+          <details className="mt-10 border-t border-hairline pt-6">
+            <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">
+              Danger zone
+            </summary>
+            <div className="mt-4 rounded-2xl border border-signal/30 bg-signal/5 p-5">
+              <p className="text-sm font-semibold text-ink">Reset the pipeline</p>
+              <p className="mt-1 mb-3 max-w-md text-sm text-ink-soft">
+                Deletes every prospect and their email history, so you can re-import
+                a fresh list. There&rsquo;s no undo.
+              </p>
+              <ClearProspectsButton count={total} />
+            </div>
+          </details>
+        )}
       </main>
     </div>
   );

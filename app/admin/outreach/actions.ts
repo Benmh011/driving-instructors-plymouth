@@ -101,6 +101,15 @@ export async function deleteProspect(id: string) {
   revalidatePath("/admin/outreach");
 }
 
+// Wipe the whole prospect list (and, by cascade, every draft/sent email).
+// Used to clear the seed data and start fresh. Type-to-confirm in the UI.
+export async function clearAllProspects(): Promise<{ cleared?: number; error?: string }> {
+  if (!(await requireAdmin())) return { error: "Not authorised." };
+  const { count } = await prisma.prospect.deleteMany({});
+  revalidatePath("/admin/outreach");
+  return { cleared: count };
+}
+
 // --- Outreach agent: drafts, approval, sending ---
 
 // Create a draft email for every prospect that has an email, is still NEW, and
