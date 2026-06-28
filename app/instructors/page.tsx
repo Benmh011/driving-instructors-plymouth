@@ -52,9 +52,9 @@ function initialsOf(name: string) {
 export default async function InstructorsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ area?: string; transmission?: string }>;
+  searchParams: Promise<{ area?: string; transmission?: string; sort?: string }>;
 }) {
-  const { area = "", transmission = "" } = await searchParams;
+  const { area = "", transmission = "", sort = "" } = await searchParams;
   const session = await auth();
 
   const areaTrim = area.trim();
@@ -113,6 +113,20 @@ export default async function InstructorsPage({
     );
   }
 
+  // Optional sort: highest rated first (rated instructors above unrated, with
+  // review count as the tie-breaker). Default keeps the recommended order.
+  const sorted =
+    sort === "rating"
+      ? [...instructors].sort((a, b) => {
+          const ra = ratingById.get(a.id);
+          const rb = ratingById.get(b.id);
+          const aAvg = ra && ra.count > 0 ? ra.avg : -1;
+          const bAvg = rb && rb.count > 0 ? rb.avg : -1;
+          if (bAvg !== aAvg) return bAvg - aAvg;
+          return (rb?.count ?? 0) - (ra?.count ?? 0);
+        })
+      : instructors;
+
   const right = session ? (
     <SignOutButton />
   ) : (
@@ -167,6 +181,15 @@ export default async function InstructorsPage({
               <option value="AUTOMATIC">Automatic</option>
             </select>
           </div>
+          <div className="sm:w-44">
+            <label className="mb-1.5 block text-sm font-semibold" htmlFor="sort">
+              Sort by
+            </label>
+            <select id="sort" name="sort" defaultValue={sort} className={field}>
+              <option value="">Recommended</option>
+              <option value="rating">Highest rated</option>
+            </select>
+          </div>
           <button
             type="submit"
             className="rounded-full bg-sea px-6 py-3 font-semibold text-white transition-colors hover:bg-sea-dark"
@@ -190,7 +213,7 @@ export default async function InstructorsPage({
           </div>
         ) : (
           <ul className="mt-4 grid gap-4 sm:grid-cols-2">
-            {instructors.map((i) => {
+            {sorted.map((i) => {
               const full = !i.acceptingStudents || i._count.roster >= MAX_ROSTER;
               const r = ratingById.get(i.id);
               return (
