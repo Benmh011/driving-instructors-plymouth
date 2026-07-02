@@ -36,4 +36,13 @@ export const SEED_PROSPECTS: SeedProspect[] = [
   { name: "Richard Curzon Driver Training", area: "Kingsbridge", phone: "07878 958192", googlePlaceId: "ChIJaXb3_xLhbEgRKCNT9iB-AH0", rating: 5.0, notes: "Local to the South Hams — strong fit." },
   { name: "Scott Tibbles Driver Training", area: "Kingsbridge", phone: "07836 244243", website: "https://www.scotttibblesdrivertraining.co.uk/", googlePlaceId: "ChIJa0kyVFzfbEgR2nsllCb9Pnk" },
   { name: "GTi Driving Ltd", area: "Kingsbridge", phone: "07803 753379", googlePlaceId: "ChIJ5RRVTZYvvCMRhAdwwHEys0k" },
+  // Added in a later Places sweep across Plympton, Plymstock, Saltash, Callington etc.
+  { name: "A-Class Driving School Plymouth", area: "Plympton", phone: "07709 104254", googlePlaceId: "ChIJhxO-36LubEgRo6tZ3keGSsU" },
+  { name: "The Road Safety Solution Ltd", area: "Saltash", phone: "01752 846600", googlePlaceId: "ChIJTQc_oiWObEgRZZO0mUrObY0" },
+  { name: "Road Ahead Driving School", area: "Plymouth", phone: "07974 255885", googlePlaceId: "ChIJr0NkdA_tbEgRD2S6H9Enmv4", rating: 5.0 },
+  { name: "One Way Driving School", area: "Plymstock", phone: "07887 024394", googlePlaceId: "ChIJRWDrwJacEU0R2-j0ZDxlq3k", rating: 5.0 },
+  { name: "Anthony Cooper Driving School", area: "Callington", phone: "07973 619022", googlePlaceId: "ChIJ3Su1Y1XHakgRqCNlwr79V9Y", rating: 4.2 },
+  { name: "K & M Learners", area: "Callington", phone: "07977 183359", googlePlaceId: "ChIJKX0f6yaPbEgR3M6lk9PhtNA", rating: 5.0 },
+  { name: "Take Control", area: "Plymouth", phone: "07568 188625", googlePlaceId: "ChIJEwHVn9OTbEgRTLwvnga47Ko", rating: 5.0, notes: "Sarah — strong reviews, good with anxious learners." },
+  { name: "Martin's Driving School", area: "Plymouth", phone: "07740 940546", googlePlaceId: "ChIJrzWRfhiTbEgRXZQJkpMBP_E", rating: 3.3 },
 ];

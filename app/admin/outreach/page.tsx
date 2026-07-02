@@ -6,6 +6,7 @@ import { AppHeader } from "@/components/AppHeader";
 import SignOutButton from "@/components/auth/SignOutButton";
 import BackLink from "@/components/BackLink";
 import ClearProspectsButton from "@/components/outreach/ClearProspectsButton";
+import EnrichEmailsButton from "@/components/outreach/EnrichEmailsButton";
 import {
   importSeedProspects,
   addProspect,
@@ -63,6 +64,10 @@ const STATUS_LABELS: Record<string, string> = {
   DO_NOT_CONTACT: "Do not contact",
 };
 const STATUS_ORDER = Object.keys(STATUS_LABELS);
+
+// The email finder fetches several external sites per prospect, so give the
+// server action headroom beyond the default function timeout (applies on Pro).
+export const maxDuration = 60;
 
 export default async function OutreachPage({
   searchParams,
@@ -122,6 +127,9 @@ export default async function OutreachPage({
     total += g._count._all;
   }
   const withEmail = await prisma.prospect.count({ where: { email: { not: null } } });
+  const enrichable = await prisma.prospect.count({
+    where: { email: null, website: { not: null } },
+  });
   const sentCount = await prisma.outreachEmail.count({ where: { status: "SENT" } });
   const sent: SentEmail[] = await prisma.outreachEmail.findMany({
     where: { status: "SENT" },
@@ -227,6 +235,14 @@ export default async function OutreachPage({
                 </button>
               </form>
             </div>
+          </div>
+
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-hairline pt-3">
+            <EnrichEmailsButton count={enrichable} />
+            <span className="text-xs text-ink-soft">
+              Reads contact emails off prospects&rsquo; own websites — Google
+              Places doesn&rsquo;t supply them. Finds some, not all.
+            </span>
           </div>
 
           {withEmail === 0 && (

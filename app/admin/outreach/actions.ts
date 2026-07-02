@@ -15,6 +15,7 @@ import {
   FOLLOWUP_AFTER_DAYS,
   MAX_TOUCHES,
 } from "@/lib/outreach/draft";
+import { findEmailOnSite } from "@/lib/outreach/enrich";
 
 const STATUSES = [
   "NEW",
@@ -108,6 +109,55 @@ export async function clearAllProspects(): Promise<{ cleared?: number; error?: s
   const { count } = await prisma.prospect.deleteMany({});
   revalidatePath("/admin/outreach");
   return { cleared: count };
+}
+
+// Try to fill in missing emails by scraping each prospect's own website. Runs in
+// small batches (websites are slow) — click again to continue. Google Places has
+// no emails, so this is how the pipeline gets addresses without manual lookup.
+const ENRICH_BATCH = 12;
+
+export async function enrichEmails(): Promise<{
+  found?: number;
+  checked?: number;
+  remaining?: number;
+  error?: string;
+}> {
+  if (!(await requireAdmin())) return { error: "Not authorised." };
+
+  const batch = await prisma.prospect.findMany({
+    where: { email: null, website: { not: null } },
+    select: { id: true, website: true },
+    take: ENRICH_BATCH,
+  });
+
+  const results = await Promise.all(
+    (batch as { id: string; website: string | null }[]).map(async (p) => ({
+      id: p.id,
+      email: p.website ? await findEmailOnSite(p.website) : null,
+    })),
+  );
+
+  let found = 0;
+  for (const r of results) {
+    if (!r.email) continue;
+    // Don't create a duplicate if another prospect already holds this address.
+    const clash = await prisma.prospect.findFirst({
+      where: { email: r.email },
+      select: { id: true },
+    });
+    if (clash) continue;
+    await prisma.prospect.update({
+      where: { id: r.id },
+      data: { email: r.email },
+    });
+    found++;
+  }
+
+  const remaining = await prisma.prospect.count({
+    where: { email: null, website: { not: null } },
+  });
+  revalidatePath("/admin/outreach");
+  return { found, checked: batch.length, remaining };
 }
 
 // --- Outreach agent: drafts, approval, sending ---
