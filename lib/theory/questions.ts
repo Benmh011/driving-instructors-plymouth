@@ -3457,6 +3457,407 @@ export const QUESTIONS: Question[] = [
     explanation:
       "A red ring with a right-turn arrow crossed out means no right turn.",
   },
+  {
+    id: "q0251",
+    topic: "Alertness",
+    prompt:
+      "You start to feel drowsy on a long drive. What is the safest thing to do?",
+    options: [
+      "Open a window and carry on",
+      "Turn the music up loud",
+      "Stop somewhere safe and rest",
+      "Drive faster to finish the journey sooner",
+    ],
+    answer: 2,
+    explanation:
+      "Tiredness badly affects reactions and judgement. Fresh air or loud music only masks it — the safe cure is to stop somewhere safe and rest.",
+  },
+  {
+    id: "q0252",
+    topic: "Alertness",
+    prompt: "Before moving off, what should you do as well as using your mirrors?",
+    options: [
+      "Sound the horn",
+      "Check your blind spots",
+      "Switch on your hazard lights",
+      "Rev the engine",
+    ],
+    answer: 1,
+    explanation:
+      "Mirrors leave blind spots. A shoulder check before moving off catches a cyclist or pedestrian the mirrors miss.",
+  },
+  {
+    id: "q0253",
+    topic: "Attitude",
+    prompt: "A driver behind is following you too closely. What should you do?",
+    options: [
+      "Brake sharply to warn them",
+      "Speed up to get away",
+      "Wave them past",
+      "Gradually increase the gap to the vehicle in front",
+    ],
+    answer: 3,
+    explanation:
+      "Easing off to open up more space ahead gives you room to slow gently, so you're not forced to brake hard in front of a tailgater.",
+  },
+  {
+    id: "q0254",
+    topic: "Attitude",
+    prompt: "A pedestrian is waiting at a zebra crossing. What should you do?",
+    options: [
+      "Slow down and be prepared to stop",
+      "Flash your headlights to wave them across",
+      "Sound your horn",
+      "Carry on if they haven't stepped out yet",
+    ],
+    answer: 0,
+    explanation:
+      "Slow down and be ready to stop. Flashing or waving can be misread and may send someone into the path of another vehicle.",
+  },
+  {
+    id: "q0255",
+    topic: "Safety and your vehicle",
+    prompt: "What is the legal minimum tyre tread depth for a car in the UK?",
+    options: ["1.0 mm", "3.0 mm", "1.6 mm", "2.5 mm"],
+    answer: 2,
+    explanation:
+      "The legal minimum is 1.6 mm across the central three-quarters of the tread and around the whole circumference of the tyre.",
+  },
+  {
+    id: "q0256",
+    topic: "Safety and your vehicle",
+    prompt:
+      "Your brake pedal feels spongy and travels further than normal. What should you do?",
+    options: [
+      "Carry on if the car still stops",
+      "Have the brakes checked before driving",
+      "Use only the handbrake",
+      "Pump the pedal and ignore it",
+    ],
+    answer: 1,
+    explanation:
+      "A spongy pedal can mean air or a leak in the brake system. Get it checked by a garage before you drive.",
+  },
+  {
+    id: "q0257",
+    topic: "Safety margins",
+    prompt: "How are stopping distances affected on a wet road?",
+    options: ["Halved", "Unchanged", "Reduced by a third", "At least doubled"],
+    answer: 3,
+    explanation:
+      "Wet roads cut grip, so stopping distances are at least doubled compared with dry conditions.",
+  },
+  {
+    id: "q0258",
+    topic: "Safety margins",
+    prompt: "What is the 'two-second rule' used for?",
+    options: [
+      "Judging a safe following distance in good conditions",
+      "Timing your indicators",
+      "How long to wait at a junction",
+      "How long to check your mirrors",
+    ],
+    answer: 0,
+    explanation:
+      "In good, dry conditions leave at least a two-second gap to the vehicle in front. Double it to at least four seconds in the wet.",
+  },
+  {
+    id: "q0259",
+    topic: "Hazard awareness",
+    prompt:
+      "You are driving past a line of parked cars. Which hazard should you most expect?",
+    options: [
+      "Losing radio signal",
+      "Running low on fuel",
+      "A pedestrian stepping out or a door opening",
+      "The cars all moving off together",
+    ],
+    answer: 2,
+    explanation:
+      "Someone may step out between parked cars, or a door may open into your path. Slow down and leave room.",
+  },
+  {
+    id: "q0260",
+    topic: "Hazard awareness",
+    prompt: "Which of these most increases the time you need to react to a hazard?",
+    options: [
+      "A clear windscreen",
+      "Being tired or distracted",
+      "Driving in daylight",
+      "Keeping both hands on the wheel",
+    ],
+    answer: 1,
+    explanation:
+      "Tiredness, distraction, alcohol and drugs all lengthen your reaction time and the distance you travel before acting.",
+  },
+  {
+    id: "q0261",
+    topic: "Vulnerable road users",
+    prompt: "How should you pass a horse and rider on the road?",
+    options: [
+      "Sound your horn to warn the rider",
+      "Rev your engine as you pass",
+      "Pass as close as possible to save time",
+      "Pass slowly, leaving at least 2 metres of space",
+    ],
+    answer: 3,
+    explanation:
+      "Pass wide and slow — at no more than 10 mph and leaving at least 2 metres. Horses are easily startled by noise and close passes.",
+  },
+  {
+    id: "q0262",
+    topic: "Vulnerable road users",
+    prompt: "Where are you most likely to meet unpredictable child pedestrians?",
+    options: [
+      "Near schools and residential streets",
+      "On the motorway",
+      "In tunnels",
+      "On dual carriageways",
+    ],
+    answer: 0,
+    explanation:
+      "Children are least predictable and most at risk near schools, homes and parked ice-cream vans. Slow right down.",
+  },
+  {
+    id: "q0263",
+    topic: "Other types of vehicle",
+    prompt:
+      "You are following a large lorry and cannot see its mirrors. What does this tell you?",
+    options: [
+      "You are too far back",
+      "The driver probably cannot see you",
+      "The lorry has no mirrors",
+      "It is safe to undertake",
+    ],
+    answer: 1,
+    explanation:
+      "If you can't see a lorry's mirrors, the driver can't see you. Drop back until you're in view.",
+  },
+  {
+    id: "q0264",
+    topic: "Other types of vehicle",
+    prompt: "A bus is signalling to move off from a bus stop. What should you do?",
+    options: [
+      "Accelerate past it",
+      "Sound your horn",
+      "Give way if it is safe to do so",
+      "Overtake it on the left",
+    ],
+    answer: 2,
+    explanation:
+      "Where it's safe, let the bus pull out — but don't brake hard or put others at risk to do so.",
+  },
+  {
+    id: "q0265",
+    topic: "Vehicle handling",
+    prompt: "You are driving in thick fog. What should you do?",
+    options: [
+      "Slow down and use dipped headlights",
+      "Use full beam to see further",
+      "Follow the car in front closely",
+      "Speed up to get through it",
+    ],
+    answer: 0,
+    explanation:
+      "Full beam reflects off fog and dazzles you. Use dipped headlights, and fog lights if visibility drops below 100 metres — switching them off when it clears.",
+  },
+  {
+    id: "q0266",
+    topic: "Vehicle handling",
+    prompt: "How can you help control your speed when going down a steep hill?",
+    options: [
+      "Coast in neutral",
+      "Hold the clutch down",
+      "Rely only on the handbrake",
+      "Select a lower gear",
+    ],
+    answer: 3,
+    explanation:
+      "A lower gear uses engine braking to help hold your speed and stops the brakes overheating. Coasting removes that control.",
+  },
+  {
+    id: "q0267",
+    topic: "Motorway rules",
+    prompt: "What is the national speed limit for a car on a motorway?",
+    options: ["60 mph", "70 mph", "80 mph", "50 mph"],
+    answer: 1,
+    explanation:
+      "It's 70 mph for cars and motorcycles, unless signs show a lower limit.",
+  },
+  {
+    id: "q0268",
+    topic: "Motorway rules",
+    prompt: "Which lane should you normally use on a motorway?",
+    options: [
+      "The left-hand lane",
+      "The middle lane",
+      "The right-hand lane",
+      "Any lane you like",
+    ],
+    answer: 0,
+    explanation:
+      "Keep to the left lane and use the others only for overtaking, moving back to the left when it's clear.",
+  },
+  {
+    id: "q0269",
+    topic: "Rules of the road",
+    prompt: "You reach a junction with a 'Stop' sign and a solid white line. You must:",
+    options: [
+      "Slow down only",
+      "Stop only if traffic is coming",
+      "Stop completely behind the line every time",
+      "Give way but not stop",
+    ],
+    answer: 2,
+    explanation:
+      "A Stop sign with a solid white line is a legal order to stop completely, every time — even if the road looks clear.",
+  },
+  {
+    id: "q0270",
+    topic: "Rules of the road",
+    prompt: "Where should you normally position your car on a two-way road?",
+    options: [
+      "In the centre of the road",
+      "Well to the left, but not clipping the kerb",
+      "Close to the centre line",
+      "Wherever there is most space",
+    ],
+    answer: 1,
+    explanation:
+      "Keep well to the left in normal driving, but not so close that you catch the kerb or drain covers.",
+  },
+  {
+    id: "q0271",
+    topic: "Road and traffic signs",
+    prompt: "What does a triangular sign with a red border usually do?",
+    options: [
+      "Give an order you must obey",
+      "Give information",
+      "Show a speed limit",
+      "Warn of a hazard ahead",
+    ],
+    answer: 3,
+    explanation:
+      "Triangular signs with a red border are warnings — they alert you to a hazard ahead.",
+  },
+  {
+    id: "q0272",
+    topic: "Road and traffic signs",
+    prompt: "What do blue circular signs generally do?",
+    options: [
+      "Give a mandatory (positive) instruction",
+      "Warn of danger",
+      "Are advisory only",
+      "Mark tourist attractions",
+    ],
+    answer: 0,
+    explanation:
+      "Blue circles give mandatory instructions, such as 'turn left' or a minimum speed. Red circles, by contrast, prohibit things.",
+  },
+  {
+    id: "q0273",
+    topic: "Documents",
+    prompt: "Which three things must a car normally have to be driven legally on the road?",
+    options: [
+      "A dashcam, sat nav and spare tyre",
+      "A first-aid kit, warning triangle and hi-vis vest",
+      "Valid insurance, vehicle tax and a current MOT (if over 3 years old)",
+      "Winter tyres, breakdown cover and a toolkit",
+    ],
+    answer: 2,
+    explanation:
+      "To drive legally a car normally needs valid insurance, vehicle tax (VED) and a current MOT once it's over three years old.",
+  },
+  {
+    id: "q0274",
+    topic: "Documents",
+    prompt: "How often must a UK photocard driving licence be renewed?",
+    options: ["Every 10 years", "Every 5 years", "Every 3 years", "Never — it's for life"],
+    answer: 0,
+    explanation:
+      "The photocard itself must be renewed every 10 years, even though your entitlement to drive may last longer.",
+  },
+  {
+    id: "q0275",
+    topic: "Documents",
+    prompt: "When must you tell the DVLA about a health condition that affects your driving?",
+    options: [
+      "Only when you renew your licence",
+      "As soon as it may affect your driving",
+      "Only if the police stop you",
+      "You never need to",
+    ],
+    answer: 1,
+    explanation:
+      "You have a legal duty to tell the DVLA about a notifiable condition as soon as it may affect your ability to drive safely.",
+  },
+  {
+    id: "q0276",
+    topic: "Incidents and emergencies",
+    prompt:
+      "At a crash, someone is unconscious but breathing. After making the scene safe, what should you do?",
+    options: [
+      "Give them a drink",
+      "Move them straight away",
+      "Remove a motorcyclist's helmet immediately",
+      "Call 999 and keep their airway open",
+    ],
+    answer: 3,
+    explanation:
+      "Call 999 and keep the airway open. Don't give food or drink, and don't remove a motorcyclist's helmet unless it's essential to keep them breathing.",
+  },
+  {
+    id: "q0277",
+    topic: "Incidents and emergencies",
+    prompt:
+      "Your car breaks down and you stop on the motorway hard shoulder. What should you do?",
+    options: [
+      "Leave by the left-hand doors and wait behind the barrier",
+      "Stay in the car with your seatbelt off",
+      "Stand in front of your car",
+      "Try to repair it in the running lane",
+    ],
+    answer: 0,
+    explanation:
+      "Get out by the left-hand doors, keep everyone away from traffic behind the barrier, and phone for help.",
+  },
+  {
+    id: "q0278",
+    topic: "Vehicle loading",
+    prompt: "Who is legally responsible for making sure a vehicle is not overloaded?",
+    options: ["The passengers", "The manufacturer", "The driver", "The insurer"],
+    answer: 2,
+    explanation:
+      "The driver is responsible for the load and for making sure the vehicle isn't overloaded.",
+  },
+  {
+    id: "q0279",
+    topic: "Vehicle loading",
+    prompt: "How does a heavy load on a roof rack affect the car?",
+    options: [
+      "It improves grip",
+      "It raises the centre of gravity and can reduce stability",
+      "It has no effect on handling",
+      "It makes the car accelerate faster",
+    ],
+    answer: 1,
+    explanation:
+      "Roof loads raise the centre of gravity, which affects handling in bends and crosswinds. Load heavy items low and secure them well.",
+  },
+  {
+    id: "q0280",
+    topic: "Vehicle loading",
+    prompt: "How should a load be carried on a vehicle?",
+    options: [
+      "Left loose so it settles",
+      "Only covered if it rains",
+      "Piled as high as possible",
+      "Secured so it can't move or fall off",
+    ],
+    answer: 3,
+    explanation:
+      "A load must be secured so it can't shift or fall into the road, which could cause a serious incident.",
+  },
 ];
 
 export function topicCount(topic: Topic): number {

@@ -10,8 +10,8 @@ export const LEGAL = {
   tradingName: "Driving Instructors Plymouth",
 
   entityName: "Reaction App Limited", // registered company / sole-trader legal name
-  companyNumber: "", // Companies House number, if incorporated
-  registeredAddress: "", // registered or principal business address
+  companyNumber: "17011311", // Companies House number, if incorporated
+  registeredAddress: "Brook House, South Milton, Kingsbridge, England, TQ7 3JQ", // registered or principal business address
   icoNumber: "", // ICO data-protection registration number
 
   contactEmail: "hello@drivinginstructorsplymouth.com",
