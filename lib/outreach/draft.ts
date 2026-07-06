@@ -29,18 +29,18 @@ export function buildDraft(prospect: { name: string; area: string | null }): {
   const subject = subjects[variantIndex(name + area, subjects.length)];
 
   const opener = name
-    ? `I came across ${name} while putting together a list of instructors ${place}, and thought this might be useful to you.`
-    : `I work with instructors ${place} and thought this might be useful to you.`;
+    ? `Came across ${name} while listing instructors ${place} — thought this might be useful.`
+    : `I work with instructors ${place} — thought this might be useful.`;
 
   const body = `Hi there,
 
 ${opener}
 
-I'm local and I run Driving Instructors Plymouth, a booking and admin platform I've built for instructors ${place}. It gives you your own diary (lessons, income and expenses), student management, optional online payments, and theory-test practice for your pupils.
+I'm local and I've built Driving Instructors Plymouth: your diary, students, payments and expenses in one app, plus theory practice for pupils and a profile on a directory learners search.
 
-There's a one-month free trial to get started. After that it's £9.99/month on the founder rate, and if you sign up now that price is locked in for good.
+Founding instructors get a free month, then £9.99/month locked in for good.
 
-If you'd like, I can send over a quick demo link to take a look. And if it's not for you, no worries at all — just reply and let me know.
+Worth a 10-minute video call, or shall I send a demo link? If it's not for you, just say — no worries.
 
 Best,
 Gabe
@@ -73,9 +73,7 @@ export function buildFollowUp(
   const body = final
     ? `Hi there,
 
-Last one from me, I promise. I dropped you a note a little while back about Driving Instructors Plymouth, the booking and admin platform I've built for instructors ${place}.
-
-If it's not for you, no problem at all and I won't chase again. But if you'd like a quick look, just reply and I'll send over a demo link.
+Last one from me, promise. If a booking & admin app built for instructors ${place} sounds useful, reply and I'll send a demo link. If not, I'll leave you be.
 
 Best,
 Gabe
@@ -83,9 +81,9 @@ Driving Instructors Plymouth
 www.drivinginstructorsplymouth.com`
     : `Hi there,
 
-Just following up on my note from last week about Driving Instructors Plymouth, the booking and admin platform for instructors ${place} — your own diary, student management, optional online payments and theory practice for pupils.
+Just nudging my note from last week — the booking & admin app for instructors ${place}. Free month and the £9.99/month founder rate are still open.
 
-The one-month free trial and locked-in founder rate are still there if you fancy a look. Happy to send a quick demo link, just say the word.
+Quick call or a demo link, whichever suits. If not, no problem at all.
 
 Best,
 Gabe
