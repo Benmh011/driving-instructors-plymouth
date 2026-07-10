@@ -18,15 +18,17 @@ export const EXPENSE_CATEGORIES = [
 ] as const;
 
 // ─── Billing ───
-// Free trial length (days). Set on the Stripe Checkout session, so it's easy
-// to change here without touching the Stripe price.
+// Standard free trial length (days) once the founder offer has closed.
 export const TRIAL_DAYS = 30;
 
 // Display prices only. The source of truth for what a customer is charged is
 // the Stripe Price object referenced by STRIPE_PRICE_* env vars.
-export const STANDARD_PRICE_PENCE = 1299; // £12.99 / month
+export const STANDARD_PRICE_PENCE = 1399; // £13.99 / month
 export const FOUNDER_PRICE_PENCE = 999; // £9.99 / month, locked for the life of the sub
 
-// Founder pricing is offered to instructors who subscribe within the launch
-// window (≈3 months from launch). Adjust if the launch date slips.
-export const FOUNDER_WINDOW_END = new Date("2026-09-10T23:59:59Z");
+// Founder offer: the first FOUNDER_SEATS instructors ride free until
+// FOUNDER_FREE_UNTIL, then pay the founder rate for as long as they stay
+// subscribed. The window end is a backstop so the offer can't run forever.
+export const FOUNDER_SEATS = 20;
+export const FOUNDER_FREE_UNTIL = new Date("2027-01-01T00:00:00Z");
+export const FOUNDER_WINDOW_END = new Date("2026-12-15T23:59:59Z");

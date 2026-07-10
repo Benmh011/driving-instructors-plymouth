@@ -12,7 +12,7 @@ export const LEGAL = {
   entityName: "Reaction App Limited", // registered company / sole-trader legal name
   companyNumber: "17011311", // Companies House number, if incorporated
   registeredAddress: "Brook House, South Milton, Kingsbridge, England, TQ7 3JQ", // registered or principal business address
-  icoNumber: "", // ICO data-protection registration number
+  icoNumber: "ZC189919", // ICO data-protection registration number
 
   contactEmail: "hello@drivinginstructorsplymouth.com",
 

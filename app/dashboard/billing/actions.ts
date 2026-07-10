@@ -9,8 +9,8 @@ import {
   STRIPE_PRICE_STANDARD,
   STRIPE_PRICE_FOUNDER,
 } from "@/lib/stripe";
-import { SITE_URL, TRIAL_DAYS } from "@/lib/constants";
-import { isFounderEligible } from "@/lib/subscription";
+import { SITE_URL, TRIAL_DAYS, FOUNDER_FREE_UNTIL } from "@/lib/constants";
+import { founderOfferOpen } from "@/lib/founder";
 
 async function requireInstructor() {
   const session = await auth();
@@ -42,7 +42,9 @@ export async function startCheckout() {
     });
   }
 
-  const founder = isFounderEligible();
+  // Founder status persists for returning customers; new checkouts only get it
+  // while seats remain (first FOUNDER_SEATS instructors, enforced for real).
+  const founder = profile.isFounder || (await founderOfferOpen());
   const price = founder ? STRIPE_PRICE_FOUNDER : STRIPE_PRICE_STANDARD;
 
   // Record founder status up front so the locked rate shows even before the
@@ -54,11 +56,20 @@ export async function startCheckout() {
     });
   }
 
+  // Founders ride free until FOUNDER_FREE_UNTIL; Stripe needs trial_end at
+  // least ~48h out, so fall back to the standard trial right at the boundary.
+  const farEnough =
+    FOUNDER_FREE_UNTIL.getTime() - Date.now() > 3 * 24 * 60 * 60 * 1000;
+  const subscription_data =
+    founder && farEnough
+      ? { trial_end: Math.floor(FOUNDER_FREE_UNTIL.getTime() / 1000) }
+      : { trial_period_days: TRIAL_DAYS };
+
   const checkout = await stripe.checkout.sessions.create({
     mode: "subscription",
     customer: customerId,
     line_items: [{ price, quantity: 1 }],
-    subscription_data: { trial_period_days: TRIAL_DAYS },
+    subscription_data,
     allow_promotion_codes: true,
     success_url: `${SITE_URL}/dashboard/billing?status=success`,
     cancel_url: `${SITE_URL}/dashboard/billing?status=cancelled`,

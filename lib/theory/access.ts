@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { accessState, hasFullAccess } from "@/lib/subscription";
 
 export type TheoryGate =
   | { ok: true }
@@ -27,9 +26,8 @@ export async function theoryAccess(): Promise<TheoryGate> {
     return { ok: true };
   }
 
-  const active = user.learnerProfile?.activeInstructor;
-  if (!active) return { ok: false, reason: "no-instructor" };
-  return hasFullAccess(accessState(active))
-    ? { ok: true }
-    : { ok: false, reason: "instructor-inactive" };
+  // Learners: theory practice is free with an account. It's the learner-side
+  // value of the platform from day one (and doubles as a perk instructors can
+  // point their pupils at), so it isn't gated on having an instructor.
+  return { ok: true };
 }

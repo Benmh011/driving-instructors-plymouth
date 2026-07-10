@@ -103,6 +103,11 @@ export default async function AccountPage() {
                   desc: "Prospect pipeline, drafts and follow-ups.",
                 },
                 {
+                  href: "/admin/waitlist",
+                  title: "Learner waitlist",
+                  desc: "Learners signed up and waiting for an instructor.",
+                },
+                {
                   href: "/admin/verification",
                   title: "ADI verification",
                   desc: "Review and approve instructor badges.",

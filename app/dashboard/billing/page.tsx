@@ -1,12 +1,14 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { accessState, isFounderEligible } from "@/lib/subscription";
+import { accessState } from "@/lib/subscription";
+import { founderOfferOpen, founderSeatsLeft } from "@/lib/founder";
 import {
   STANDARD_PRICE_PENCE,
   FOUNDER_PRICE_PENCE,
   TRIAL_DAYS,
-  FOUNDER_WINDOW_END,
+  FOUNDER_SEATS,
+  FOUNDER_FREE_UNTIL,
 } from "@/lib/constants";
 import { stripeConfigured } from "@/lib/stripe";
 import { reconcileCustomerSubscription } from "@/lib/stripe-sync";
@@ -72,7 +74,8 @@ export default async function BillingPage({
 
   // For the pre-subscribe pitch: an eligible instructor would actually be
   // charged the founder rate, so show that (not the standard price).
-  const founderEligible = isFounderEligible();
+  const founderEligible = await founderOfferOpen();
+  const seatsLeft = founderEligible ? await founderSeatsLeft() : 0;
   const pitchPence = founderEligible ? FOUNDER_PRICE_PENCE : STANDARD_PRICE_PENCE;
 
   const included = [
@@ -144,8 +147,9 @@ export default async function BillingPage({
             </div>
             {founderEligible && (
               <p className="mt-1 text-sm text-ink-soft">
-                Lock in the founder rate for as long as you stay subscribed —
-                available until {fmtDate(FOUNDER_WINDOW_END)}.
+                Founder rate — locked in for as long as you stay subscribed.
+                First {FOUNDER_SEATS} instructors only
+                {seatsLeft < FOUNDER_SEATS ? ` (${seatsLeft} seats left)` : ""}.
               </p>
             )}
 
@@ -161,15 +165,30 @@ export default async function BillingPage({
             </ul>
 
             <div className="mt-6 rounded-xl border border-hairline bg-paper/60 px-4 py-3 text-[15px] text-ink-soft">
-              Start with a{" "}
-              <strong className="text-ink">{TRIAL_DAYS}-day free trial</strong>.
-              Nothing&rsquo;s charged today, and you can cancel any time before it
-              ends.
+              {founderEligible ? (
+                <>
+                  Founders ride{" "}
+                  <strong className="text-ink">
+                    free until {fmtDate(FOUNDER_FREE_UNTIL)}
+                  </strong>
+                  . Nothing&rsquo;s charged before then, and you can cancel any
+                  time.
+                </>
+              ) : (
+                <>
+                  Start with a{" "}
+                  <strong className="text-ink">{TRIAL_DAYS}-day free trial</strong>.
+                  Nothing&rsquo;s charged today, and you can cancel any time before
+                  it ends.
+                </>
+              )}
             </div>
 
             <form action={startCheckout} className="mt-5">
               <button type="submit" className={primaryBtn}>
-                Start my {TRIAL_DAYS}-day free trial
+                {founderEligible
+                  ? "Join free until January 2027"
+                  : `Start my ${TRIAL_DAYS}-day free trial`}
               </button>
             </form>
           </div>

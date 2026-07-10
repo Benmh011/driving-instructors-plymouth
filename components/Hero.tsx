@@ -18,7 +18,7 @@ export function Hero() {
           style={{ animationDelay: "0ms" }}
         >
           <span className="inline-block h-2 w-2 rounded-full bg-go" />
-          Plymouth &amp; South West Devon · Launching soon
+          Plymouth &amp; South West Devon · Now live
         </p>
 
         <h1
@@ -35,9 +35,9 @@ export function Hero() {
           style={{ animationDelay: "160ms" }}
         >
           We connect you with vetted local driving instructors across
-          Plymouth and the surrounding towns. See real prices, real
-          availability, and book lessons in minutes — no endless phone calls,
-          no six-month waitlists.
+          Plymouth and the surrounding towns. See real prices and availability,
+          book lessons in minutes — and practise for your theory test free
+          while you learn.
         </p>
 
         {/* Area search — visual for now, leads to sign-up */}

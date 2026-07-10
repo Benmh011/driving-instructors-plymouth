@@ -38,7 +38,7 @@ ${opener}
 
 I'm local and I've built Driving Instructors Plymouth: your diary, students, payments and expenses in one app, plus theory practice for pupils and a profile on a directory learners search.
 
-Founding instructors get a free month, then £9.99/month locked in for good.
+Founding instructors get it free until January 2027, then £9.99/month locked in for good (standard rate is £13.99). First 20 only.
 
 Worth a 10-minute video call, or shall I send a demo link? If it's not for you, just say — no worries.
 
@@ -81,7 +81,7 @@ Driving Instructors Plymouth
 www.drivinginstructorsplymouth.com`
     : `Hi there,
 
-Just nudging my note from last week — the booking & admin app for instructors ${place}. Free month and the £9.99/month founder rate are still open.
+Just nudging my note from last week — the booking & admin app for instructors ${place}. Free until January 2027 and the £9.99/month founder rate are still open (first 20).
 
 Quick call or a demo link, whichever suits. If not, no problem at all.
 
