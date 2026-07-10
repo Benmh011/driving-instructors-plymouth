@@ -3858,6 +3858,637 @@ export const QUESTIONS: Question[] = [
     explanation:
       "A load must be secured so it can't shift or fall into the road, which could cause a serious incident.",
   },
+  {
+    id: "q0281",
+    topic: "Alertness",
+    prompt: "What is the penalty for using a hand-held mobile phone while driving?",
+    options: [
+      "3 penalty points",
+      "A warning letter",
+      "6 penalty points and a £200 fine",
+      "No penalty if you are stationary in traffic",
+    ],
+    answer: 2,
+    explanation:
+      "Using a hand-held phone while driving carries 6 penalty points and a £200 fine — and it applies even when queuing in traffic or at lights.",
+  },
+  {
+    id: "q0282",
+    topic: "Alertness",
+    prompt: "You need to change the destination in your sat nav. What should you do?",
+    options: [
+      "Adjust it while driving slowly",
+      "Ask a passenger to hold the wheel",
+      "Adjust it while waiting at traffic lights",
+      "Stop somewhere safe and legal first",
+    ],
+    answer: 3,
+    explanation:
+      "Programming a sat nav takes your eyes and mind off the road. Stop somewhere safe and legal before adjusting it.",
+  },
+  {
+    id: "q0283",
+    topic: "Alertness",
+    prompt: "On a long journey, how often is it recommended you take a break?",
+    options: [
+      "At least 15 minutes every 2 hours",
+      "5 minutes every 4 hours",
+      "Only when you feel tired",
+      "Once, halfway through",
+    ],
+    answer: 0,
+    explanation:
+      "Plan a break of at least 15 minutes after every 2 hours of driving — before tiredness sets in, not after.",
+  },
+  {
+    id: "q0284",
+    topic: "Attitude",
+    prompt: "When may you flash your headlights at another road user?",
+    options: [
+      "To tell them to go ahead",
+      "To let them know you are there",
+      "To thank them",
+      "To warn them off your lane",
+    ],
+    answer: 1,
+    explanation:
+      "Flashing headlights has one official meaning: letting another road user know you're there. Using it as a signal to proceed can cause misunderstandings.",
+  },
+  {
+    id: "q0285",
+    topic: "Attitude",
+    prompt:
+      "In a built-up area, when must you NOT sound your horn (unless another road user poses a danger)?",
+    options: [
+      "Between 7 am and 11.30 pm",
+      "On a Sunday",
+      "Between 11.30 pm and 7 am",
+      "Any time it is raining",
+    ],
+    answer: 2,
+    explanation:
+      "In built-up areas the horn must not be used between 11.30 pm and 7 am, except when another road user poses a danger.",
+  },
+  {
+    id: "q0286",
+    topic: "Attitude",
+    prompt: "An ambulance with flashing blue lights is behind you. What should you do?",
+    options: [
+      "Stop immediately where you are",
+      "Speed up to stay ahead of it",
+      "Ignore it until it uses its siren",
+      "Pull over safely and legally to let it pass",
+    ],
+    answer: 3,
+    explanation:
+      "Let it through as soon as you safely and legally can — but don't panic-stop, run red lights or mount kerbs to do it.",
+  },
+  {
+    id: "q0287",
+    topic: "Safety and your vehicle",
+    prompt: "When should you check your tyre pressures?",
+    options: [
+      "When the tyres are cold",
+      "Straight after a long drive",
+      "Only before an MOT",
+      "Once a year",
+    ],
+    answer: 0,
+    explanation:
+      "Check pressures when tyres are cold, against the values in the handbook — warm tyres give a falsely high reading.",
+  },
+  {
+    id: "q0288",
+    topic: "Safety and your vehicle",
+    prompt: "What is the purpose of a catalytic converter?",
+    options: [
+      "To improve fuel economy",
+      "To make the engine quieter",
+      "To reduce toxic exhaust emissions",
+      "To boost engine power",
+    ],
+    answer: 2,
+    explanation:
+      "A catalytic converter cleans up the exhaust, converting toxic gases into less harmful ones.",
+  },
+  {
+    id: "q0289",
+    topic: "Safety and your vehicle",
+    prompt: "The oil pressure warning light comes on while you are driving. What should you do?",
+    options: [
+      "Drive to the next garage, however far",
+      "Stop as soon as it is safe and check the cause",
+      "Ignore it if the engine sounds fine",
+      "Speed up to circulate the oil",
+    ],
+    answer: 1,
+    explanation:
+      "Low oil pressure can wreck an engine in minutes. Stop as soon as it's safe and investigate before driving on.",
+  },
+  {
+    id: "q0290",
+    topic: "Safety and your vehicle",
+    prompt: "Before leaving your parked car, you should:",
+    options: [
+      "Leave it in neutral with the handbrake off",
+      "Leave the engine running if you'll be quick",
+      "Leave a window open for ventilation",
+      "Switch off the engine, apply the handbrake and lock it",
+    ],
+    answer: 3,
+    explanation:
+      "Stop the engine, apply the parking brake, remove the key and lock the car — an unattended running car is unsafe and uninsured against theft.",
+  },
+  {
+    id: "q0291",
+    topic: "Safety margins",
+    prompt:
+      "Your steering suddenly feels light on a wet road (aquaplaning). What should you do?",
+    options: [
+      "Brake firmly",
+      "Steer sharply to find grip",
+      "Ease off the accelerator and keep the steering straight",
+      "Change down a gear",
+    ],
+    answer: 2,
+    explanation:
+      "Light steering means the tyres are riding on water. Ease off gently and avoid braking or sharp steering until grip returns.",
+  },
+  {
+    id: "q0292",
+    topic: "Safety margins",
+    prompt: "On an icy road, how much longer can it take to stop compared with a dry road?",
+    options: ["Twice as long", "Half as long again", "Five times", "Up to ten times"],
+    answer: 3,
+    explanation:
+      "On ice, stopping distances can be ten times greater than on a dry road. Slow right down and leave huge gaps.",
+  },
+  {
+    id: "q0293",
+    topic: "Safety margins",
+    prompt: "What is the typical overall stopping distance at 60 mph in good, dry conditions?",
+    options: ["36 metres", "53 metres", "73 metres", "96 metres"],
+    answer: 2,
+    explanation:
+      "At 60 mph the typical overall stopping distance is 73 metres — thinking distance plus braking distance.",
+  },
+  {
+    id: "q0294",
+    topic: "Hazard awareness",
+    prompt: "How does alcohol affect your driving?",
+    options: [
+      "It slows reactions and gives false confidence",
+      "It sharpens your judgement",
+      "It only affects you above the legal limit",
+      "It improves concentration on long drives",
+    ],
+    answer: 0,
+    explanation:
+      "Even below the legal limit, alcohol slows reactions, reduces coordination and breeds false confidence. The safe amount when driving is none.",
+  },
+  {
+    id: "q0295",
+    topic: "Hazard awareness",
+    prompt:
+      "You've been prescribed a new medicine. How do you find out if it's safe to drive while taking it?",
+    options: [
+      "Try a short drive and see how you feel",
+      "Assume it's fine if bought over the counter",
+      "Ask your doctor or pharmacist",
+      "Drink coffee to counteract any drowsiness",
+    ],
+    answer: 2,
+    explanation:
+      "Many medicines cause drowsiness or slowed reactions. Check with your doctor or pharmacist — and read the label — before driving.",
+  },
+  {
+    id: "q0296",
+    topic: "Hazard awareness",
+    prompt: "A school crossing patrol shows a 'stop for children' sign. What must you do?",
+    options: [
+      "Slow down and pass with care",
+      "Stop and wait until the sign is lowered",
+      "Sound your horn and continue",
+      "Stop only if children are on the crossing",
+    ],
+    answer: 1,
+    explanation:
+      "You must stop when a school crossing patrol shows the sign — it carries legal force, like a police officer's signal.",
+  },
+  {
+    id: "q0297",
+    topic: "Vulnerable road users",
+    prompt:
+      "You're turning into a side road. Pedestrians are waiting to cross it. Who has priority?",
+    options: [
+      "You — vehicles have priority over pedestrians",
+      "Whoever moves first",
+      "Nobody — proceed with caution",
+      "The pedestrians — you should give way",
+    ],
+    answer: 3,
+    explanation:
+      "Under the Highway Code hierarchy, pedestrians crossing or waiting to cross a road you're turning into have priority — give way to them.",
+  },
+  {
+    id: "q0298",
+    topic: "Vulnerable road users",
+    prompt: "How much space should you leave when overtaking a cyclist at up to 30 mph?",
+    options: [
+      "At least 1.5 metres",
+      "Half a metre",
+      "One car door's width",
+      "There is no guidance",
+    ],
+    answer: 0,
+    explanation:
+      "Leave at least 1.5 metres when passing a cyclist at up to 30 mph — and more space at higher speeds or in bad weather.",
+  },
+  {
+    id: "q0299",
+    topic: "Vulnerable road users",
+    prompt: "At junctions, which road users are the hardest to see and most often missed?",
+    options: [
+      "Buses",
+      "Motorcyclists and cyclists",
+      "Delivery vans",
+      "Tractors",
+    ],
+    answer: 1,
+    explanation:
+      "Two-wheelers are narrow and easily hidden by pillars and other traffic. Look specifically for them — twice — before emerging.",
+  },
+  {
+    id: "q0300",
+    topic: "Vulnerable road users",
+    prompt:
+      "On a country road with no pavement, where should you expect pedestrians to be walking?",
+    options: [
+      "Only on grass verges",
+      "With their backs to you on your side",
+      "On your side of the road, facing you",
+      "Pedestrians aren't allowed on such roads",
+    ],
+    answer: 2,
+    explanation:
+      "Pedestrians are advised to walk facing oncoming traffic, so expect them on your side of the road walking towards you — slow down and give them room.",
+  },
+  {
+    id: "q0301",
+    topic: "Other types of vehicle",
+    prompt: "In strong crosswinds, which vehicles are most affected?",
+    options: [
+      "High-sided vehicles, motorcyclists and cyclists",
+      "Sports cars",
+      "Small hatchbacks",
+      "Taxis",
+    ],
+    answer: 0,
+    explanation:
+      "High-sided vehicles, caravans, motorcyclists and cyclists are most affected by gusts, especially on exposed stretches and bridges — give them extra room.",
+  },
+  {
+    id: "q0302",
+    topic: "Other types of vehicle",
+    prompt:
+      "A long lorry ahead is indicating left but has moved out to the right. What is it most likely doing?",
+    options: [
+      "The driver has forgotten the indicator",
+      "Overtaking then pulling in",
+      "Letting you pass on the left",
+      "Swinging out to make a tight left turn",
+    ],
+    answer: 3,
+    explanation:
+      "Long vehicles often swing out before a tight left turn. Hold back and don't pass on either side until it's clear what it's doing.",
+  },
+  {
+    id: "q0303",
+    topic: "Other types of vehicle",
+    prompt: "Why do trams deserve extra care from drivers?",
+    options: [
+      "They travel very slowly",
+      "They can't steer to avoid you and run quietly",
+      "They always have priority lights",
+      "They only run at night",
+    ],
+    answer: 1,
+    explanation:
+      "Trams are fixed to their rails — they cannot swerve — and they're quiet, so you may not hear one coming. Never race or cut across them.",
+  },
+  {
+    id: "q0304",
+    topic: "Vehicle handling",
+    prompt: "Why is coasting (rolling in neutral or with the clutch down) a bad habit?",
+    options: [
+      "It wears the brakes out",
+      "It uses more fuel",
+      "It reduces your control of the car",
+      "It damages the gearbox",
+    ],
+    answer: 2,
+    explanation:
+      "Coasting removes engine braking and drive, so you have less control — particularly downhill, where the car will pick up speed.",
+  },
+  {
+    id: "q0305",
+    topic: "Vehicle handling",
+    prompt:
+      "The rear of your car slides to the right in a skid. What should you do?",
+    options: [
+      "Steer to the right",
+      "Steer to the left",
+      "Brake hard",
+      "Pull the handbrake",
+    ],
+    answer: 0,
+    explanation:
+      "Steer into the skid — if the rear slides right, steer right — while easing off the pedals. Braking hard makes it worse.",
+  },
+  {
+    id: "q0306",
+    topic: "Vehicle handling",
+    prompt: "How should you brake in an emergency in a car with ABS?",
+    options: [
+      "Pump the brake pedal rapidly",
+      "Brake firmly and keep the pressure on",
+      "Brake gently to avoid activating it",
+      "Use the handbrake as well",
+    ],
+    answer: 1,
+    explanation:
+      "With ABS, brake firmly and don't release — the system prevents the wheels locking and lets you steer while braking.",
+  },
+  {
+    id: "q0307",
+    topic: "Vehicle handling",
+    prompt: "When moving off on snow or ice, what helps prevent wheelspin?",
+    options: [
+      "High revs in first gear",
+      "Riding the clutch in first",
+      "Turning off traction control",
+      "Using the highest gear you can, such as second",
+    ],
+    answer: 3,
+    explanation:
+      "Use as high a gear as possible — often second — with gentle throttle, so the wheels are less likely to spin.",
+  },
+  {
+    id: "q0308",
+    topic: "Motorway rules",
+    prompt: "A red X is showing above your lane on a motorway gantry. What does it mean?",
+    options: [
+      "You must not use that lane",
+      "The lane is for emergency vehicles only",
+      "The lane closes in one mile",
+      "Reduce speed in that lane",
+    ],
+    answer: 0,
+    explanation:
+      "A red X means the lane is closed — you must move out of it. Ignoring it is dangerous and enforced by camera.",
+  },
+  {
+    id: "q0309",
+    topic: "Motorway rules",
+    prompt:
+      "Your car develops a problem on a smart motorway with no hard shoulder. What should you do?",
+    options: [
+      "Stop in the left lane with hazard lights on",
+      "Continue at walking pace",
+      "Make for an emergency area or leave at the next exit if you can",
+      "Stop under the next gantry",
+    ],
+    answer: 2,
+    explanation:
+      "If possible, exit the motorway or reach an emergency area (orange bays). If you're forced to stop in a live lane, keep belts on where safest, call 999.",
+  },
+  {
+    id: "q0310",
+    topic: "Motorway rules",
+    prompt: "Can learner drivers use the motorway?",
+    options: [
+      "No, never",
+      "Yes, on their own after 6 months",
+      "Yes, with any full licence holder",
+      "Yes, with an approved instructor in a dual-controlled car",
+    ],
+    answer: 3,
+    explanation:
+      "Learners may drive on motorways only when accompanied by an approved driving instructor in a car fitted with dual controls.",
+  },
+  {
+    id: "q0311",
+    topic: "Motorway rules",
+    prompt: "When joining a motorway from a slip road, you should:",
+    options: [
+      "Stop at the end of the slip road and wait for a gap",
+      "Match your speed to the traffic and merge when safe",
+      "Force your way into the left lane",
+      "Join at 30 mph for safety",
+    ],
+    answer: 1,
+    explanation:
+      "Use the slip road to build up to the speed of traffic and merge into a safe gap — traffic already on the motorway has priority.",
+  },
+  {
+    id: "q0312",
+    topic: "Rules of the road",
+    prompt: "When may you enter a yellow box junction?",
+    options: [
+      "Whenever the light is green",
+      "When your exit is blocked, if you're quick",
+      "Only when your exit road is clear — or waiting to turn right",
+      "Never",
+    ],
+    answer: 2,
+    explanation:
+      "Don't enter a box junction unless your exit is clear. The exception: you may wait in the box to turn right if only oncoming traffic stops you.",
+  },
+  {
+    id: "q0313",
+    topic: "Rules of the road",
+    prompt: "Parking at night on a two-way road, you should park:",
+    options: [
+      "In the direction of the traffic flow",
+      "Facing against the traffic flow",
+      "On the pavement",
+      "With hazard lights on",
+    ],
+    answer: 0,
+    explanation:
+      "At night you must not park facing against the traffic flow — headlights won't pick out your reflectors, making your car hard to see.",
+  },
+  {
+    id: "q0314",
+    topic: "Rules of the road",
+    prompt: "What do the zigzag lines at a pedestrian crossing mean?",
+    options: [
+      "Slow-moving traffic only",
+      "Parking for 5 minutes maximum",
+      "Cycles may overtake here",
+      "No parking, and no overtaking the leading vehicle",
+    ],
+    answer: 3,
+    explanation:
+      "Zigzags keep the crossing area clear: you must not park or stop on them, and must not overtake the vehicle nearest the crossing.",
+  },
+  {
+    id: "q0315",
+    topic: "Rules of the road",
+    prompt: "To supervise a learner driver, a person must be:",
+    options: [
+      "18 or over with any licence",
+      "At least 21 and have held a full licence for at least 3 years",
+      "A qualified instructor",
+      "25 or over",
+    ],
+    answer: 1,
+    explanation:
+      "A supervising driver must be at least 21 and have held a full licence for the category for at least 3 years.",
+  },
+  {
+    id: "q0316",
+    topic: "Road and traffic signs",
+    prompt: "At a pelican crossing, what does a flashing amber light mean?",
+    options: [
+      "Stop and wait for green",
+      "Speed up to clear the crossing",
+      "Give way to pedestrians on the crossing; go if it's clear",
+      "The crossing is out of order",
+    ],
+    answer: 2,
+    explanation:
+      "Flashing amber at a pelican means give way to anyone still on the crossing — once it's clear, you may go.",
+  },
+  {
+    id: "q0317",
+    topic: "Road and traffic signs",
+    prompt:
+      "A solid white line runs along the centre of the road. When may you cross it?",
+    options: [
+      "To overtake anything slower than you",
+      "Only between 7 pm and 7 am",
+      "Never, in any circumstances",
+      "To pass a stationary vehicle, or a cyclist or road works vehicle moving at 10 mph or less",
+    ],
+    answer: 3,
+    explanation:
+      "You may cross a solid centre line only to enter premises or a side road, or to pass a stationary vehicle — or a pedal cycle, horse or road maintenance vehicle moving at 10 mph or less.",
+  },
+  {
+    id: "q0318",
+    topic: "Road and traffic signs",
+    prompt: "Rectangular blue signs generally give you:",
+    options: [
+      "Information (such as motorway directions)",
+      "Warnings of hazards",
+      "Orders you must obey",
+      "Tourist directions",
+    ],
+    answer: 0,
+    explanation:
+      "Rectangular signs give information; blue ones are used on motorways and for general information like lane guidance.",
+  },
+  {
+    id: "q0319",
+    topic: "Road and traffic signs",
+    prompt: "What are brown road signs used for?",
+    options: [
+      "Ring roads",
+      "Tourist attractions and facilities",
+      "Primary routes",
+      "Roadworks",
+    ],
+    answer: 1,
+    explanation:
+      "Brown signs direct you to tourist attractions and facilities, like historic sites and country parks.",
+  },
+  {
+    id: "q0320",
+    topic: "Documents",
+    prompt:
+      "A police officer asks to see your insurance certificate, which you don't have with you. What happens?",
+    options: [
+      "Your car is seized immediately",
+      "You get an automatic fine",
+      "You may be asked to produce it at a police station within 7 days",
+      "Nothing — insurance is checked electronically only",
+    ],
+    answer: 2,
+    explanation:
+      "If you can't show documents at the roadside you may be required to produce them at a police station within 7 days.",
+  },
+  {
+    id: "q0321",
+    topic: "Documents",
+    prompt: "When does a new car first need an MOT test?",
+    options: [
+      "After 1 year",
+      "After 5 years",
+      "Only when it is sold",
+      "When it is 3 years old",
+    ],
+    answer: 3,
+    explanation:
+      "Cars need their first MOT at 3 years old, and a valid MOT every year after that.",
+  },
+  {
+    id: "q0322",
+    topic: "Documents",
+    prompt: "What does making a SORN (Statutory Off Road Notification) mean?",
+    options: [
+      "Your vehicle is kept off the road, untaxed and uninsured for road use",
+      "Your vehicle can be driven on Sundays only",
+      "Your tax is reduced by half",
+      "Your vehicle is exempt from MOT",
+    ],
+    answer: 0,
+    explanation:
+      "A SORN declares the vehicle is kept off the public road, so it needs no tax — but it must not be driven or parked on the road while the SORN is in force.",
+  },
+  {
+    id: "q0323",
+    topic: "Incidents and emergencies",
+    prompt: "You are first on the scene of a crash. What should you do FIRST?",
+    options: [
+      "Move the casualties away from the vehicles",
+      "Check for danger and make the scene safe",
+      "Take photos for insurance",
+      "Find witnesses",
+    ],
+    answer: 1,
+    explanation:
+      "Danger first: switch off engines, warn other traffic and make the scene safe before helping casualties (then follow DR ABC).",
+  },
+  {
+    id: "q0324",
+    topic: "Incidents and emergencies",
+    prompt: "Where should you place a warning triangle after breaking down on an ordinary road?",
+    options: [
+      "On the roof of your car",
+      "10 metres in front of the car",
+      "At least 45 metres behind your vehicle — never on a motorway",
+      "In the middle of your lane",
+    ],
+    answer: 2,
+    explanation:
+      "Place it at least 45 metres behind your vehicle on the same side of the road. Never use one on a motorway — walking in live lanes is too dangerous.",
+  },
+  {
+    id: "q0325",
+    topic: "Incidents and emergencies",
+    prompt:
+      "You're involved in a collision that causes damage and nobody exchanges details at the scene. What must you do?",
+    options: [
+      "Nothing further, if the damage is minor",
+      "Tell your insurer within 30 days",
+      "Post your details on local social media",
+      "Report it to the police within 24 hours",
+    ],
+    answer: 3,
+    explanation:
+      "If details weren't exchanged at the scene, you must report the incident to the police as soon as reasonably practicable — and in any case within 24 hours.",
+  },
 ];
 
 export function topicCount(topic: Topic): number {
