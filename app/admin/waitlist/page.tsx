@@ -38,7 +38,10 @@ export default async function WaitlistPage() {
   // The waitlist is simply every learner without an active instructor —
   // exactly who to hand to the next instructor that signs up in their area.
   const waiting: Row[] = await prisma.learnerProfile.findMany({
-    where: { activeInstructorId: null, user: { deletedAt: null } },
+    where: {
+      activeInstructorId: null,
+      user: { anonymizedAt: null, deletionScheduledFor: null },
+    },
     select: {
       id: true,
       postcode: true,
