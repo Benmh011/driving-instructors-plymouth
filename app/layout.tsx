@@ -6,6 +6,7 @@ import AppChrome from "@/components/AppChrome";
 import FreshOnRestore from "@/components/FreshOnRestore";
 import PullToRefresh from "@/components/PullToRefresh";
 import { RouteProgress } from "@/components/RouteProgress";
+import { Analytics } from "@vercel/analytics/next";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { SITE } from "@/lib/site";
@@ -84,6 +85,7 @@ export default async function RootLayout({
           {children}
         </AppChrome>
         <ServiceWorker />
+        <Analytics />
       </body>
     </html>
   );

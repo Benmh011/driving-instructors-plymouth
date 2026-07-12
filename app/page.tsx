@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { HowItWorks } from "@/components/HowItWorks";
+import { FreeTheory } from "@/components/FreeTheory";
 import { TwoSided } from "@/components/TwoSided";
 import { Coverage } from "@/components/Coverage";
 import { Faq } from "@/components/Faq";
@@ -20,6 +21,9 @@ export default async function Home() {
         <Hero />
         <Reveal>
           <HowItWorks />
+        </Reveal>
+        <Reveal>
+          <FreeTheory />
         </Reveal>
         <Reveal>
           <TwoSided />
