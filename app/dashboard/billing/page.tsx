@@ -79,12 +79,12 @@ export default async function BillingPage({
   const pitchPence = founderEligible ? FOUNDER_PRICE_PENCE : STANDARD_PRICE_PENCE;
 
   const included = [
-    "Manage your students and roster in one place",
+    "A steady stream of new local learners",
+    "Your profile in the directory learners search",
     "Take, schedule and track lesson bookings",
-    "Get matched with new local learners",
-    "Message your pupils directly",
+    "Manage your students and roster in one place",
     "Income & expenses ready for Self Assessment",
-    "Automatic lesson reminders for learners",
+    "Message pupils directly, with automatic lesson reminders",
   ];
 
   return (
