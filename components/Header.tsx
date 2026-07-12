@@ -9,8 +9,8 @@ export function Header() {
           <a href="/#how" className="link-grow hover:text-paper">
             How it works
           </a>
-          <a href="/instructors" className="link-grow hover:text-paper">
-            Find an instructor
+          <a href="/#theory" className="link-grow hover:text-paper">
+            For learners
           </a>
           <a href="/#instructors" className="link-grow hover:text-paper">
             For instructors
