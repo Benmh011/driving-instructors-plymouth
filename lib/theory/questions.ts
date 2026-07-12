@@ -4489,6 +4489,697 @@ export const QUESTIONS: Question[] = [
     explanation:
       "If details weren't exchanged at the scene, you must report the incident to the police as soon as reasonably practicable — and in any case within 24 hours.",
   },
+  {
+    id: "q0326",
+    topic: "Road and traffic signs",
+    prompt: "What is the shape of a STOP sign — the only one of its kind on UK roads?",
+    options: [
+      "A red triangle",
+      "An eight-sided octagon",
+      "A blue circle",
+      "A red square",
+    ],
+    answer: 1,
+    explanation:
+      "The octagon is unique to the STOP sign, so it's recognisable even if snow covers the writing. You must stop completely at the line.",
+  },
+  {
+    id: "q0327",
+    topic: "Road and traffic signs",
+    prompt: "What shape is a GIVE WAY sign?",
+    options: [
+      "A circle",
+      "An octagon",
+      "A square",
+      "A downward-pointing (inverted) triangle",
+    ],
+    answer: 3,
+    explanation:
+      "Give way is an inverted triangle. You needn't stop, but you must give way to traffic on the main road.",
+  },
+  {
+    id: "q0328",
+    topic: "Road and traffic signs",
+    prompt: "A circular sign with a red border generally tells you:",
+    options: [
+      "Something you must not do",
+      "A hazard is ahead",
+      "Tourist information",
+      "A recommended route",
+    ],
+    answer: 0,
+    explanation:
+      "Red-bordered circles are prohibitive — they forbid something, such as 'no entry' or 'no left turn'.",
+  },
+  {
+    id: "q0329",
+    topic: "Road and traffic signs",
+    prompt: "A circular sign, red with a single white horizontal bar, means:",
+    options: [
+      "No overtaking",
+      "Give way",
+      "One-way street",
+      "No entry for vehicles",
+    ],
+    answer: 3,
+    explanation:
+      "A red circle with a white bar means no entry for vehicular traffic — you must not drive past it.",
+  },
+  {
+    id: "q0330",
+    topic: "Road and traffic signs",
+    prompt: "A white circular sign with a single black diagonal stripe means:",
+    options: [
+      "The national speed limit applies",
+      "No vehicles at all",
+      "No stopping",
+      "End of a one-way street",
+    ],
+    answer: 0,
+    explanation:
+      "This sign means national speed limit applies — 60 mph on a single carriageway, 70 on a dual carriageway or motorway for cars.",
+  },
+  {
+    id: "q0331",
+    topic: "Road and traffic signs",
+    prompt: "A blue circle crossed by a single red diagonal line means:",
+    options: [
+      "No stopping at any time",
+      "No waiting",
+      "No entry",
+      "No parking on Sundays",
+    ],
+    answer: 1,
+    explanation:
+      "One red diagonal on blue means no waiting. A red cross (or clearway sign) means the stricter no stopping.",
+  },
+  {
+    id: "q0332",
+    topic: "Road and traffic signs",
+    prompt: "A blue circle with a red cross (a 'clearway' sign) means:",
+    options: [
+      "No stopping at any time",
+      "No waiting after dark",
+      "No entry",
+      "No U-turn",
+    ],
+    answer: 0,
+    explanation:
+      "A red cross on blue means no stopping — you must not even pause to pick up or set down.",
+  },
+  {
+    id: "q0333",
+    topic: "Road and traffic signs",
+    prompt: "A red circle containing a U-shaped arrow with a line through it means:",
+    options: ["No right turn", "No U-turns", "One-way traffic", "Roundabout ahead"],
+    answer: 1,
+    explanation:
+      "This prohibits U-turns — you must not turn to face the opposite direction here.",
+  },
+  {
+    id: "q0334",
+    topic: "Road and traffic signs",
+    prompt: "A red circle showing two cars side by side (one red) means:",
+    options: [
+      "Two-way traffic",
+      "An overtaking lane ahead",
+      "A dual carriageway",
+      "No overtaking",
+    ],
+    answer: 3,
+    explanation:
+      "Two cars in a red circle means no overtaking until you pass the sign that cancels it.",
+  },
+  {
+    id: "q0335",
+    topic: "Road and traffic signs",
+    prompt:
+      "A circular sign with a large red arrow pointing towards you and a small black arrow the other way means:",
+    options: [
+      "You have priority over oncoming vehicles",
+      "Give priority to oncoming vehicles",
+      "No entry",
+      "Two-way traffic ahead",
+    ],
+    answer: 1,
+    explanation:
+      "Give priority to vehicles from the opposite direction — usually at a narrowing. The mirror-image sign (big arrow your way) means you have priority.",
+  },
+  {
+    id: "q0336",
+    topic: "Road and traffic signs",
+    prompt: "A blue circle with a white arrow pointing straight up means:",
+    options: [
+      "Give way ahead",
+      "End of restriction",
+      "Ahead only",
+      "One-way street",
+    ],
+    answer: 2,
+    explanation:
+      "Blue circles give positive instructions; a straight-up arrow means ahead only.",
+  },
+  {
+    id: "q0337",
+    topic: "Road and traffic signs",
+    prompt: "A blue circle with an arrow angled down to the left means:",
+    options: ["Turn left only", "No left turn", "Keep left", "Left bend ahead"],
+    answer: 2,
+    explanation:
+      "Blue circle, downward-left arrow means keep left — for example, pass to the left of an island.",
+  },
+  {
+    id: "q0338",
+    topic: "Road and traffic signs",
+    prompt: "A blue circle showing three curved arrows forming a ring means:",
+    options: [
+      "A roundabout warning",
+      "A mini-roundabout — give way to traffic from your immediate right",
+      "No U-turn",
+      "A one-way system",
+    ],
+    answer: 1,
+    explanation:
+      "The blue circle of arrows is a mini-roundabout: give way to your immediate right and drive around it.",
+  },
+  {
+    id: "q0339",
+    topic: "Road and traffic signs",
+    prompt: "A number such as '30' shown inside a blue circle means:",
+    options: [
+      "Maximum speed 30 mph",
+      "Minimum speed 30 mph",
+      "30 miles to the junction",
+      "End of a 30 zone",
+    ],
+    answer: 1,
+    explanation:
+      "A number in a blue circle is a minimum speed. The same number in a red circle would be a maximum speed limit.",
+  },
+  {
+    id: "q0340",
+    topic: "Road and traffic signs",
+    prompt: "A red triangle showing a simple upright cross (+) warns of:",
+    options: [
+      "A hospital",
+      "A first-aid point",
+      "A crossroads ahead",
+      "A level crossing",
+    ],
+    answer: 2,
+    explanation:
+      "The plus shape in a warning triangle means a crossroads is ahead.",
+  },
+  {
+    id: "q0341",
+    topic: "Road and traffic signs",
+    prompt: "A red warning triangle containing three curved arrows warns of:",
+    options: [
+      "A mini-roundabout you give way at",
+      "A roundabout ahead",
+      "A one-way system",
+      "No U-turns",
+    ],
+    answer: 1,
+    explanation:
+      "The triangular version warns that a roundabout is ahead; the blue circular version is the roundabout instruction itself.",
+  },
+  {
+    id: "q0342",
+    topic: "Road and traffic signs",
+    prompt: "A red triangle showing a car with wavy skid marks behind it warns of:",
+    options: [
+      "Loose chippings",
+      "A ford",
+      "Falling rocks",
+      "A slippery road",
+    ],
+    answer: 3,
+    explanation:
+      "This warns of a slippery road — reduce speed and avoid harsh braking or steering.",
+  },
+  {
+    id: "q0343",
+    topic: "Road and traffic signs",
+    prompt: "A red triangle showing a downhill gradient, such as '10%', warns of:",
+    options: [
+      "A hump bridge",
+      "An uneven road",
+      "A steep hill downwards",
+      "A quayside",
+    ],
+    answer: 2,
+    explanation:
+      "Steep hill downwards — select a lower gear to help control your speed and save the brakes.",
+  },
+  {
+    id: "q0344",
+    topic: "Road and traffic signs",
+    prompt: "A red triangle showing two vertical arrows, one up and one down, warns of:",
+    options: [
+      "A dual carriageway",
+      "One-way traffic",
+      "Overtaking allowed",
+      "Two-way traffic ahead",
+    ],
+    answer: 3,
+    explanation:
+      "Two-way traffic straight ahead — often where a one-way section or dual carriageway returns to two-way.",
+  },
+  {
+    id: "q0345",
+    topic: "Road and traffic signs",
+    prompt: "A red triangle showing a windsock warns of:",
+    options: [
+      "Low-flying aircraft",
+      "Side winds",
+      "An airfield",
+      "A quayside",
+    ],
+    answer: 1,
+    explanation:
+      "The windsock warns of side winds — grip the wheel firmly and watch for gusts, especially on exposed stretches and after bridges.",
+  },
+  {
+    id: "q0346",
+    topic: "Road and traffic signs",
+    prompt: "A red triangle showing a snowflake or ice crystal warns of:",
+    options: [
+      "A ski area",
+      "Risk of ice",
+      "Snow ploughs working",
+      "Falling snow from trees",
+    ],
+    answer: 1,
+    explanation:
+      "Risk of ice — slow right down; stopping distances on ice can be ten times longer than on a dry road.",
+  },
+  {
+    id: "q0347",
+    topic: "Road and traffic signs",
+    prompt: "A red triangle showing a closed gate warns of:",
+    options: [
+      "A farm entrance",
+      "A toll booth",
+      "A car park",
+      "A level crossing with barrier or gate ahead",
+    ],
+    answer: 3,
+    explanation:
+      "This warns of a level crossing with a barrier or gate ahead — be ready to stop when the lights show.",
+  },
+  {
+    id: "q0348",
+    topic: "Road and traffic signs",
+    prompt: "A red triangle showing a steam locomotive warns of:",
+    options: [
+      "A railway station",
+      "A level crossing without a barrier or gate",
+      "A heritage railway",
+      "Trams only",
+    ],
+    answer: 1,
+    explanation:
+      "The steam-engine symbol warns of a level crossing with no barrier or gate — approach with extra care.",
+  },
+  {
+    id: "q0349",
+    topic: "Road and traffic signs",
+    prompt: "A red triangle showing a cow warns of:",
+    options: [
+      "A farm shop",
+      "Cattle that may be in the road",
+      "A wildlife park",
+      "No animals allowed",
+    ],
+    answer: 1,
+    explanation:
+      "Cattle may be on or crossing the road ahead — slow down and be ready to stop.",
+  },
+  {
+    id: "q0350",
+    topic: "Road and traffic signs",
+    prompt: "A red triangle showing a leaping deer warns of:",
+    options: [
+      "A deer farm",
+      "Wild animals that may cross the road",
+      "A country park",
+      "A hunting area",
+    ],
+    answer: 1,
+    explanation:
+      "Wild animals may cross ahead — especially at dawn and dusk. Slow down and watch the verges.",
+  },
+  {
+    id: "q0351",
+    topic: "Road and traffic signs",
+    prompt: "A red triangle showing an aeroplane warns of:",
+    options: [
+      "An airport terminal",
+      "Low-flying aircraft or sudden aircraft noise",
+      "A no-fly zone",
+      "A model-aircraft club",
+    ],
+    answer: 1,
+    explanation:
+      "Low-flying aircraft or sudden aircraft noise — don't be startled into a sudden manoeuvre.",
+  },
+  {
+    id: "q0352",
+    topic: "Road and traffic signs",
+    prompt: "A red triangle showing a tunnel entrance warns of:",
+    options: [
+      "A pedestrian subway",
+      "A multi-storey car park",
+      "A tunnel ahead",
+      "A bridge",
+    ],
+    answer: 2,
+    explanation:
+      "Tunnel ahead — switch on dipped headlights, remove sunglasses and keep a safe distance.",
+  },
+  {
+    id: "q0353",
+    topic: "Road and traffic signs",
+    prompt: "A red triangle showing a tram warns of:",
+    options: [
+      "Trams crossing ahead",
+      "A tram stop only",
+      "No trams beyond this point",
+      "A railway station",
+    ],
+    answer: 0,
+    explanation:
+      "Trams cross ahead — they can't steer to avoid you and run quietly, so take extra care.",
+  },
+  {
+    id: "q0354",
+    topic: "Road and traffic signs",
+    prompt: "A red triangle showing rocks tumbling down a slope warns of:",
+    options: [
+      "A quarry entrance",
+      "Road works",
+      "A steep hill",
+      "Falling or fallen rocks",
+    ],
+    answer: 3,
+    explanation:
+      "Falling or fallen rocks — watch for debris in the road and be ready to slow or stop.",
+  },
+  {
+    id: "q0355",
+    topic: "Road and traffic signs",
+    prompt: "A worded warning sign reading 'Ford' means:",
+    options: [
+      "A car dealership ahead",
+      "A place where a stream crosses the road",
+      "A parking area",
+      "A picnic site",
+    ],
+    answer: 1,
+    explanation:
+      "A ford is where water crosses the road. Check the depth gauge, drive through slowly, then test your brakes.",
+  },
+  {
+    id: "q0356",
+    topic: "Road and traffic signs",
+    prompt: "A red warning triangle containing a 'T' shape warns of:",
+    options: [
+      "A T-junction ahead",
+      "A hospital",
+      "Toilets",
+      "A tourist route",
+    ],
+    answer: 0,
+    explanation:
+      "A T-junction is ahead — the road you're on ends at a junction; be ready to give way.",
+  },
+  {
+    id: "q0357",
+    topic: "Road and traffic signs",
+    prompt: "On a normal road, where is a triangular warning sign usually placed?",
+    options: [
+      "Right at the hazard",
+      "Well before the hazard, so you have time to react",
+      "Five metres before it",
+      "Exactly one mile before it",
+    ],
+    answer: 1,
+    explanation:
+      "Warning triangles are sited ahead of the hazard so you can prepare; the distance is often shown on a plate below.",
+  },
+  {
+    id: "q0358",
+    topic: "Road and traffic signs",
+    prompt: "A direction sign with a blue background tells you the route leads to:",
+    options: [
+      "A tourist attraction",
+      "A local road",
+      "A cycle path",
+      "A motorway",
+    ],
+    answer: 3,
+    explanation:
+      "Blue direction signs point to motorways. Green is for primary routes; white with black borders for local routes.",
+  },
+  {
+    id: "q0359",
+    topic: "Road and traffic signs",
+    prompt: "A direction sign with a green background indicates:",
+    options: [
+      "A motorway",
+      "A primary route",
+      "A dead end",
+      "A tourist site",
+    ],
+    answer: 1,
+    explanation:
+      "Green direction signs are for primary routes. A blue panel on one shows a motorway can be reached that way.",
+  },
+  {
+    id: "q0360",
+    topic: "Road and traffic signs",
+    prompt: "A direction sign that is white with a black border indicates:",
+    options: [
+      "A motorway",
+      "A primary route",
+      "A non-primary or local route",
+      "A diversion",
+    ],
+    answer: 2,
+    explanation:
+      "White signs with black borders point to non-primary and local routes.",
+  },
+  {
+    id: "q0361",
+    topic: "Motorway rules",
+    prompt: "A rectangular blue sign showing a white motorway symbol means:",
+    options: [
+      "Start of the motorway — motorway rules now apply",
+      "A motorway service area",
+      "End of the motorway",
+      "No motorway access",
+    ],
+    answer: 0,
+    explanation:
+      "From this point motorway rules apply: no learners (except with an ADI in a dual-control car), pedestrians, cyclists or slow vehicles.",
+  },
+  {
+    id: "q0362",
+    topic: "Motorway rules",
+    prompt: "A sign showing the motorway symbol with a red diagonal line through it means:",
+    options: [
+      "The motorway is closed",
+      "End of the motorway",
+      "No entry to the motorway",
+      "Motorway services ahead",
+    ],
+    answer: 1,
+    explanation:
+      "End of motorway — the rules and likely the speed limit and road type change, so be ready.",
+  },
+  {
+    id: "q0363",
+    topic: "Road and traffic signs",
+    prompt: "A sign showing a red bar across the top of a white 'T' on blue means:",
+    options: [
+      "No through road (a dead end)",
+      "No entry",
+      "No U-turn",
+      "One-way street",
+    ],
+    answer: 0,
+    explanation:
+      "This marks a no through road — a dead end with no exit for vehicles.",
+  },
+  {
+    id: "q0364",
+    topic: "Road and traffic signs",
+    prompt: "A rectangular blue sign with a white letter 'H' means:",
+    options: [
+      "A hotel",
+      "A helipad only",
+      "A home zone",
+      "A hospital ahead",
+    ],
+    answer: 3,
+    explanation:
+      "The 'H' points to a hospital ahead; a version with 'A&E' or a cross shows one with Accident and Emergency.",
+  },
+  {
+    id: "q0365",
+    topic: "Road and traffic signs",
+    prompt: "A sign showing a white lower-case 'i' on a blue square means:",
+    options: [
+      "A tourist information point",
+      "An interstate route",
+      "An internet café",
+      "No information available",
+    ],
+    answer: 0,
+    explanation:
+      "The 'i' marks a tourist information point.",
+  },
+  {
+    id: "q0366",
+    topic: "Road and traffic signs",
+    prompt: "At a boundary, a large white letter 'C' inside a red circle indicates:",
+    options: [
+      "The entrance to a congestion charging zone",
+      "A car park",
+      "A clearway",
+      "A cycle-only zone",
+    ],
+    answer: 0,
+    explanation:
+      "The 'C' marks the entrance to a congestion charging zone — you may have to pay to drive in it.",
+  },
+  {
+    id: "q0367",
+    topic: "Road and traffic signs",
+    prompt: "A red warning triangle showing a person digging warns of:",
+    options: [
+      "A public footpath",
+      "A quarry",
+      "A farm",
+      "Road works ahead",
+    ],
+    answer: 3,
+    explanation:
+      "The digging figure warns of road works ahead — expect lane changes, workers and a possible lower speed limit.",
+  },
+  {
+    id: "q0368",
+    topic: "Road and traffic signs",
+    prompt: "A sign reading 'End' after a stretch of road works means:",
+    options: [
+      "End of the road works and any temporary limits, including speed",
+      "The end of the motorway",
+      "Road closed ahead",
+      "No entry beyond this point",
+    ],
+    answer: 0,
+    explanation:
+      "This marks the end of the road works and lifts any temporary restrictions, including the temporary speed limit.",
+  },
+  {
+    id: "q0369",
+    topic: "Road and traffic signs",
+    prompt: "You see a 'Loose chippings' sign at road works. You should:",
+    options: [
+      "Speed up to clear the area",
+      "Slow down — stray stones can damage vehicles or be thrown up",
+      "Sound your horn",
+      "Drive on the verge",
+    ],
+    answer: 1,
+    explanation:
+      "Slow down for loose chippings: stones can crack windscreens and cut grip. A lower speed protects you and others.",
+  },
+  {
+    id: "q0370",
+    topic: "Road and traffic signs",
+    prompt: "The back of a slow-moving works vehicle shows a large arrow pointing left. You should:",
+    options: [
+      "Overtake on the right",
+      "Pass in the direction the arrow points",
+      "Stop and wait behind it",
+      "Reverse away",
+    ],
+    answer: 1,
+    explanation:
+      "The arrow tells you which side to pass the slow-moving or stationary works vehicle. Follow it and pass with care.",
+  },
+  {
+    id: "q0371",
+    topic: "Road and traffic signs",
+    prompt: "A speed limit shown inside a red circle at road works is:",
+    options: [
+      "Only advisory",
+      "A mandatory limit you must not exceed",
+      "For lorries only",
+      "A minimum speed",
+    ],
+    answer: 1,
+    explanation:
+      "A red-circle limit is mandatory — you must not exceed it, and speeding fines at road works can be higher.",
+  },
+  {
+    id: "q0372",
+    topic: "Road and traffic signs",
+    prompt: "A red warning triangle showing a person on a striped crossing warns of:",
+    options: [
+      "A school",
+      "A pedestrian-only zone",
+      "A zebra crossing ahead",
+      "Road works",
+    ],
+    answer: 2,
+    explanation:
+      "This warns a zebra crossing is ahead — be ready to slow and give way to anyone waiting to cross.",
+  },
+  {
+    id: "q0373",
+    topic: "Road and traffic signs",
+    prompt: "A red warning triangle showing two people walking warns of:",
+    options: [
+      "A school ahead",
+      "Pedestrians in the road ahead (often where there's no pavement)",
+      "A pedestrian-only zone",
+      "A bus stop",
+    ],
+    answer: 1,
+    explanation:
+      "It warns of pedestrians in the road ahead — common on rural roads with no footway. Slow down and give them room.",
+  },
+  {
+    id: "q0374",
+    topic: "Road and traffic signs",
+    prompt: "A red warning triangle showing a bumpy road surface warns of:",
+    options: [
+      "A hump bridge",
+      "Road works",
+      "A ford",
+      "An uneven road",
+    ],
+    answer: 3,
+    explanation:
+      "It warns of an uneven road surface ahead — slow down to keep control and protect your suspension.",
+  },
+  {
+    id: "q0375",
+    topic: "Road and traffic signs",
+    prompt: "A red warning triangle showing a car dropping towards water warns of:",
+    options: [
+      "A car wash",
+      "A quayside or river bank",
+      "A ferry terminal",
+      "A flooded road",
+    ],
+    answer: 1,
+    explanation:
+      "Quayside or river bank — there's a real risk of driving into water, so approach slowly and with great care.",
+  },
 ];
 
 export function topicCount(topic: Topic): number {
