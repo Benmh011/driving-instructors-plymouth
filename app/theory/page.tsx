@@ -79,8 +79,9 @@ export default async function TheoryPage() {
         Theory practice
       </h1>
       <p className="mt-3 max-w-lg text-ink-soft">
-        Revise by topic, then sit a full mock test under timed conditions. Built
-        to mirror the real car theory test.
+        Revise by topic, then sit a full mock test under timed conditions. This
+        covers the multiple-choice half of the car theory test — see below for
+        hazard perception.
       </p>
 
       {(isInstructor || isAdmin) && (
@@ -150,6 +151,44 @@ export default async function TheoryPage() {
           </li>
         ))}
       </ul>
+
+      <div className="mt-10 rounded-2xl border border-line/40 bg-line/5 p-6">
+        <h2 className="font-display text-xl font-bold text-ink">
+          Hazard perception
+        </h2>
+        <p className="mt-2 text-[15px] text-ink-soft">
+          The real theory test has two parts — the multiple-choice questions
+          (which you can practise here) and a hazard perception test: 14 video
+          clips where you click as developing hazards appear, scored out of 75
+          with a pass mark of 44. You need to pass both, in the same sitting. We
+          don&rsquo;t simulate the video clips yet, so practise that part with
+          the official DVSA materials below — worth knowing that some paid apps
+          score more generously than the real test, so the official clips give
+          you the truest picture.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <a
+            href="https://www.gov.uk/theory-test/hazard-perception-test"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-full bg-sea px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-sea-dark"
+          >
+            How hazard perception works ↗
+          </a>
+          <a
+            href="https://www.safedrivingforlife.info/free-practice-tests/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-full border border-ink/20 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink"
+          >
+            Official free practice ↗
+          </a>
+        </div>
+        <p className="mt-3 text-xs text-ink-soft">
+          Safe Driving for Life is run by the DVSA — the people who set the real
+          test.
+        </p>
+      </div>
     </Shell>
   );
 }
