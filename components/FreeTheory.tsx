@@ -43,13 +43,13 @@ export function FreeTheory() {
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href="/register"
-                className="inline-flex items-center justify-center rounded-full bg-sea px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-sea-dark"
+                className="press inline-flex items-center justify-center rounded-full bg-sea px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-sea-dark"
               >
                 Start practising free
               </Link>
               <Link
                 href="/theory/preview"
-                className="inline-flex items-center justify-center rounded-full border border-ink/20 px-6 py-3 text-sm font-semibold text-ink transition-colors hover:border-ink"
+                className="lift press inline-flex items-center justify-center rounded-full border border-ink/15 bg-white px-6 py-3 text-sm font-semibold text-ink transition-colors hover:border-ink/40"
               >
                 See how it works
               </Link>
