@@ -106,7 +106,7 @@ export default async function InstructorProfilePage({
   // students" messaging to learners. The owner gets a private heads-up instead.
   const profileLocked = !hasFullAccess(accessState(instructor));
   const isOwner = !!session?.user?.id && session.user.id === instructor.userId;
-  if (profileLocked && !isOwner) notFound();
+  if (profileLocked && !isOwner && !isAdmin) notFound();
   if (profileLocked && isOwner) {
     return (
       <div className="relative z-10 min-h-dvh">
@@ -334,6 +334,15 @@ export default async function InstructorProfilePage({
       <AppHeader home={isOwner ? "/dashboard" : "/"} right={right} />
 
       <main className="mx-auto max-w-3xl px-5 py-14 sm:px-8">
+        {isAdmin && !isOwner && (profileLocked || !verified) && (
+          <div className="mb-6 rounded-2xl border border-line/50 bg-line/10 p-4 text-sm text-ink">
+            <strong>Admin preview.</strong> This profile isn&rsquo;t live to
+            learners yet
+            {!verified && " · ADI not verified"}
+            {profileLocked && " · no active subscription"}. You&rsquo;re seeing it
+            because you&rsquo;re an admin.
+          </div>
+        )}
         <Link
           href={isOwner ? "/dashboard/profile" : "/instructors"}
           className="text-sm font-semibold text-ink-soft transition-colors hover:text-ink"

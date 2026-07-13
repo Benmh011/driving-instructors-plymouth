@@ -87,9 +87,11 @@ export default async function VerificationPage() {
             </p>
             <Link
               href={`/instructors/${i.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="mt-2 inline-block text-sm font-semibold text-sea link-grow"
             >
-              View public profile
+              Preview public profile ↗
             </Link>
             {i.adiBadgeUrl ? (
               <a href={`/api/badge/${i.id}`} target="_blank" rel="noopener noreferrer" className="mt-3 block">
