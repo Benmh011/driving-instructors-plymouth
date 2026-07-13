@@ -436,10 +436,10 @@ export default async function DashboardPage({
 
         {admin && (
           <Link
-            href="/admin/verification"
+            href="/admin"
             className="mt-8 inline-block text-sm font-semibold text-sea link-grow"
           >
-            Admin: ADI verification &rarr;
+            Admin &rarr;
           </Link>
         )}
       </main>

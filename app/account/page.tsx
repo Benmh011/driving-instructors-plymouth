@@ -98,9 +98,14 @@ export default async function AccountPage() {
             <ul className="mt-3 space-y-3">
               {[
                 {
-                  href: "/admin/outreach",
-                  title: "Instructor outreach",
-                  desc: "Prospect pipeline, drafts and follow-ups.",
+                  href: "/admin",
+                  title: "Admin hub",
+                  desc: "Users, waitlist, verification, outreach and theory.",
+                },
+                {
+                  href: "/admin/users",
+                  title: "All users",
+                  desc: "Everyone who's signed up — learners and instructors.",
                 },
                 {
                   href: "/admin/waitlist",
