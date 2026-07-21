@@ -12,6 +12,7 @@ export const metadata = { title: "ADI verification" };
 type Row = {
   id: string;
   businessName: string | null;
+  phone: string | null;
   adiNumber: string;
   postcodes: string;
   transmission: string;
@@ -77,6 +78,18 @@ export default async function VerificationPage() {
             </div>
             <p className="mt-1 text-sm text-ink-soft">
               {i.user.name} &middot; {i.user.email}
+              {i.phone ? (
+                <>
+                  {" "}
+                  &middot;{" "}
+                  <a
+                    href={`tel:${i.phone.replace(/\s/g, "")}`}
+                    className="font-semibold text-sea"
+                  >
+                    {i.phone}
+                  </a>
+                </>
+              ) : null}
             </p>
             <p className="mt-2 text-sm text-ink">
               ADI badge: <span className="font-semibold">{i.adiNumber}</span>

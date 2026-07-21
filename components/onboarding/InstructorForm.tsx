@@ -23,6 +23,24 @@ export default function InstructorForm({ next }: { next?: string }) {
         </p>
       </div>
       <div>
+        <label className={label} htmlFor="phone">
+          Contact number
+        </label>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="e.g. 07700 900123"
+          required
+          className={field}
+        />
+        <p className="mt-1 text-xs text-ink-soft">
+          So we can reach you about your account. Never shown to learners.
+        </p>
+      </div>
+      <div>
         <label className={label} htmlFor="businessName">
           Business name <span className="font-normal text-ink-soft">(optional)</span>
         </label>

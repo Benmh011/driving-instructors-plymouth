@@ -29,6 +29,7 @@ type Row = {
   learnerProfile: { activeInstructorId: string | null } | null;
   instructorProfile: {
     adiStatus: string;
+    phone: string | null;
     adiBadgeUrl: string | null;
     photoUrl: string | null;
     inviteCode: string | null;
@@ -69,6 +70,7 @@ export default async function UsersPage() {
       instructorProfile: {
         select: {
           adiStatus: true,
+          phone: true,
           adiBadgeUrl: true,
           photoUrl: true,
           inviteCode: true,
@@ -125,6 +127,17 @@ export default async function UsersPage() {
                 >
                   {u.email}
                 </a>
+                {u.instructorProfile?.phone && (
+                  <>
+                    {" · "}
+                    <a
+                      href={`tel:${u.instructorProfile.phone.replace(/\s/g, "")}`}
+                      className="font-semibold text-sea"
+                    >
+                      {u.instructorProfile.phone}
+                    </a>
+                  </>
+                )}
               </p>
               <p className="mt-2 inline-block rounded-full bg-cream px-3 py-1 text-xs font-semibold text-ink-soft">
                 {status(u)}

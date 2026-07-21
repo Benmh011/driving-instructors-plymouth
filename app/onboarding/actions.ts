@@ -50,6 +50,7 @@ export async function completeInstructor(
   const parsed = instructorSchema.safeParse({
     adiNumber: formData.get("adiNumber"),
     businessName: formData.get("businessName") || undefined,
+    phone: formData.get("phone"),
     postcodes: formData.get("postcodes"),
     transmission: formData.get("transmission"),
     hourlyRate: formData.get("hourlyRate"),

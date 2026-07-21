@@ -127,6 +127,7 @@ export default async function EditProfilePage() {
         <div className="mt-5 rounded-2xl border border-hairline bg-cream p-6">
           <EditProfileForm
             businessName={p.businessName ?? ""}
+            phone={p.phone ?? ""}
             postcodes={p.postcodes}
             transmission={p.transmission}
             hourlyRate={p.hourlyRate}

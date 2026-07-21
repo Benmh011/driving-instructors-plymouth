@@ -21,6 +21,10 @@ export const learnerSchema = z.object({
 export const instructorSchema = z.object({
   adiNumber: z.string().min(2, "Enter your ADI badge number"),
   businessName: z.string().max(120).optional(),
+  phone: z
+    .string()
+    .min(7, "Enter a contact number")
+    .max(20, "That number looks too long"),
   postcodes: z.string().min(2, "Enter the areas you cover"),
   transmission: z.enum(["MANUAL", "AUTOMATIC", "BOTH"]),
   hourlyRate: z.coerce.number().int().min(1, "Enter your hourly rate"),
@@ -33,6 +37,10 @@ export const instructorSchema = z.object({
 // cancellation-notice setting.
 export const instructorProfileSchema = z.object({
   businessName: z.string().max(120).optional(),
+  phone: z
+    .string()
+    .min(7, "Enter a contact number")
+    .max(20, "That number looks too long"),
   postcodes: z.string().min(2, "Enter the areas you cover"),
   transmission: z.enum(["MANUAL", "AUTOMATIC", "BOTH"]),
   hourlyRate: z.coerce.number().int().min(1, "Enter your hourly rate"),

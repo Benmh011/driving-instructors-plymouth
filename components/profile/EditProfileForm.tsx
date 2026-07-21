@@ -9,6 +9,7 @@ const label = "mb-1.5 block text-sm font-semibold";
 
 export default function EditProfileForm({
   businessName,
+  phone,
   postcodes,
   transmission,
   hourlyRate,
@@ -21,6 +22,7 @@ export default function EditProfileForm({
   cancellationNoticeHours,
 }: {
   businessName: string;
+  phone: string;
   postcodes: string;
   transmission: string;
   hourlyRate: number;
@@ -47,6 +49,26 @@ export default function EditProfileForm({
           defaultValue={businessName}
           className={field}
         />
+      </div>
+
+      <div>
+        <label className={label} htmlFor="phone">
+          Contact number
+        </label>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          defaultValue={phone}
+          placeholder="e.g. 07700 900123"
+          required
+          className={field}
+        />
+        <p className="mt-1 text-xs text-ink-soft">
+          So we can reach you about your account. Never shown to learners.
+        </p>
       </div>
 
       <div>
