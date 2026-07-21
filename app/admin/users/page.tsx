@@ -27,8 +27,24 @@ type Row = {
   createdAt: Date;
   anonymizedAt: Date | null;
   learnerProfile: { activeInstructorId: string | null } | null;
-  instructorProfile: { adiStatus: string } | null;
+  instructorProfile: {
+    adiStatus: string;
+    adiBadgeUrl: string | null;
+    photoUrl: string | null;
+    inviteCode: string | null;
+    stripeSubscriptionId: string | null;
+    updatedAt: Date;
+    _count: { roster: number; bookings: number };
+  } | null;
 };
+
+function Signal({ done, label }: { done: boolean; label: string }) {
+  return (
+    <li className={done ? "font-medium text-go" : "text-ink-soft"}>
+      {done ? "✓" : "○"} {label}
+    </li>
+  );
+}
 
 export default async function UsersPage() {
   const session = await auth();
@@ -50,7 +66,17 @@ export default async function UsersPage() {
       createdAt: true,
       anonymizedAt: true,
       learnerProfile: { select: { activeInstructorId: true } },
-      instructorProfile: { select: { adiStatus: true } },
+      instructorProfile: {
+        select: {
+          adiStatus: true,
+          adiBadgeUrl: true,
+          photoUrl: true,
+          inviteCode: true,
+          stripeSubscriptionId: true,
+          updatedAt: true,
+          _count: { select: { roster: true, bookings: true } },
+        },
+      },
     },
     orderBy: { createdAt: "desc" },
   });
@@ -103,6 +129,43 @@ export default async function UsersPage() {
               <p className="mt-2 inline-block rounded-full bg-cream px-3 py-1 text-xs font-semibold text-ink-soft">
                 {status(u)}
               </p>
+
+              {u.instructorProfile && (
+                <div className="mt-3 border-t border-hairline pt-3">
+                  <p className="text-xs font-semibold uppercase tracking-[0.1em] text-ink-soft">
+                    Activity
+                  </p>
+                  <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                    <Signal
+                      done={!!u.instructorProfile.adiBadgeUrl}
+                      label="ADI badge uploaded"
+                    />
+                    <Signal
+                      done={!!u.instructorProfile.photoUrl}
+                      label="Profile photo"
+                    />
+                    <Signal
+                      done={!!u.instructorProfile.stripeSubscriptionId}
+                      label="Started billing"
+                    />
+                    <Signal
+                      done={!!u.instructorProfile.inviteCode}
+                      label="Opened Students page"
+                    />
+                    <Signal
+                      done={u.instructorProfile._count.roster > 0}
+                      label={`${u.instructorProfile._count.roster} students`}
+                    />
+                    <Signal
+                      done={u.instructorProfile._count.bookings > 0}
+                      label={`${u.instructorProfile._count.bookings} lessons`}
+                    />
+                  </ul>
+                  <p className="mt-2 text-xs text-ink-soft">
+                    Profile last changed {fmt(u.instructorProfile.updatedAt)}
+                  </p>
+                </div>
+              )}
             </li>
           ))}
           {users.length === 0 && (
